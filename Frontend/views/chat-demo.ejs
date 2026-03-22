@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Demo - Modern Design</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/chat-box.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        'blue': {
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-100 dark:bg-slate-900 min-h-screen">
+    <!-- Header -->
+    <header class="bg-white dark:bg-slate-800 shadow-lg">
+        <div class="container mx-auto px-4 py-6">
+            <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Modern Chat Demo</h1>
+            <p class="text-gray-600 dark:text-gray-400 mt-2">Thiết kế chat hiện đại với Tailwind CSS và Dark Mode</p>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Feature Cards -->
+            <div class="bg-white dark:bg-slate-800 rounded-xl shadow-lg p-6">
+                <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900 rounded-lg flex items-center justify-center mb-4">
+                    <i class="fas fa-mobile-alt text-blue-600 dark:text-blue-400 text-xl"></i>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Responsive Design</h3>
+                <p class="text-gray-600 dark:text-gray-400">Tự động thích ứng với mọi kích thước màn hình</p>
+            </div>
+
+            <div class="bg-white dark:bg-slate-800 rounded-xl shadow-lg p-6">
+                <div class="w-12 h-12 bg-green-100 dark:bg-green-900 rounded-lg flex items-center justify-center mb-4">
+                    <i class="fas fa-moon text-green-600 dark:text-green-400 text-xl"></i>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Dark Mode</h3>
+                <p class="text-gray-600 dark:text-gray-400">Hỗ trợ chế độ tối với toggle dễ dàng</p>
+            </div>
+
+            <div class="bg-white dark:bg-slate-800 rounded-xl shadow-lg p-6">
+                <div class="w-12 h-12 bg-purple-100 dark:bg-purple-900 rounded-lg flex items-center justify-center mb-4">
+                    <i class="fas fa-bolt text-purple-600 dark:text-purple-400 text-xl"></i>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Real-time</h3>
+                <p class="text-gray-600 dark:text-gray-400">Tin nhắn real-time với Socket.IO</p>
+            </div>
+        </div>
+
+        <!-- Instructions -->
+        <div class="mt-12 bg-white dark:bg-slate-800 rounded-xl shadow-lg p-8">
+            <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">Hướng dẫn sử dụng</h2>
+            <div class="space-y-4 text-gray-600 dark:text-gray-400">
+                <div class="flex items-start gap-3">
+                    <div class="w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-sm font-bold">1</div>
+                    <p>Click vào icon chat ở góc dưới bên phải để mở chat box</p>
+                </div>
+                <div class="flex items-start gap-3">
+                    <div class="w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-sm font-bold">2</div>
+                    <p>Sử dụng nút moon/sun để chuyển đổi giữa chế độ sáng và tối</p>
+                </div>
+                <div class="flex items-start gap-3">
+                    <div class="w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-sm font-bold">3</div>
+                    <p>Chat box sẽ tự động thích ứng với kích thước màn hình</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Chat Box -->
+    <%- include('partials/chat-box') %>
+
+    <!-- Demo Script -->
+    <script>
+        // Set demo user info
+        localStorage.setItem('userInfo', JSON.stringify({
+            id: 'demo-user-123',
+            userBanId: 'demo-seller-456',
+            role: 'customer',
+            hoTen: 'Demo User'
+        }));
+
+        // Add some demo functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 Modern Chat Demo loaded successfully!');
+            console.log('💡 Click the chat icon in the bottom right to test the chat interface');
+        });
+    </script>
+</body>
+</html>

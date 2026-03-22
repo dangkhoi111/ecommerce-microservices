@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liên Hệ - MegaStore VN</title>
+    <!-- Tailwind CSS (CDN) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>if (window.tailwind) { tailwind.config = { darkMode: 'class' } }</script>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="bg-white dark:bg-black text-slate-900 dark:text-white min-h-screen transition-colors duration-300">
+
+
+
+    <!-- Hero Section -->
+    <section class="relative bg-gradient-to-br from-slate-50 via-white to-slate-50 dark:from-neutral-900 dark:via-black dark:to-neutral-900 py-20">
+        <div class="absolute top-1/2 right-0 -translate-y-1/2 translate-x-1/4 w-[500px] h-[500px] opacity-5 dark:opacity-10 pointer-events-none">
+            <div class="w-full h-full rounded-full border-8 border-slate-900 dark:border-white flex items-center justify-center">
+                <div class="text-[350px] font-black text-slate-900 dark:text-white">M</div>
+            </div>
+        </div>
+        
+        <div class="container mx-auto px-4 relative z-10">
+            <div class="max-w-4xl mx-auto text-center">
+                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-yellow-500/30 bg-yellow-500/10 text-yellow-600 dark:text-yellow-500 font-semibold text-sm mb-6">
+                    <i class="fas fa-envelope"></i>
+                    <span>Chúng tôi luôn lắng nghe</span>
+                </div>
+                <h1 class="text-5xl md:text-6xl font-extrabold mb-4 text-slate-900 dark:text-white">
+                    Liên Hệ
+                    <br/>
+                    <span class="bg-gradient-to-r from-orange-500 via-yellow-500 to-orange-500 dark:from-yellow-400 dark:via-yellow-200 dark:to-yellow-400 bg-clip-text text-transparent">Với Chúng Tôi</span>
+                </h1>
+                <p class="text-xl md:text-2xl text-slate-600 dark:text-neutral-300 max-w-2xl mx-auto">
+                    Chúng tôi luôn sẵn sàng lắng nghe và hỗ trợ bạn. Hãy liên hệ với chúng tôi ngay!
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <div class="container mx-auto px-4 py-12">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
+            <!-- Contact Information -->
+            <div class="lg:col-span-1 space-y-6">
+                <div class="text-center lg:text-left mb-8">
+                    <h2 class="text-3xl md:text-4xl font-extrabold mb-4 text-slate-900 dark:text-white">
+                        Thông Tin
+                        <span class="bg-gradient-to-r from-orange-500 to-yellow-500 dark:from-yellow-400 dark:to-yellow-200 bg-clip-text text-transparent"> Liên Hệ</span>
+                    </h2>
+                </div>
+
+                <!-- Address -->
+                <div class="bg-white dark:bg-neutral-900 border border-slate-200 dark:border-neutral-800 rounded-xl p-6 hover:border-orange-500 dark:hover:border-yellow-500 transition-all">
+                    <div class="flex items-start gap-4">
+                        <div class="w-12 h-12 rounded-full bg-orange-500/10 dark:bg-yellow-500/10 flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-map-marker-alt text-orange-500 dark:text-yellow-500 text-xl"></i>
+                        </div>
+                        <div>
+                            <h5 class="font-bold text-lg mb-2 text-slate-900 dark:text-white">Địa chỉ</h5>
+                            <p class="text-slate-600 dark:text-neutral-400">123 Đường ABC, Quận XYZ<br>TP. Hồ Chí Minh, Việt Nam</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Phone -->
+                <div class="bg-white dark:bg-neutral-900 border border-slate-200 dark:border-neutral-800 rounded-xl p-6 hover:border-orange-500 dark:hover:border-yellow-500 transition-all">
+                    <div class="flex items-start gap-4">
+                        <div class="w-12 h-12 rounded-full bg-orange-500/10 dark:bg-yellow-500/10 flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-phone-alt text-orange-500 dark:text-yellow-500 text-xl"></i>
+                        </div>
+                        <div>
+                            <h5 class="font-bold text-lg mb-2 text-slate-900 dark:text-white">Điện thoại</h5>
+                            <p class="text-slate-600 dark:text-neutral-400">
+                                <a href="tel:+84123456789" class="hover:text-orange-500 dark:hover:text-yellow-500 transition-colors">+84 123 456 789</a><br>
+                                <a href="tel:+84987654321" class="hover:text-orange-500 dark:hover:text-yellow-500 transition-colors">+84 987 654 321</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Email -->
+                <div class="bg-white dark:bg-neutral-900 border border-slate-200 dark:border-neutral-800 rounded-xl p-6 hover:border-orange-500 dark:hover:border-yellow-500 transition-all">
+                    <div class="flex items-start gap-4">
+                        <div class="w-12 h-12 rounded-full bg-orange-500/10 dark:bg-yellow-500/10 flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-envelope text-orange-500 dark:text-yellow-500 text-xl"></i>
+                        </div>
+                        <div>
+                            <h5 class="font-bold text-lg mb-2 text-slate-900 dark:text-white">Email</h5>
+                            <p class="text-slate-600 dark:text-neutral-400">
+                                <a href="mailto:info@megastorevn.com" class="hover:text-orange-500 dark:hover:text-yellow-500 transition-colors">info@megastorevn.com</a><br>
+                                <a href="mailto:support@megastorevn.com" class="hover:text-orange-500 dark:hover:text-yellow-500 transition-colors">support@megastorevn.com</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Working Hours -->
+                <div class="bg-white dark:bg-neutral-900 border border-slate-200 dark:border-neutral-800 rounded-xl p-6 hover:border-orange-500 dark:hover:border-yellow-500 transition-all">
+                    <div class="flex items-start gap-4">
+                        <div class="w-12 h-12 rounded-full bg-orange-500/10 dark:bg-yellow-500/10 flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-clock text-orange-500 dark:text-yellow-500 text-xl"></i>
+                        </div>
+                        <div>
+                            <h5 class="font-bold text-lg mb-2 text-slate-900 dark:text-white">Giờ làm việc</h5>
+                            <p class="text-slate-600 dark:text-neutral-400">
+                                Thứ 2 - Thứ 6: 8:00 - 17:00<br>
+                                Thứ 7: 8:00 - 12:00
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contact Form -->
+            <div class="lg:col-span-2">
+                <div class="bg-white dark:bg-neutral-900 border border-slate-200 dark:border-neutral-800 rounded-2xl p-8 shadow-lg">
+                    <h2 class="text-3xl md:text-4xl font-extrabold mb-6 text-slate-900 dark:text-white">
+                        Gửi
+                        <span class="bg-gradient-to-r from-orange-500 to-yellow-500 dark:from-yellow-400 dark:to-yellow-200 bg-clip-text text-transparent"> Tin Nhắn</span>
+                    </h2>
+
+                    <form id="contactForm" class="space-y-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <!-- Name -->
+                            <div>
+                                <label for="name" class="block text-sm font-semibold text-slate-700 dark:text-neutral-300 mb-2">
+                                    <i class="fas fa-user text-orange-500 dark:text-yellow-500 mr-2"></i>
+                                    Họ và tên
+                                </label>
+                                <input 
+                                    type="text" 
+                                    id="name" 
+                                    required
+                                    class="w-full px-4 py-3 rounded-xl border-2 border-slate-200 dark:border-neutral-800 bg-slate-50 dark:bg-black text-slate-900 dark:text-white placeholder-slate-400 focus:border-orange-500 dark:focus:border-yellow-500 focus:ring-2 focus:ring-orange-500/20 dark:focus:ring-yellow-500/20 transition-all"
+                                    placeholder="Nhập họ và tên"
+                                >
+                            </div>
+
+                            <!-- Email -->
+                            <div>
+                                <label for="email" class="block text-sm font-semibold text-slate-700 dark:text-neutral-300 mb-2">
+                                    <i class="fas fa-envelope text-orange-500 dark:text-yellow-500 mr-2"></i>
+                                    Email
+                                </label>
+                                <input 
+                                    type="email" 
+                                    id="email" 
+                                    required
+                                    class="w-full px-4 py-3 rounded-xl border-2 border-slate-200 dark:border-neutral-800 bg-slate-50 dark:bg-black text-slate-900 dark:text-white placeholder-slate-400 focus:border-orange-500 dark:focus:border-yellow-500 focus:ring-2 focus:ring-orange-500/20 dark:focus:ring-yellow-500/20 transition-all"
+                                    placeholder="example@email.com"
+                                >
+                            </div>
+
+                            <!-- Phone -->
+                            <div>
+                                <label for="phone" class="block text-sm font-semibold text-slate-700 dark:text-neutral-300 mb-2">
+                                    <i class="fas fa-phone text-orange-500 dark:text-yellow-500 mr-2"></i>
+                                    Số điện thoại
+                                </label>
+                                <input 
+                                    type="tel" 
+                                    id="phone" 
+                                    required
+                                    class="w-full px-4 py-3 rounded-xl border-2 border-slate-200 dark:border-neutral-800 bg-slate-50 dark:bg-black text-slate-900 dark:text-white placeholder-slate-400 focus:border-orange-500 dark:focus:border-yellow-500 focus:ring-2 focus:ring-orange-500/20 dark:focus:ring-yellow-500/20 transition-all"
+                                    placeholder="0123 456 789"
+                                >
+                            </div>
+
+                            <!-- Subject -->
+                            <div>
+                                <label for="subject" class="block text-sm font-semibold text-slate-700 dark:text-neutral-300 mb-2">
+                                    <i class="fas fa-tag text-orange-500 dark:text-yellow-500 mr-2"></i>
+                                    Chủ đề
+                                </label>
+                                <select 
+                                    id="subject" 
+                                    required
+                                    class="w-full px-4 py-3 rounded-xl border-2 border-slate-200 dark:border-neutral-800 bg-slate-50 dark:bg-black text-slate-900 dark:text-white focus:border-orange-500 dark:focus:border-yellow-500 focus:ring-2 focus:ring-orange-500/20 dark:focus:ring-yellow-500/20 transition-all cursor-pointer"
+                                >
+                                    <option value="">Chọn chủ đề</option>
+                                    <option value="support">Hỗ trợ kỹ thuật</option>
+                                    <option value="sales">Tư vấn mua hàng</option>
+                                    <option value="warranty">Bảo hành</option>
+                                    <option value="other">Khác</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Message -->
+                        <div>
+                            <label for="message" class="block text-sm font-semibold text-slate-700 dark:text-neutral-300 mb-2">
+                                <i class="fas fa-comment text-orange-500 dark:text-yellow-500 mr-2"></i>
+                                Nội dung tin nhắn
+                            </label>
+                            <textarea 
+                                id="message" 
+                                rows="6"
+                                required
+                                class="w-full px-4 py-3 rounded-xl border-2 border-slate-200 dark:border-neutral-800 bg-slate-50 dark:bg-black text-slate-900 dark:text-white placeholder-slate-400 focus:border-orange-500 dark:focus:border-yellow-500 focus:ring-2 focus:ring-orange-500/20 dark:focus:ring-yellow-500/20 transition-all resize-none"
+                                placeholder="Nhập nội dung tin nhắn của bạn..."
+                            ></textarea>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <button 
+                            type="submit" 
+                            class="w-full md:w-auto px-8 py-4 rounded-xl bg-gradient-to-r from-orange-500 to-yellow-500 dark:bg-yellow-500 text-white dark:text-black font-bold text-lg hover:shadow-lg hover:shadow-orange-500/50 dark:hover:shadow-yellow-500/50 transition-all inline-flex items-center justify-center gap-2"
+                        >
+                            <i class="fas fa-paper-plane"></i>
+                            <span>Gửi tin nhắn</span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Map Section -->
+        <section>
+            <div class="bg-white dark:bg-neutral-900 border border-slate-200 dark:border-neutral-800 rounded-2xl overflow-hidden shadow-lg">
+                <iframe 
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3919.4241674197956!2d106.69845661533454!3d10.777638792319489!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31752f3a9d8d1bb3%3A0xc4eca1b1726b7e37!2sNguyen%20Hue%20Walking%20Street!5e0!3m2!1sen!2s!4v1647095833755!5m2!1sen!2s" 
+                    width="100%" 
+                    height="450" 
+                    style="border:0;" 
+                    allowfullscreen="" 
+                    loading="lazy">
+                </iframe>
+            </div>
+        </section>
+    </div>
+
+<script>
+document.getElementById('contactForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    // Get form values
+    const name = document.getElementById('name').value;
+    const email = document.getElementById('email').value;
+    const phone = document.getElementById('phone').value;
+    const subject = document.getElementById('subject').value;
+    const message = document.getElementById('message').value;
+    
+    // Show success message (you can replace this with actual API call)
+    alert('Cảm ơn bạn đã liên hệ với chúng tôi, ' + name + '!\n\nChúng tôi sẽ phản hồi sớm nhất có thể qua email: ' + email);
+    
+    // Reset form
+    this.reset();
+});
+</script>
+
+</html>

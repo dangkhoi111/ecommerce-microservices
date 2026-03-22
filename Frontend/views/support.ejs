@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hỗ trợ khách hàng - MegaStore VN</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/support.css">
+</head>
+<body>
+    <header>
+        <div class="top-header">
+            <div class="container">
+                <div class="left-section">
+                    <a href="/seller" class="seller-channel">Kênh người bán</a>
+                </div>
+                <div class="right-section">
+                    <a href="#"><i class="fas fa-bell"></i> Thông báo</a>
+                    <a href="#">Trợ giúp</a>
+                    <% if (typeof hoTen !== 'undefined' && hoTen) { %>
+                        <p>Xin chào, <%= hoTen %>!</p>
+                        <p><a href="/logout">Đăng xuất</a></p>
+                    <% } else { %>
+                        <p><a href="/login">Đăng nhập</a></p>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+        <div class="main-header">
+            <div class="container">
+                <div class="logo">
+                    <h1>MegaStore VN</h1>
+                </div>
+                <div class="search-bar">
+                    <input type="text" placeholder="Tìm kiếm sản phẩm...">
+                    <button><i class="fas fa-search"></i></button>
+                </div>
+                <div class="cart">
+                    <a href="/cart" class="cart-icon">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span class="cart-count">0</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <nav class="main-nav">
+            <div class="container">
+                <ul>
+                    <li><a href="/">Trang chủ</a></li>
+                    <li><a href="/products">Sản phẩm</a></li>
+                    <li><a href="/blog">Blog</a></li>
+                    <li><a href="/about">Thông tin</a></li>
+                    <li><a href="/contact">Liên hệ</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Support Content -->
+    <div class="support-banner">
+        <div class="container">
+            <h1 class="text-center mb-4">Trung tâm hỗ trợ khách hàng</h1>
+            <p class="text-center text-white mb-0">Chúng tôi luôn sẵn sàng hỗ trợ bạn 24/7</p>
+        </div>
+    </div>
+
+    <div class="container py-5">
+        <!-- Quick Support Options -->
+        <div class="quick-support mb-5">
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="support-card text-center">
+                        <div class="icon-circle mb-3">
+                            <i class="fas fa-comments"></i>
+                        </div>
+                        <h4>Chat trực tuyến</h4>
+                        <p>Trò chuyện trực tiếp với nhân viên hỗ trợ</p>
+                        <button class="btn btn-primary">Bắt đầu chat</button>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="support-card text-center">
+                        <div class="icon-circle mb-3">
+                            <i class="fas fa-phone-alt"></i>
+                        </div>
+                        <h4>Hotline</h4>
+                        <p>Gọi ngay: 1800-xxxx</p>
+                        <p class="small">Thời gian: 8:00 - 22:00</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="support-card text-center">
+                        <div class="icon-circle mb-3">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <h4>Email hỗ trợ</h4>
+                        <p>support@megastore.vn</p>
+                        <p class="small">Phản hồi trong vòng 24h</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Shopping Guide -->
+        <section class="support-section mb-5" id="shopping-guide">
+            <div class="section-header">
+                <h2><i class="fas fa-shopping-cart"></i>Hướng dẫn mua hàng</h2>
+                <p class="text-muted">Quy trình mua sắm đơn giản, nhanh chóng và an toàn</p>
+            </div>
+            <div class="shopping-steps">
+                <div class="row g-4">
+                    <div class="col-md-3">
+                        <div class="step-card">
+                            <div class="step-number">1</div>
+                            <h5>Tìm sản phẩm</h5>
+                            <p>Sử dụng thanh tìm kiếm hoặc duyệt qua danh mục</p>
+                            <ul class="step-details">
+                                <li>Tìm theo tên sản phẩm</li>
+                                <li>Lọc theo danh mục</li>
+                                <li>Sắp xếp theo giá</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="step-card">
+                            <div class="step-number">2</div>
+                            <h5>Thêm vào giỏ hàng</h5>
+                            <p>Chọn số lượng và thêm vào giỏ hàng</p>
+                            <ul class="step-details">
+                                <li>Kiểm tra tồn kho</li>
+                                <li>Chọn phiên bản</li>
+                                <li>Xem giỏ hàng</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="step-card">
+                            <div class="step-number">3</div>
+                            <h5>Thanh toán</h5>
+                            <p>Chọn phương thức thanh toán</p>
+                            <ul class="step-details">
+                                <li>Thẻ tín dụng</li>
+                                <li>Chuyển khoản</li>
+                                <li>Thanh toán khi nhận hàng</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="step-card">
+                            <div class="step-number">4</div>
+                            <h5>Nhận hàng</h5>
+                            <p>Theo dõi đơn hàng trực tuyến</p>
+                            <ul class="step-details">
+                                <li>Kiểm tra trạng thái</li>
+                                <li>Theo dõi vận chuyển</li>
+                                <li>Xác nhận nhận hàng</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Return Policy -->
+        <section class="support-section mb-5" id="return-policy">
+            <div class="section-header">
+                <h2><i class="fas fa-exchange-alt"></i>Chính sách đổi trả</h2>
+                <p class="text-muted">Cam kết hoàn tiền và đổi trả dễ dàng</p>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="policy-card">
+                        <h5 class="card-title">Điều kiện đổi trả</h5>
+                        <ul class="policy-list">
+                            <li><i class="fas fa-check"></i>Sản phẩm còn nguyên tem mác</li>
+                            <li><i class="fas fa-check"></i>Thời gian đổi trả trong vòng 7 ngày</li>
+                            <li><i class="fas fa-check"></i>Sản phẩm chưa qua sử dụng</li>
+                            <li><i class="fas fa-check"></i>Có hóa đơn mua hàng</li>
+                            <li><i class="fas fa-check"></i>Phụ kiện còn đầy đủ</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="policy-card">
+                        <h5 class="card-title">Quy trình đổi trả</h5>
+                        <div class="timeline">
+                            <div class="timeline-item">
+                                <div class="timeline-badge">1</div>
+                                <div class="timeline-content">
+                                    <h6>Liên hệ CSKH</h6>
+                                    <p>Thông báo yêu cầu đổi trả</p>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-badge">2</div>
+                                <div class="timeline-content">
+                                    <h6>Điền form đổi trả</h6>
+                                    <p>Cung cấp thông tin chi tiết</p>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-badge">3</div>
+                                <div class="timeline-content">
+                                    <h6>Đóng gói sản phẩm</h6>
+                                    <p>Đảm bảo đóng gói cẩn thận</p>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-badge">4</div>
+                                <div class="timeline-content">
+                                    <h6>Gửi trả sản phẩm</h6>
+                                    <p>Sử dụng dịch vụ vận chuyển</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Invoice OCR Assistance -->
+        <section class="support-section mb-5" id="invoice-ocr">
+            <div class="section-header">
+                <h2><i class="fas fa-file-invoice"></i>Quét hóa đơn đổi trả</h2>
+                <p class="text-muted">Tải ảnh hóa đơn để chúng tôi giúp bạn đối chiếu thông tin đơn hàng nhanh chóng</p>
+            </div>
+            <div class="row g-4 align-items-stretch">
+                <div class="col-lg-6">
+                    <div class="support-card h-100">
+                        <h5 class="mb-3">Thông tin cần cung cấp</h5>
+                        <form id="support-invoice-form" class="space-y-3">
+                            <div class="mb-3">
+                                <label for="support-invoice-order-id" class="form-label">Mã đơn hàng</label>
+                                <input type="text" id="support-invoice-order-id" class="form-control" placeholder="VD: 66f1b2c..." autocomplete="off" required>
+                                <div class="form-text">Bạn có thể lấy mã đơn hàng tại trang Đơn Mua hoặc email xác nhận</div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="support-invoice-file" class="form-label">Ảnh hóa đơn</label>
+                                <input type="file" id="support-invoice-file" class="form-control" accept="image/*" required>
+                                <div class="form-text">Hỗ trợ PNG hoặc JPG, dung lượng tối đa 5MB</div>
+                            </div>
+                            <button type="submit" id="support-invoice-submit" class="btn btn-warning w-100">
+                                <i class="fas fa-magic me-2"></i>Quét hóa đơn
+                            </button>
+                            <p id="support-invoice-error" class="text-danger small mb-0 mt-2"></p>
+                        </form>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="support-card h-100">
+                        <h5 class="mb-3">Kết quả quét</h5>
+                        <div id="support-invoice-result" class="d-none">
+                            <p class="text-muted small mb-2">Bạn có thể đính kèm thông tin này khi gửi yêu cầu đổi trả.</p>
+                            <div class="alert alert-light border">
+                                <div class="d-flex align-items-center gap-2 mb-2">
+                                    <span class="badge bg-warning text-dark">Trạng thái</span>
+                                    <span id="support-invoice-status" class="fw-semibold text-dark">Chờ xử lý</span>
+                                </div>
+                                <ul id="support-invoice-details" class="list-unstyled mb-3 text-dark small">
+                                </ul>
+                                <div>
+                                    <label class="text-muted small fw-semibold">Nội dung OCR</label>
+                                    <pre id="support-invoice-raw" class="bg-white border rounded p-2 small" style="max-height: 140px; overflow-y: auto;">Chưa có nội dung</pre>
+                                </div>
+                                <a id="support-invoice-link" href="#" target="_blank" class="d-inline-flex align-items-center gap-2 small text-decoration-none d-none">
+                                    <i class="fas fa-external-link-alt"></i>
+                                    Xem ảnh hóa đơn đã tải lên
+                                </a>
+                            </div>
+                        </div>
+                        <div id="support-invoice-placeholder" class="text-center text-muted py-4">
+                            <i class="fas fa-receipt fa-3x mb-3 text-warning"></i>
+                            <p class="mb-0">Chưa có dữ liệu. Hãy tải ảnh hóa đơn để bắt đầu.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Privacy Policy -->
+        <section class="support-section mb-5" id="privacy-policy">
+            <div class="section-header">
+                <h2><i class="fas fa-shield-alt"></i>Chính sách bảo mật</h2>
+                <p class="text-muted">Bảo vệ thông tin khách hàng là ưu tiên hàng đầu</p>
+            </div>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="privacy-card">
+                        <div class="privacy-icon">
+                            <i class="fas fa-user-shield"></i>
+                        </div>
+                        <h5>Thông tin cá nhân</h5>
+                        <ul>
+                            <li>Họ tên</li>
+                            <li>Địa chỉ</li>
+                            <li>Số điện thoại</li>
+                            <li>Email</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="privacy-card">
+                        <div class="privacy-icon">
+                            <i class="fas fa-lock"></i>
+                        </div>
+                        <h5>Bảo mật thanh toán</h5>
+                        <ul>
+                            <li>Mã hóa SSL 256-bit</li>
+                            <li>Xác thực 2 lớp</li>
+                            <li>Bảo mật thẻ</li>
+                            <li>Theo dõi giao dịch</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="privacy-card">
+                        <div class="privacy-icon">
+                            <i class="fas fa-handshake"></i>
+                        </div>
+                        <h5>Cam kết bảo mật</h5>
+                        <ul>
+                            <li>Không chia sẻ thông tin</li>
+                            <li>Bảo vệ dữ liệu</li>
+                            <li>Tuân thủ pháp luật</li>
+                            <li>Cập nhật thường xuyên</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Terms of Use -->
+        <section class="support-section" id="terms">
+            <div class="section-header">
+                <h2><i class="fas fa-file-contract"></i>Điều khoản sử dụng</h2>
+                <p class="text-muted">Quy định và điều khoản khi sử dụng dịch vụ</p>
+            </div>
+            <div class="terms-grid">
+                <div class="terms-card">
+                    <div class="terms-icon">
+                        <i class="fas fa-gavel"></i>
+                    </div>
+                    <h5>Quy định chung</h5>
+                    <p>Tuân thủ pháp luật Việt Nam và các quy định về thương mại điện tử</p>
+                </div>
+                <div class="terms-card">
+                    <div class="terms-icon">
+                        <i class="fas fa-user-lock"></i>
+                    </div>
+                    <h5>Tài khoản</h5>
+                    <p>Bảo mật thông tin đăng nhập và chịu trách nhiệm về hoạt động của tài khoản</p>
+                </div>
+                <div class="terms-card">
+                    <div class="terms-icon">
+                        <i class="fas fa-shopping-bag"></i>
+                    </div>
+                    <h5>Mua hàng</h5>
+                    <p>Cung cấp thông tin chính xác và thanh toán đầy đủ cho đơn hàng</p>
+                </div>
+                <div class="terms-card">
+                    <div class="terms-icon">
+                        <i class="fas fa-copyright"></i>
+                    </div>
+                    <h5>Bản quyền</h5>
+                    <p>Tôn trọng quyền sở hữu trí tuệ và không sao chép trái phép</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Về MegaStore</h3>
+                    <p>MegaStore là nền tảng thương mại điện tử hàng đầu Việt Nam, cung cấp đa dạng sản phẩm chất lượng với giá cả cạnh tranh.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Hỗ trợ khách hàng</h3>
+                    <ul>
+                        <li><a href="/support">Trung tâm trợ giúp</a></li>
+                        <li><a href="/support">Hướng dẫn mua hàng</a></li>
+                        <li><a href="/support">Chính sách đổi trả</a></li>
+                        <li><a href="/support">Chính sách bảo mật</a></li>
+                        <li><a href="/support">Điều khoản sử dụng</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Về chúng tôi</h3>
+                    <ul>
+                        <li><a href="/about">Giới thiệu</a></li>
+                        <li><a href="/about">Tuyển dụng</a></li>
+                        <li><a href="/about">Điều khoản</a></li>
+                        <li><a href="/about">Chính sách bảo mật</a></li>
+                        <li><a href="/about">Chương trình khuyến mãi</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Đăng ký nhận tin</h3>
+                    <p>Đăng ký để nhận thông tin về sản phẩm mới và chương trình khuyến mãi</p>
+                    <form class="newsletter-form">
+                        <input type="email" placeholder="Nhập email của bạn">
+                        <button type="submit">Đăng ký</button>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2024 MegaStore VN. Tất cả quyền được bảo lưu.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap Bundle JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Custom JavaScript -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize Bootstrap components
+            var triggerTabList = [].slice.call(document.querySelectorAll('.list-group-item'))
+            triggerTabList.forEach(function(triggerEl) {
+                triggerEl.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    // Remove active class from all items
+                    triggerTabList.forEach(item => item.classList.remove('active'));
+                    // Add active class to clicked item
+                    this.classList.add('active');
+                });
+            });
+
+            const supportInvoiceForm = document.getElementById('support-invoice-form');
+            if (supportInvoiceForm) {
+                const orderIdInput = document.getElementById('support-invoice-order-id');
+                const fileInput = document.getElementById('support-invoice-file');
+                const submitBtn = document.getElementById('support-invoice-submit');
+                const errorEl = document.getElementById('support-invoice-error');
+                const resultContainer = document.getElementById('support-invoice-result');
+                const placeholder = document.getElementById('support-invoice-placeholder');
+                const statusEl = document.getElementById('support-invoice-status');
+                const detailsEl = document.getElementById('support-invoice-details');
+                const rawEl = document.getElementById('support-invoice-raw');
+                const linkEl = document.getElementById('support-invoice-link');
+
+                const renderResult = (invoice) => {
+                    if (!invoice) {
+                        statusEl.textContent = 'Chưa có dữ liệu';
+                        detailsEl.innerHTML = '<li>• Không tìm thấy thông tin từ hóa đơn</li>';
+                        rawEl.textContent = 'Chưa có nội dung';
+                        linkEl.classList.add('d-none');
+                        return;
+                    }
+
+                    statusEl.textContent = invoice.status === 'processed'
+                        ? 'Đã xử lý'
+                        : invoice.status === 'failed'
+                            ? 'Xử lý thất bại'
+                            : 'Đang chờ xử lý';
+
+                    if (invoice.parsed) {
+                        const items = [];
+                        // Thông tin đơn hàng
+                        if (invoice.parsed.orderCode) {
+                            items.push(`<strong>📋 Mã đơn:</strong> ${invoice.parsed.orderCode}`);
+                        }
+                        if (invoice.parsed.date) {
+                            items.push(`<strong>📅 Ngày:</strong> ${invoice.parsed.date}`);
+                        }
+                        if (invoice.parsed.status) {
+                            items.push(`<strong>🔄 Trạng thái:</strong> ${invoice.parsed.status}`);
+                        }
+                        if (invoice.parsed.paymentMethod) {
+                            items.push(`<strong>💳 Phương thức:</strong> ${invoice.parsed.paymentMethod.toUpperCase()}`);
+                        }
+                        
+                        // Thông tin khách hàng
+                        if (invoice.parsed.customer) {
+                            items.push(`<strong>👤 Họ tên:</strong> ${invoice.parsed.customer}`);
+                        }
+                        if (invoice.parsed.phone) {
+                            items.push(`<strong>📞 SĐT:</strong> ${invoice.parsed.phone}`);
+                        }
+                        if (invoice.parsed.address) {
+                            items.push(`<strong>📍 Địa chỉ:</strong> ${invoice.parsed.address}`);
+                        }
+                        if (invoice.parsed.province) {
+                            items.push(`<strong>🏙️ Tỉnh/Thành:</strong> ${invoice.parsed.province}`);
+                        }
+                        
+                        // Sản phẩm
+                        if (invoice.parsed.products && invoice.parsed.products.length > 0) {
+                            items.push(`<strong>🛍️ Sản phẩm (${invoice.parsed.products.length}):</strong>`);
+                            invoice.parsed.products.forEach((product, idx) => {
+                                const productPrice = product.price ? `${Number(product.price).toLocaleString('vi-VN')} VNĐ` : '-';
+                                const colorLabel = product.color || '-';
+                                const sizeLabel = product.size || '-';
+                                items.push(`&nbsp;&nbsp;${idx + 1}. ${product.name} - SL: ${product.quantity || 1} - Màu: ${colorLabel} - Kích thước: ${sizeLabel} - Giá: ${productPrice}`);
+                            });
+                        }
+                        
+                        // Tổng tiền
+                        if (invoice.parsed.total) {
+                            const totalNumber = Number(invoice.parsed.total);
+                            const formattedTotal = Number.isFinite(totalNumber)
+                                ? `${totalNumber.toLocaleString('vi-VN')} VNĐ`
+                                : `${invoice.parsed.total} VNĐ`;
+                            items.push(`<strong>💰 Tổng tiền:</strong> <span class="text-primary fw-bold">${formattedTotal}</span>`);
+                        }
+
+                        detailsEl.innerHTML = items.length
+                            ? items.map(item => `<li class="mb-2">${item}</li>`).join('')
+                            : '<li>• Không trích xuất được thông tin</li>';
+                    } else {
+                        detailsEl.innerHTML = '<li>• Không trích xuất được thông tin</li>';
+                    }
+
+                    rawEl.textContent = invoice.rawText || 'Không có nội dung OCR';
+
+                    if (invoice.imagePath) {
+                        linkEl.href = `http://localhost:3006/${invoice.imagePath}`;
+                        linkEl.classList.remove('d-none');
+                    } else {
+                        linkEl.classList.add('d-none');
+                    }
+                };
+
+                supportInvoiceForm.addEventListener('submit', async (event) => {
+                    event.preventDefault();
+                    errorEl.textContent = '';
+
+                    const orderId = orderIdInput.value.trim();
+                    const file = fileInput.files[0];
+
+                    if (!orderId) {
+                        errorEl.textContent = 'Vui lòng nhập mã đơn hàng trước khi quét hóa đơn.';
+                        return;
+                    }
+
+                    if (!file) {
+                        errorEl.textContent = 'Vui lòng chọn ảnh hóa đơn.';
+                        return;
+                    }
+
+                    submitBtn.disabled = true;
+                    submitBtn.innerHTML = '<span class=\"spinner-border spinner-border-sm me-2\"></span>Đang xử lý...';
+
+                    const formData = new FormData();
+                    formData.append('orderId', orderId);
+                    formData.append('invoice', file);
+
+                    try {
+                        const response = await fetch('http://localhost:3006/api/invoices', {
+                            method: 'POST',
+                            body: formData
+                        });
+
+                        const data = await response.json();
+
+                        if (!response.ok) {
+                            renderResult(data.invoice);
+                            throw new Error(data.message || 'Không thể xử lý hóa đơn');
+                        }
+
+                        renderResult(data.invoice);
+                        resultContainer.classList.remove('d-none');
+                        placeholder.classList.add('d-none');
+                    } catch (err) {
+                        errorEl.textContent = err.message || 'Đã xảy ra lỗi khi quét hóa đơn.';
+                    } finally {
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = '<i class=\"fas fa-magic me-2\"></i>Quét hóa đơn';
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html> 

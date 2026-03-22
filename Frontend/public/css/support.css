@@ -1,0 +1,247 @@
+/* Support Banner */
+.support-banner {
+    background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);
+    padding: 3rem 0;
+    margin-bottom: 2rem;
+    color: white;
+}
+
+.support-banner h1 {
+    font-size: 2.5rem;
+    font-weight: 600;
+}
+
+/* Quick Support Cards */
+.support-card {
+    background: white;
+    border-radius: 10px;
+    padding: 2rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    height: 100%;
+    transition: transform 0.3s ease;
+}
+
+.support-card:hover {
+    transform: translateY(-5px);
+}
+
+.icon-circle {
+    width: 70px;
+    height: 70px;
+    background: #e7f1ff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+}
+
+.icon-circle i {
+    font-size: 30px;
+    color: #0d6efd;
+}
+
+/* Section Headers */
+.section-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.section-header h2 {
+    font-size: 2rem;
+    font-weight: 600;
+    color: #2d3436;
+    margin-bottom: 1rem;
+}
+
+.section-header h2 i {
+    margin-right: 1rem;
+    color: #0d6efd;
+}
+
+/* Shopping Steps */
+.step-card {
+    background: white;
+    border-radius: 10px;
+    padding: 2rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    height: 100%;
+    position: relative;
+}
+
+.step-number {
+    width: 40px;
+    height: 40px;
+    background: #0d6efd;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    position: absolute;
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.step-details {
+    list-style: none;
+    padding: 0;
+    margin-top: 1rem;
+}
+
+.step-details li {
+    padding: 0.5rem 0;
+    color: #666;
+    border-bottom: 1px dashed #eee;
+}
+
+.step-details li:last-child {
+    border-bottom: none;
+}
+
+/* Policy Cards */
+.policy-card {
+    background: white;
+    border-radius: 10px;
+    padding: 2rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    height: 100%;
+}
+
+.policy-list {
+    list-style: none;
+    padding: 0;
+}
+
+.policy-list li {
+    padding: 0.75rem 0;
+    display: flex;
+    align-items: center;
+}
+
+.policy-list li i {
+    color: #0d6efd;
+    margin-right: 1rem;
+}
+
+/* Timeline */
+.timeline {
+    position: relative;
+    padding: 2rem 0;
+}
+
+.timeline-item {
+    padding-left: 3rem;
+    position: relative;
+    margin-bottom: 2rem;
+}
+
+.timeline-badge {
+    width: 30px;
+    height: 30px;
+    background: #0d6efd;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+
+.timeline-content {
+    background: #f8f9fa;
+    padding: 1rem;
+    border-radius: 5px;
+}
+
+/* Privacy Cards */
+.privacy-card {
+    background: white;
+    border-radius: 10px;
+    padding: 2rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    height: 100%;
+    text-align: center;
+}
+
+.privacy-icon {
+    width: 60px;
+    height: 60px;
+    background: #e7f1ff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem;
+}
+
+.privacy-icon i {
+    font-size: 24px;
+    color: #0d6efd;
+}
+
+.privacy-card ul {
+    list-style: none;
+    padding: 0;
+    text-align: left;
+}
+
+.privacy-card ul li {
+    padding: 0.5rem 0;
+    color: #666;
+    border-bottom: 1px dashed #eee;
+}
+
+/* Terms Grid */
+.terms-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+}
+
+.terms-card {
+    background: white;
+    border-radius: 10px;
+    padding: 2rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.terms-icon {
+    width: 60px;
+    height: 60px;
+    background: #e7f1ff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem;
+}
+
+.terms-icon i {
+    font-size: 24px;
+    color: #0d6efd;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .support-banner {
+        padding: 2rem 0;
+    }
+
+    .support-banner h1 {
+        font-size: 2rem;
+    }
+
+    .section-header h2 {
+        font-size: 1.75rem;
+    }
+
+    .terms-grid {
+        grid-template-columns: 1fr;
+    }
+}

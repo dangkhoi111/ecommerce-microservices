@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thanh toán thành công - MegaStore VN</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .success-animation {
+            animation: success-pulse 2s ease-in-out infinite;
+        }
+        @keyframes success-pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background: #f97316;
+            animation: confetti-fall 3s linear infinite;
+        }
+        @keyframes confetti-fall {
+            to {
+                transform: translateY(100vh) rotate(360deg);
+            }
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-green-50 to-blue-50 min-h-screen">
+    <!-- Confetti Animation -->
+    <div id="confetti-container"></div>
+
+    <div class="container mx-auto px-4 py-8 max-w-md">
+        <!-- Success Card -->
+        <div class="bg-white rounded-2xl shadow-xl p-8 text-center success-animation">
+            <!-- Success Icon -->
+            <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                <i class="fas fa-check-circle text-4xl text-green-500"></i>
+            </div>
+
+            <!-- Success Message -->
+            <h1 class="text-3xl font-bold text-gray-800 mb-2">Thanh toán thành công!</h1>
+            <p class="text-gray-600 mb-6">Đơn hàng của bạn đã được xác nhận</p>
+
+            <!-- Order Details -->
+            <div class="bg-gray-50 rounded-lg p-4 mb-6 text-left">
+                <div class="flex justify-between items-center mb-2">
+                    <span class="text-gray-600">Mã đơn hàng:</span>
+                    <span class="font-semibold"><%= orderId %></span>
+                </div>
+                <div class="flex justify-between items-center">
+                    <span class="text-gray-600">Phương thức:</span>
+                    <span class="font-semibold"><%= paymentMethod %></span>
+                </div>
+            </div>
+
+            <!-- Next Steps -->
+            <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+                <h3 class="font-semibold text-blue-800 mb-2">
+                    <i class="fas fa-info-circle mr-2"></i>Các bước tiếp theo
+                </h3>
+                <ul class="text-sm text-blue-700 space-y-1 text-left">
+                    <li>• Đơn hàng sẽ được xử lý trong vòng 24 giờ</li>
+                    <li>• Bạn sẽ nhận được email xác nhận</li>
+                    <li>• Hàng sẽ được giao theo địa chỉ đã chọn</li>
+                </ul>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="space-y-3">
+                <a href="/purchase" class="block w-full bg-green-500 text-white py-3 rounded-lg font-semibold hover:bg-green-600 transition-colors">
+                    <i class="fas fa-shopping-bag mr-2"></i>
+                    Xem đơn hàng của tôi
+                </a>
+                <a href="/products" class="block w-full bg-gray-200 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-300 transition-colors">
+                    <i class="fas fa-arrow-left mr-2"></i>
+                    Tiếp tục mua sắm
+                </a>
+            </div>
+        </div>
+
+        <!-- Help Section -->
+        <div class="text-center mt-6">
+            <p class="text-sm text-gray-600">
+                <i class="fas fa-phone-alt mr-1"></i>
+                Cần hỗ trợ? <a href="#" class="text-green-500 hover:underline">1900 1234</a>
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Create confetti effect
+        function createConfetti() {
+            const container = document.getElementById('confetti-container');
+            const colors = ['#f97316', '#10b981', '#3b82f6', '#f59e0b', '#ef4444'];
+            
+            for (let i = 0; i < 50; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = Math.random() * 100 + '%';
+                    confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.animationDelay = Math.random() * 3 + 's';
+                    confetti.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                    container.appendChild(confetti);
+                    
+                    setTimeout(() => confetti.remove(), 5000);
+                }, i * 50);
+            }
+        }
+
+        // Create confetti on page load
+        createConfetti();
+        
+        // Recreate confetti every 5 seconds for celebration effect
+        setInterval(createConfetti, 5000);
+    </script>
+</body>
+</html>

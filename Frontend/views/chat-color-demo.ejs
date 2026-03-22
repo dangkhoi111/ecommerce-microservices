@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Color Demo - Orange/Yellow Theme</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/chat-box.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        'orange': {
+                            500: '#f97316',
+                            600: '#ea580c',
+                        },
+                        'yellow': {
+                            500: '#eab308',
+                            600: '#ca8a04',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-100 dark:bg-slate-900 min-h-screen">
+    <!-- Header -->
+    <header class="bg-white dark:bg-slate-800 shadow-lg">
+        <div class="container mx-auto px-4 py-6">
+            <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Chat Color Theme Demo</h1>
+            <p class="text-gray-600 dark:text-gray-400 mt-2">Màu sắc chat đã được cập nhật để đồng bộ với website</p>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8">
+        <!-- Color Comparison -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+            <!-- Old Theme -->
+            <div class="bg-white dark:bg-slate-800 rounded-xl shadow-lg p-6">
+                <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+                    <div class="w-4 h-4 bg-blue-500 rounded"></div>
+                    Theme Cũ (Blue)
+                </h3>
+                <div class="space-y-4">
+                    <div class="flex items-center gap-3 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+                        <div class="w-8 h-8 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full"></div>
+                        <span class="text-sm text-gray-700 dark:text-gray-300">Chat Icon</span>
+                    </div>
+                    <div class="flex items-center gap-3 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+                        <div class="w-8 h-8 bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg"></div>
+                        <span class="text-sm text-gray-700 dark:text-gray-300">Header Background</span>
+                    </div>
+                    <div class="flex items-center gap-3 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+                        <div class="w-8 h-8 bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg"></div>
+                        <span class="text-sm text-gray-700 dark:text-gray-300">Send Button</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- New Theme -->
+            <div class="bg-white dark:bg-slate-800 rounded-xl shadow-lg p-6">
+                <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+                    <div class="w-4 h-4 bg-gradient-to-r from-orange-500 to-yellow-500 rounded"></div>
+                    Theme Mới (Orange/Yellow)
+                </h3>
+                <div class="space-y-4">
+                    <div class="flex items-center gap-3 p-3 bg-orange-50 dark:bg-orange-900/20 rounded-lg">
+                        <div class="w-8 h-8 bg-gradient-to-r from-orange-500 via-yellow-500 to-orange-500 rounded-full"></div>
+                        <span class="text-sm text-gray-700 dark:text-gray-300">Chat Icon</span>
+                    </div>
+                    <div class="flex items-center gap-3 p-3 bg-orange-50 dark:bg-orange-900/20 rounded-lg">
+                        <div class="w-8 h-8 bg-gradient-to-r from-orange-500 via-yellow-500 to-orange-500 rounded-lg"></div>
+                        <span class="text-sm text-gray-700 dark:text-gray-300">Header Background</span>
+                    </div>
+                    <div class="flex items-center gap-3 p-3 bg-orange-50 dark:bg-orange-900/20 rounded-lg">
+                        <div class="w-8 h-8 bg-gradient-to-r from-orange-500 via-yellow-500 to-orange-500 rounded-lg"></div>
+                        <span class="text-sm text-gray-700 dark:text-gray-300">Send Button</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Website Theme Colors -->
+        <div class="bg-white dark:bg-slate-800 rounded-xl shadow-lg p-8 mb-8">
+            <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6">Màu sắc chính của Website</h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-gradient-to-r from-orange-500 via-yellow-500 to-orange-500 rounded-xl mx-auto mb-2"></div>
+                    <p class="text-sm font-medium text-gray-700 dark:text-gray-300">Primary Gradient</p>
+                    <p class="text-xs text-gray-500 dark:text-gray-400">orange-500 → yellow-500</p>
+                </div>
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-orange-500 rounded-xl mx-auto mb-2"></div>
+                    <p class="text-sm font-medium text-gray-700 dark:text-gray-300">Orange Primary</p>
+                    <p class="text-xs text-gray-500 dark:text-gray-400">#f97316</p>
+                </div>
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-yellow-500 rounded-xl mx-auto mb-2"></div>
+                    <p class="text-sm font-medium text-gray-700 dark:text-gray-300">Yellow Accent</p>
+                    <p class="text-xs text-gray-500 dark:text-gray-400">#eab308</p>
+                </div>
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-gradient-to-r from-orange-400 via-yellow-400 to-orange-400 rounded-xl mx-auto mb-2"></div>
+                    <p class="text-sm font-medium text-gray-700 dark:text-gray-300">Hover State</p>
+                    <p class="text-xs text-gray-500 dark:text-gray-400">Lighter shades</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Updated Components -->
+        <div class="bg-white dark:bg-slate-800 rounded-xl shadow-lg p-8">
+            <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6">Các thành phần đã cập nhật</h2>
+            <div class="space-y-6">
+                <div class="flex items-center gap-4 p-4 bg-slate-50 dark:bg-slate-700 rounded-lg">
+                    <div class="w-12 h-12 bg-gradient-to-r from-orange-500 via-yellow-500 to-orange-500 rounded-full flex items-center justify-center">
+                        <i class="fas fa-comments text-white"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold text-gray-900 dark:text-white">Chat Icon</h4>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">Gradient orange-yellow với hover effects</p>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-4 p-4 bg-slate-50 dark:bg-slate-700 rounded-lg">
+                    <div class="w-12 h-12 bg-gradient-to-r from-orange-500 via-yellow-500 to-orange-500 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-comment-dots text-white"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold text-gray-900 dark:text-white">Chat Header</h4>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">Background gradient và action buttons</p>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-4 p-4 bg-slate-50 dark:bg-slate-700 rounded-lg">
+                    <div class="w-12 h-12 bg-gradient-to-r from-orange-500 via-yellow-500 to-orange-500 rounded-full flex items-center justify-center">
+                        <i class="fas fa-paper-plane text-white"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold text-gray-900 dark:text-white">Send Button</h4>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">Gradient button với hover states</p>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-4 p-4 bg-slate-50 dark:bg-slate-700 rounded-lg">
+                    <div class="w-12 h-12 border-2 border-orange-500 rounded-full flex items-center justify-center">
+                        <i class="fas fa-user text-orange-500"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold text-gray-900 dark:text-white">Avatar Borders</h4>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">Orange border cho shop avatars</p>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-4 p-4 bg-slate-50 dark:bg-slate-700 rounded-lg">
+                    <div class="w-12 h-12 bg-orange-100 dark:bg-orange-900/20 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-search text-orange-500"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold text-gray-900 dark:text-white">Focus States</h4>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">Orange focus rings cho inputs</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Chat Box -->
+    <%- include('partials/chat-box') %>
+
+    <!-- Demo Script -->
+    <script>
+        // Set demo user info
+        localStorage.setItem('userInfo', JSON.stringify({
+            id: 'demo-user-123',
+            userBanId: 'demo-seller-456',
+            role: 'customer',
+            hoTen: 'Demo User'
+        }));
+
+        // Add some demo functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🎨 Chat Color Demo loaded successfully!');
+            console.log('💡 Click the chat icon to see the new orange/yellow theme in action');
+        });
+    </script>
+</body>
+</html>

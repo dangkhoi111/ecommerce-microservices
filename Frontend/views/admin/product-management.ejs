@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý sản phẩm - MegaStore VN</title>
+    <meta name="description" content="Quản lý sản phẩm trong hệ thống MegaStore VN - Admin Panel">
+    
+    <!-- Tailwind CSS (CDN) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        if (window.tailwind) { 
+            tailwind.config = { 
+                darkMode: 'class',
+                theme: {
+                    extend: {
+                        animation: {
+                            'fade-in': 'fadeIn 0.5s ease-in',
+                            'slide-up': 'slideUp 0.6s ease-out',
+                            'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        },
+                        keyframes: {
+                            fadeIn: {
+                                '0%': { opacity: '0' },
+                                '100%': { opacity: '1' }
+                            },
+                            slideUp: {
+                                '0%': { transform: 'translateY(20px)', opacity: '0' },
+                                '100%': { transform: 'translateY(0)', opacity: '1' }
+                            }
+                        }
+                    }
+                }
+            } 
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        /* Custom styles to override any conflicting CSS */
+        .admin-layout {
+            display: flex;
+            min-height: 100vh;
+        }
+        .main-content {
+            flex: 1;
+            margin-left: 16rem; /* 64 * 0.25rem = 16rem */
+            margin-top: 0;
+            padding-top: 0;
+        }
+        
+        /* Override header styles for admin pages */
+        .seller-header {
+            position: relative !important;
+            z-index: 10 !important;
+            margin-bottom: 0 !important;
+        }
+        
+        /* Ensure sidebar is positioned correctly */
+        nav.sidebar {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            height: 100vh !important;
+            z-index: 30 !important;
+        }
+        
+        @media (max-width: 768px) {
+            .main-content {
+                margin-left: 0;
+                padding-top: 1rem;
+            }
+            nav.sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+            nav.sidebar.active {
+                transform: translateX(0);
+            }
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-slate-50 via-white to-slate-50 dark:from-neutral-900 dark:via-black dark:to-neutral-900 min-h-screen transition-colors duration-300" style="font-family: 'Inter', sans-serif;">
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <%- include('./../elements/navbaradmin') %>
+        
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Admin Header -->
+            <div class="bg-white dark:bg-neutral-900 border-b border-slate-200 dark:border-neutral-800 px-6 py-4">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h1 class="text-2xl font-bold text-slate-900 dark:text-white">Quản lý sản phẩm</h1>
+                        <p class="text-slate-600 dark:text-neutral-400">Quản lý và theo dõi tất cả sản phẩm trong hệ thống</p>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <div class="relative">
+                            <button class="p-2 text-slate-600 dark:text-neutral-400 hover:text-orange-500 dark:hover:text-yellow-400 transition-colors">
+                                <i class="fas fa-bell text-lg"></i>
+                                <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">3</span>
+                            </button>
+                        </div>
+                        <div class="relative group">
+                            <button class="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-orange-500 to-yellow-500 dark:from-yellow-500 dark:to-yellow-400 text-white dark:text-black rounded-xl font-medium hover:shadow-lg transition-all">
+                                <i class="fas fa-user-circle"></i>
+                                <span id="admin-username">Admin</span>
+                                <i class="fas fa-chevron-down text-sm"></i>
+                            </button>
+                            <div class="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-neutral-800 rounded-xl shadow-lg border border-slate-200 dark:border-neutral-700 py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                                <a href="/" class="flex items-center gap-3 px-4 py-2 text-slate-700 dark:text-neutral-300 hover:bg-slate-50 dark:hover:bg-neutral-700 transition-colors">
+                                    <i class="fas fa-home"></i>
+                                    <span>Quay lại trang chính</span>
+                                </a>
+                                <a href="#" onclick="logout()" class="flex items-center gap-3 px-4 py-2 text-slate-700 dark:text-neutral-300 hover:bg-slate-50 dark:hover:bg-neutral-700 transition-colors">
+                                    <i class="fas fa-sign-out-alt"></i>
+                                    <span>Đăng xuất</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Dashboard Content -->
+            <div class="p-6 space-y-8">
+                <!-- Stats Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                    <div class="bg-white dark:bg-neutral-900 rounded-2xl shadow-lg shadow-orange-500/5 dark:shadow-yellow-500/5 border border-slate-200 dark:border-neutral-800 p-6">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-orange-500 to-yellow-500 dark:from-yellow-500 dark:to-yellow-400 flex items-center justify-center">
+                                <i class="fas fa-cube text-white dark:text-black text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-2xl font-black text-slate-900 dark:text-white" id="totalProducts">0</h3>
+                                <p class="text-slate-600 dark:text-neutral-400 font-medium">Tổng sản phẩm</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white dark:bg-neutral-900 rounded-2xl shadow-lg shadow-orange-500/5 dark:shadow-yellow-500/5 border border-slate-200 dark:border-neutral-800 p-6">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center">
+                                <i class="fas fa-check-circle text-white text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-2xl font-black text-slate-900 dark:text-white" id="activeProducts">0</h3>
+                                <p class="text-slate-600 dark:text-neutral-400 font-medium">Đang bán</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white dark:bg-neutral-900 rounded-2xl shadow-lg shadow-orange-500/5 dark:shadow-yellow-500/5 border border-slate-200 dark:border-neutral-800 p-6">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-yellow-500 to-orange-500 flex items-center justify-center">
+                                <i class="fas fa-clock text-white text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-2xl font-black text-slate-900 dark:text-white" id="pendingProducts">0</h3>
+                                <p class="text-slate-600 dark:text-neutral-400 font-medium">Chờ duyệt</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white dark:bg-neutral-900 rounded-2xl shadow-lg shadow-orange-500/5 dark:shadow-yellow-500/5 border border-slate-200 dark:border-neutral-800 p-6">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-red-500 to-pink-500 flex items-center justify-center">
+                                <i class="fas fa-times-circle text-white text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-2xl font-black text-slate-900 dark:text-white" id="inactiveProducts">0</h3>
+                                <p class="text-slate-600 dark:text-neutral-400 font-medium">Ngừng bán</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Bar -->
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-4">
+                        <button class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-orange-500 to-yellow-500 dark:from-yellow-500 dark:to-yellow-400 text-white dark:text-black font-bold rounded-xl shadow-lg shadow-orange-500/25 dark:shadow-yellow-500/25 hover:shadow-xl hover:shadow-orange-500/40 dark:hover:shadow-yellow-500/40 hover:-translate-y-0.5 transition-all duration-200" id="addProductBtn">
+                            <i class="fas fa-plus"></i>
+                            <span>Thêm sản phẩm mới</span>
+                        </button>
+                        
+                        <button class="inline-flex items-center gap-2 px-4 py-3 border border-slate-300 dark:border-neutral-700 rounded-xl bg-white dark:bg-neutral-800 text-slate-700 dark:text-neutral-300 hover:bg-slate-50 dark:hover:bg-neutral-700 transition-colors">
+                            <i class="fas fa-download"></i>
+                            <span>Xuất Excel</span>
+                        </button>
+                    </div>
+                    
+                    <div class="flex items-center gap-4">
+                        <div class="relative">
+                            <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 dark:text-neutral-500"></i>
+                            <input type="text" placeholder="Tìm kiếm sản phẩm..." class="pl-10 pr-4 py-2 border border-slate-300 dark:border-neutral-700 rounded-xl bg-slate-50 dark:bg-neutral-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-orange-500 dark:focus:ring-yellow-500 focus:border-transparent" id="searchInput">
+                        </div>
+                        
+                        <select class="px-4 py-2 border border-slate-300 dark:border-neutral-700 rounded-xl bg-slate-50 dark:bg-neutral-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-orange-500 dark:focus:ring-yellow-500 focus:border-transparent" id="categoryFilter">
+                            <option value="">Tất cả danh mục</option>
+                            <option value="Điện thoại">Điện thoại</option>
+                            <option value="Gia dụng">Gia dụng</option>
+                            <option value="Thời trang">Thời trang</option>
+                            <option value="Điện tử">Điện tử</option>
+                        </select>
+                        
+                        <select class="px-4 py-2 border border-slate-300 dark:border-neutral-700 rounded-xl bg-slate-50 dark:bg-neutral-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-orange-500 dark:focus:ring-yellow-500 focus:border-transparent" id="statusFilter">
+                            <option value="">Tất cả trạng thái</option>
+                            <option value="active">Đang bán</option>
+                            <option value="inactive">Ngừng bán</option>
+                            <option value="pending">Chờ duyệt</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Products Table -->
+                <div class="bg-white dark:bg-neutral-900 rounded-2xl shadow-lg shadow-orange-500/5 dark:shadow-yellow-500/5 border border-slate-200 dark:border-neutral-800 overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead class="bg-slate-50 dark:bg-neutral-800">
+                                <tr>
+                                    <th class="text-left py-4 px-6 font-semibold text-slate-600 dark:text-neutral-400">Hình ảnh</th>
+                                    <th class="text-left py-4 px-6 font-semibold text-slate-600 dark:text-neutral-400">Tên sản phẩm</th>
+                                    <th class="text-left py-4 px-6 font-semibold text-slate-600 dark:text-neutral-400">Danh mục</th>
+                                    <th class="text-left py-4 px-6 font-semibold text-slate-600 dark:text-neutral-400">Giá</th>
+                                    <th class="text-left py-4 px-6 font-semibold text-slate-600 dark:text-neutral-400">Tồn kho</th>
+                                    <th class="text-left py-4 px-6 font-semibold text-slate-600 dark:text-neutral-400">Trạng thái</th>
+                                    <th class="text-left py-4 px-6 font-semibold text-slate-600 dark:text-neutral-400">Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody id="productTableBody" class="divide-y divide-slate-200 dark:divide-neutral-800">
+                                <!-- Dữ liệu sản phẩm sẽ được thêm bằng JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Pagination -->
+                <div class="flex items-center justify-between">
+                    <div class="text-sm text-slate-600 dark:text-neutral-400">
+                        Hiển thị <span id="showingStart">1</span> - <span id="showingEnd">10</span> của <span id="totalCount">0</span> sản phẩm
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button class="px-3 py-2 border border-slate-300 dark:border-neutral-700 rounded-lg bg-white dark:bg-neutral-800 text-slate-700 dark:text-neutral-300 hover:bg-slate-50 dark:hover:bg-neutral-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed" id="prevPage" disabled>
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <div id="pageNumbers" class="flex items-center gap-1">
+                            <!-- Page numbers will be added here dynamically -->
+                        </div>
+                        <button class="px-3 py-2 border border-slate-300 dark:border-neutral-700 rounded-lg bg-white dark:bg-neutral-800 text-slate-700 dark:text-neutral-300 hover:bg-slate-50 dark:hover:bg-neutral-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed" id="nextPage">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <script>
+        const token = localStorage.getItem('authToken');
+        let currentPage = 1;
+        const productsPerPage = 10;
+        let totalProducts = 0;
+        let allProducts = [];
+       
+        if (!token) {
+            window.location.href = '/admin/login';
+        }
+
+        function logout() {
+            localStorage.removeItem('authToken');
+            localStorage.removeItem('userInfo');
+            localStorage.removeItem('hoTen');
+            window.location.href = '/';
+        }
+
+        // Update admin username
+        document.addEventListener('DOMContentLoaded', function() {
+            const userName = 'Admin';
+            try {
+                const userInfo = localStorage.getItem('userInfo');
+                if (userInfo) {
+                    const userObj = JSON.parse(userInfo);
+                    if (userObj.hoTen) userName = userObj.hoTen;
+                    else if (userObj.name) userName = userObj.name;
+                } else if (localStorage.getItem('hoTen')) {
+                    userName = localStorage.getItem('hoTen');
+                }
+            } catch(e) {}
+            const el = document.getElementById('admin-username');
+            if (el) el.textContent = userName;
+        });
+
+        async function loadProducts(page = 1) {
+            try {
+                const res = await fetch('http://localhost:3001/api/admin/sanphams', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                const data = await res.json();
+                allProducts = data;
+                totalProducts = data.length;
+                
+                // Update stats
+                updateStats(data);
+                
+                // Calculate pagination
+                const totalPages = Math.ceil(totalProducts / productsPerPage);
+                const startIndex = (page - 1) * productsPerPage;
+                const endIndex = startIndex + productsPerPage;
+                const productsToShow = data.slice(startIndex, endIndex);
+
+                // Update table
+                const tbody = document.getElementById('productTableBody');
+                tbody.innerHTML = '';
+
+                productsToShow.forEach((sp) => {
+                    const row = document.createElement('tr');
+                    const hinhAnh = sp.hinhAnh.startsWith('http') ? sp.hinhAnh : `/uploads/${sp.hinhAnh}`;
+                    const status = getProductStatus(sp);
+                    const statusBadge = getStatusBadge(status);
+
+                    row.innerHTML = `
+                        <td class="py-4 px-6">
+                            <img src="${hinhAnh}" alt="${sp.tenSP}" class="w-16 h-16 object-cover rounded-xl shadow-sm">
+                        </td>
+                        <td class="py-4 px-6">
+                            <div>
+                                <h3 class="font-semibold text-slate-900 dark:text-white">${sp.tenSP}</h3>
+                                <p class="text-sm text-slate-500 dark:text-neutral-400">ID: ${sp._id}</p>
+                            </div>
+                        </td>
+                        <td class="py-4 px-6">
+                            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-400">
+                                ${sp.maDM ? sp.maDM.tenDM : 'Chưa phân loại'}
+                            </span>
+                        </td>
+                        <td class="py-4 px-6">
+                            <div>
+                                <div class="font-semibold text-slate-900 dark:text-white">${(sp.giaGiam || sp.giaGoc).toLocaleString()} VNĐ</div>
+                                ${sp.giaGiam ? `<div class="text-sm text-slate-500 dark:text-neutral-400 line-through">${sp.giaGoc.toLocaleString()} VNĐ</div>` : ''}
+                            </div>
+                        </td>
+                        <td class="py-4 px-6">
+                            <span class="font-semibold text-slate-900 dark:text-white">${sp.soLuong}</span>
+                        </td>
+                        <td class="py-4 px-6">
+                            ${statusBadge}
+                        </td>
+                        <td class="py-4 px-6">
+                            <div class="flex items-center gap-2">
+                                <button class="p-2 text-slate-400 hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-colors" title="Xem chi tiết">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button class="p-2 text-slate-400 hover:text-orange-500 hover:bg-orange-50 dark:hover:bg-orange-900/20 rounded-lg transition-colors" title="Chỉnh sửa">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="p-2 text-slate-400 hover:text-green-500 hover:bg-green-50 dark:hover:bg-green-900/20 rounded-lg transition-colors" title="Truy cập shop" onclick="window.location.href='/shop/${sp.maUserBan}'">
+                                    <i class="fas fa-store"></i>
+                                </button>
+                                <button class="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors" title="Xóa" onclick="deleteProduct('${sp._id}')">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </td>
+                    `;
+                    tbody.appendChild(row);
+                });
+
+                // Update pagination
+                updatePagination(page, totalPages);
+                updatePaginationInfo(page, totalProducts);
+            } catch (error) {
+                console.error('Lỗi khi tải sản phẩm:', error);
+            }
+        }
+
+        function updateStats(products) {
+            const total = products.length;
+            const active = products.filter(p => getProductStatus(p) === 'active').length;
+            const pending = products.filter(p => getProductStatus(p) === 'pending').length;
+            const inactive = products.filter(p => getProductStatus(p) === 'inactive').length;
+
+            document.getElementById('totalProducts').textContent = total;
+            document.getElementById('activeProducts').textContent = active;
+            document.getElementById('pendingProducts').textContent = pending;
+            document.getElementById('inactiveProducts').textContent = inactive;
+        }
+
+        function getProductStatus(product) {
+            // Logic to determine product status based on your business rules
+            if (product.trangThai === 'active') return 'active';
+            if (product.trangThai === 'pending') return 'pending';
+            if (product.trangThai === 'inactive') return 'inactive';
+            return 'active'; // default
+        }
+
+        function getStatusBadge(status) {
+            const badges = {
+                active: '<span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-400"><i class="fas fa-circle text-xs mr-2"></i>Đang bán</span>',
+                pending: '<span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-400"><i class="fas fa-clock text-xs mr-2"></i>Chờ duyệt</span>',
+                inactive: '<span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-400"><i class="fas fa-times-circle text-xs mr-2"></i>Ngừng bán</span>'
+            };
+            return badges[status] || badges.active;
+        }
+
+        function updatePagination(currentPage, totalPages) {
+            const pageNumbers = document.getElementById('pageNumbers');
+            const prevButton = document.getElementById('prevPage');
+            const nextButton = document.getElementById('nextPage');
+            
+            // Update prev/next buttons
+            prevButton.disabled = currentPage === 1;
+            nextButton.disabled = currentPage === totalPages;
+
+            // Generate page numbers
+            let pageNumbersHTML = '';
+            const maxVisiblePages = 5;
+            let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+            let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+
+            if (endPage - startPage + 1 < maxVisiblePages) {
+                startPage = Math.max(1, endPage - maxVisiblePages + 1);
+            }
+
+            for (let i = startPage; i <= endPage; i++) {
+                pageNumbersHTML += `
+                    <button class="px-3 py-2 border rounded-lg text-sm font-medium transition-colors ${
+                        i === currentPage 
+                            ? 'bg-orange-500 dark:bg-yellow-500 text-white dark:text-black border-orange-500 dark:border-yellow-500' 
+                            : 'border-slate-300 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-slate-700 dark:text-neutral-300 hover:bg-slate-50 dark:hover:bg-neutral-700'
+                    }" onclick="changePage(${i})">${i}</button>
+                `;
+            }
+
+            pageNumbers.innerHTML = pageNumbersHTML;
+        }
+
+        function updatePaginationInfo(currentPage, totalProducts) {
+            const start = (currentPage - 1) * productsPerPage + 1;
+            const end = Math.min(currentPage * productsPerPage, totalProducts);
+            
+            document.getElementById('showingStart').textContent = start;
+            document.getElementById('showingEnd').textContent = end;
+            document.getElementById('totalCount').textContent = totalProducts;
+        }
+
+        function changePage(page) {
+            currentPage = page;
+            loadProducts(page);
+        }
+
+        // Event listeners for prev/next buttons
+        document.getElementById('prevPage').addEventListener('click', () => {
+            if (currentPage > 1) {
+                changePage(currentPage - 1);
+            }
+        });
+
+        document.getElementById('nextPage').addEventListener('click', () => {
+            const totalPages = Math.ceil(totalProducts / productsPerPage);
+            if (currentPage < totalPages) {
+                changePage(currentPage + 1);
+            }
+        });
+
+        // Search functionality
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+            const filteredProducts = allProducts.filter(product => 
+                product.tenSP.toLowerCase().includes(searchTerm)
+            );
+            // Update table with filtered results
+            updateTableWithProducts(filteredProducts);
+        });
+
+        // Filter functionality
+        document.getElementById('categoryFilter').addEventListener('change', (e) => {
+            const category = e.target.value;
+            const filteredProducts = allProducts.filter(product => 
+                !category || (product.maDM && product.maDM.tenDM === category)
+            );
+            updateTableWithProducts(filteredProducts);
+        });
+
+        document.getElementById('statusFilter').addEventListener('change', (e) => {
+            const status = e.target.value;
+            const filteredProducts = allProducts.filter(product => 
+                !status || getProductStatus(product) === status
+            );
+            updateTableWithProducts(filteredProducts);
+        });
+
+        function updateTableWithProducts(products) {
+            const tbody = document.getElementById('productTableBody');
+            tbody.innerHTML = '';
+
+            products.forEach((sp) => {
+                const row = document.createElement('tr');
+                const hinhAnh = sp.hinhAnh.startsWith('http') ? sp.hinhAnh : `/uploads/${sp.hinhAnh}`;
+                const status = getProductStatus(sp);
+                const statusBadge = getStatusBadge(status);
+
+                row.innerHTML = `
+                    <td class="py-4 px-6">
+                        <img src="${hinhAnh}" alt="${sp.tenSP}" class="w-16 h-16 object-cover rounded-xl shadow-sm">
+                    </td>
+                    <td class="py-4 px-6">
+                        <div>
+                            <h3 class="font-semibold text-slate-900 dark:text-white">${sp.tenSP}</h3>
+                            <p class="text-sm text-slate-500 dark:text-neutral-400">ID: ${sp._id}</p>
+                        </div>
+                    </td>
+                    <td class="py-4 px-6">
+                        <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-400">
+                            ${sp.maDM ? sp.maDM.tenDM : 'Chưa phân loại'}
+                        </span>
+                    </td>
+                    <td class="py-4 px-6">
+                        <div>
+                            <div class="font-semibold text-slate-900 dark:text-white">${(sp.giaGiam || sp.giaGoc).toLocaleString()} VNĐ</div>
+                            ${sp.giaGiam ? `<div class="text-sm text-slate-500 dark:text-neutral-400 line-through">${sp.giaGoc.toLocaleString()} VNĐ</div>` : ''}
+                        </div>
+                    </td>
+                    <td class="py-4 px-6">
+                        <span class="font-semibold text-slate-900 dark:text-white">${sp.soLuong}</span>
+                    </td>
+                    <td class="py-4 px-6">
+                        ${statusBadge}
+                    </td>
+                    <td class="py-4 px-6">
+                        <div class="flex items-center gap-2">
+                            <button class="p-2 text-slate-400 hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-colors" title="Xem chi tiết">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button class="p-2 text-slate-400 hover:text-orange-500 hover:bg-orange-50 dark:hover:bg-orange-900/20 rounded-lg transition-colors" title="Chỉnh sửa">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="p-2 text-slate-400 hover:text-green-500 hover:bg-green-50 dark:hover:bg-green-900/20 rounded-lg transition-colors" title="Truy cập shop" onclick="window.location.href='/shop/${sp.maUserBan}'">
+                                <i class="fas fa-store"></i>
+                            </button>
+                            <button class="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors" title="Xóa" onclick="deleteProduct('${sp._id}')">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // Delete product function
+        async function deleteProduct(id) {
+            if (!confirm("Bạn có chắc chắn muốn xoá sản phẩm này không?")) return;
+            try {
+                const res = await fetch(`http://localhost:3001/api/sanphams/${id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (res.ok) {
+                    alert("Xoá sản phẩm thành công!");
+                    loadProducts(currentPage);
+                } else {
+                    const err = await res.json();
+                    alert("Xoá thất bại: " + (err.message || res.statusText));
+                }
+            } catch (error) {
+                console.error("Lỗi khi xoá sản phẩm:", error);
+                alert("Đã xảy ra lỗi khi xoá sản phẩm.");
+            }
+        }
+
+        // Load products on page load
+        document.addEventListener('DOMContentLoaded', () => loadProducts(1));
+    </script>
+</body>
+</html>

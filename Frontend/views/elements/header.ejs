@@ -1,0 +1,77 @@
+    <!-- Header -->
+    <header class="seller-header">
+        <div class="container">
+            <div class="logo">
+                <h1>MegaStore VN</h1>
+                <span class="seller-badge">Kênh Người Bán</span>
+            </div>
+            <div class="header-right">
+                <a href="#" class="notification">
+                    <i class="fas fa-bell"></i>
+                    <span class="badge">3</span>
+                </a>
+                <div class="user-dropdown admin-dropdown">
+                    <span class="user-greeting">
+                        <i class="fas fa-user-circle"></i>
+                        Xin chào, <span id="header-username">Admin</span>
+                    </span>
+                    <div class="dropdown-menu">
+                        <a href="/" class="dropdown-item"><i class="fas fa-home"></i> Quay lại trang chính</a>
+                        <a href="#" class="dropdown-item" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Đăng xuất</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <script>
+    function logout() {
+        localStorage.removeItem('authToken');
+        localStorage.removeItem('userInfo');
+        localStorage.removeItem('hoTen');
+        window.location.href = '/';
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        // Áp dụng cho tất cả dropdown menu dạng user-dropdown hoặc admin-dropdown
+        document.querySelectorAll('.admin-dropdown, .user-dropdown').forEach(function(dropdown) {
+            const menu = dropdown.querySelector('.dropdown-menu');
+            let hideTimeout;
+            dropdown.addEventListener('mouseenter', function() {
+                clearTimeout(hideTimeout);
+                menu.style.display = 'flex';
+            });
+            dropdown.addEventListener('mouseleave', function() {
+                hideTimeout = setTimeout(() => {
+                    menu.style.display = 'none';
+                }, 120);
+            });
+            menu.addEventListener('mouseenter', function() {
+                clearTimeout(hideTimeout);
+                menu.style.display = 'flex';
+            });
+            menu.addEventListener('mouseleave', function() {
+                hideTimeout = setTimeout(() => {
+                    menu.style.display = 'none';
+                }, 120);
+            });
+        });
+
+        // Thay tên user động trong header
+        (function() {
+            var userName = 'Admin';
+            try {
+                var userInfo = localStorage.getItem('userInfo');
+                if (userInfo) {
+                    var userObj = JSON.parse(userInfo);
+                    if (userObj.hoTen) userName = userObj.hoTen;
+                    else if (userObj.name) userName = userObj.name;
+                } else if (localStorage.getItem('hoTen')) {
+                    userName = localStorage.getItem('hoTen');
+                }
+            } catch(e) {}
+            var el = document.getElementById('header-username');
+            if (el) el.textContent = userName;
+        })();
+    });
+    </script>

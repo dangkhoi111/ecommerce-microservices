@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Trang Shop</title>
+  <link rel="stylesheet" href="/css/shop.css">
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</head>
+<body>
+
+<div class="shop-container">
+  <div class="container">
+    <div class="store-header">
+      <div class="store-info">
+        <div class="store-avatar">
+          <img id="shop-avatar" src="/images/store-logo.png" alt="Logo Shop">
+        </div>
+        <div class="store-details">
+          <div class="store-name-wrapper">
+            <h1 id="shop-name">Đang tải...</h1>
+            <span class="verified-badge">
+              <i class="fas fa-check-circle"></i> Verified
+            </span>
+          </div>
+          <div id="shop-location" class="store-status">Địa chỉ: ...</div>
+          <div class="store-actions">
+            <button class="btn-follow"><i class="fas fa-plus"></i> Theo Dõi</button>
+            <button class="btn-chat"><i class="fas fa-comments"></i> Chat</button>
+          </div>
+        </div>
+      </div>
+      <div class="store-metrics">
+        <div class="metric-card">
+          <div class="metric-value" id="product-count">0</div>
+          <div class="metric-label">Sản Phẩm</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-value">0</div>
+          <div class="metric-label">Người Theo Dõi</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-value">0</div>
+          <div class="metric-label">Đánh Giá</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-value">0</div>
+          <div class="metric-label">Phản Hồi Chat</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="category-nav">
+      <div class="nav-item active"><a href="#all">Tất cả sản phẩm</a></div>
+      <div class="nav-item"><a href="#sale">Sản phẩm khuyến mại</a></div>
+      <div class="nav-item"><a href="#new">Sản phẩm mới</a></div>
+      <div class="nav-item dropdown">
+        <a href="#">Thêm <i class="fas fa-chevron-down"></i></a>
+      </div>
+    </div>
+
+    <div class="section-header">
+      <h2>Tất cả sản phẩm của shop</h2>
+      <div class="view-options">
+        <div class="sort-select">
+          <select>
+            <option>Sắp xếp theo</option>
+            <option>Giá tăng dần</option>
+            <option>Giá giảm dần</option>
+            <option>Mới nhất</option>
+            <option>Bán chạy nhất</option>
+          </select>
+        </div>
+        <div class="view-mode">
+          <button class="active"><i class="fas fa-th-large"></i></button>
+          <button><i class="fas fa-list"></i></button>
+        </div>
+      </div>
+    </div>
+
+    <div class="products-grid" id="products-container">
+      <!-- Sản phẩm sẽ được thêm vào đây -->
+    </div>
+    <div class="pagination" id="shop-pagination"></div>
+  </div>
+</div>
+
+<script>
+  const pathParts = window.location.pathname.split('/');
+  const sellerId = pathParts[pathParts.length - 1];
+
+  // Gọi API để lấy thông tin người bán
+  fetch(`http://localhost:3002/api/user-ban/check/${sellerId}`)
+    .then(res => res.json())
+    .then(data => {
+      if (data.tenShop) {
+        document.getElementById('shop-name').textContent = data.tenShop;
+        document.getElementById('shop-location').textContent = `Địa chỉ: ${data.tinhThanh}`;
+        if (data.hinhAnh) {
+          document.getElementById('shop-avatar').src = data.hinhAnh;
+        }
+      } else {
+        document.getElementById('shop-name').textContent = 'Không tìm thấy shop';
+        document.getElementById('shop-location').textContent = '';
+      }
+    })
+    .catch(err => {
+      console.error(err);
+      document.getElementById('shop-name').textContent = 'Lỗi khi tải dữ liệu shop';
+    });
+
+  // Gọi API để lấy danh sách sản phẩm của shop
+  fetch(`http://localhost:3001/api/public/sanphams/shop/${sellerId}`)
+    .then(res => res.json())
+    .then(data => {
+      const container = document.getElementById('products-container');
+      const pagination = document.getElementById('shop-pagination');
+      document.getElementById('product-count').textContent = data.length || 0;
+
+      const perPage = 8;
+      let currentPage = 1;
+      let totalPages = Math.ceil(data.length / perPage);
+
+      function renderProducts(page) {
+        container.innerHTML = '';
+        const start = (page - 1) * perPage;
+        const end = start + perPage;
+        const products = data.slice(start, end);
+
+        products.forEach(product => {
+          const card = document.createElement('div');
+          card.className = 'product-card';
+          card.dataset.id = product._id;
+
+          card.innerHTML = `
+  <div class="card-header">
+    ${product.giaGiam && product.giaGoc ? `<div class="discount-badge">-${Math.round(100 - (product.giaGiam / product.giaGoc) * 100)}%</div>` : ''}
+    <div class="product-image-wrapper">
+      <a href="/products/detail/${product._id}">
+        <img class="product-image" src="${product.hinhAnh || '/images/products/default.jpg'}" alt="${product.tenSP}">
+      </a>
+    </div>
+    <div class="quick-actions">
+      <button class="action-btn add-to-cart" title="Thêm vào giỏ">
+        <i class="fas fa-shopping-cart"></i>
+      </button>
+      <button class="action-btn quick-view" title="Xem nhanh">
+        <i class="fas fa-eye"></i>
+      </button>
+      <button class="action-btn add-wishlist" title="Yêu thích">
+        <i class="fas fa-heart"></i>
+      </button>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="product-category">${product.maDM?.tenDM || 'Chưa rõ'}</div>
+    <h3 class="product-name">
+      <a href="/products/detail/${product._id}">${product.tenSP}</a>
+    </h3>
+    <div class="product-meta">
+      <div class="rating">
+        <div class="stars">
+          <i class="fas fa-star filled"></i>
+          <i class="fas fa-star filled"></i>
+          <i class="fas fa-star filled"></i>
+          <i class="fas fa-star filled"></i>
+          <i class="fas fa-star"></i>
+        </div>
+        <span class="rating-count">(100)</span>
+      </div>
+      <div class="sales-count">${product.soLuongBan || 0} đã bán</div>
+    </div>
+    <div class="price">
+      ${product.giaGoc ? `<span class="original-price">₫${product.giaGoc.toLocaleString()}</span>` : ''}
+      <span class="current-price">₫${(product.giaGiam || product.giaGoc || 0).toLocaleString()}</span>
+    </div>
+  </div>
+          `;
+          container.appendChild(card);
+        });
+
+        // Gắn lại các sự kiện
+        document.querySelectorAll('.add-to-cart').forEach(button => {
+          button.addEventListener('click', (e) => {
+            const card = e.target.closest('.product-card');
+            const productId = card.dataset.id;
+            alert("Thêm sản phẩm vào giỏ: " + productId);
+          });
+        });
+
+        document.querySelectorAll('.quick-view').forEach(button => {
+          button.addEventListener('click', (e) => {
+            const card = e.target.closest('.product-card');
+            const productId = card.dataset.id;
+            alert("Xem nhanh sản phẩm: " + productId);
+          });
+        });
+
+        document.querySelectorAll('.add-wishlist').forEach(button => {
+          button.addEventListener('click', () => {
+            button.classList.toggle('active');
+          });
+        });
+      }
+
+      function renderPagination() {
+        pagination.innerHTML = '';
+        for (let i = 1; i <= totalPages; i++) {
+          const btn = document.createElement('button');
+          btn.textContent = i;
+          btn.className = (i === currentPage) ? 'active' : '';
+          btn.addEventListener('click', () => {
+            currentPage = i;
+            renderProducts(currentPage);
+            renderPagination();
+          });
+          pagination.appendChild(btn);
+        }
+      }
+
+      // Khởi tạo lần đầu
+      renderProducts(currentPage);
+      renderPagination();
+    })
+    .catch(err => {
+      console.error('Lỗi khi tải sản phẩm:', err);
+      const container = document.getElementById('products-container');
+      container.innerHTML = '<p>Không thể tải sản phẩm.</p>';
+    });
+
+  // Xử lý nút chat giống product-detail.ejs
+  // Giả sử bạn đã có sẵn selectShop và toggleChatBox ở global hoặc import từ file chat-box.js
+  // Nếu chưa có, thêm đoạn dưới đây để demo
+  function selectShop(shop) {
+    // Lưu shop vào localStorage hoặc biến toàn cục, hoặc truyền vào chat-box
+    localStorage.setItem('selectedShop', JSON.stringify(shop));
+  }
+  function toggleChatBox() {
+    // Giả lập mở chat box, bạn thay bằng code thực tế nếu đã có chat-box
+    alert('Mở chat với shop: ' + (JSON.parse(localStorage.getItem('selectedShop'))?.tenShop || 'Shop'));
+  }
+
+  document.querySelector('.btn-chat')?.addEventListener('click', function () {
+    const shop = {
+      _id: sellerId,
+      tenShop: document.getElementById('shop-name').textContent,
+      hinhAnh: document.getElementById('shop-avatar').src,
+      online: true,
+      maUserBan: sellerId
+    };
+    selectShop(shop);
+    toggleChatBox();
+  });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,64 @@
+<!-- Sidebar Admin -->
+<nav class="fixed left-0 top-0 h-full w-64 bg-white dark:bg-neutral-900 border-r border-slate-200 dark:border-neutral-800 shadow-lg z-40">
+    <div class="p-6">
+        <!-- Logo -->
+        <div class="mb-8">
+            <h1 class="text-2xl font-black bg-gradient-to-r from-orange-500 to-yellow-500 dark:from-yellow-400 dark:to-yellow-200 bg-clip-text text-transparent">
+                AdminHub
+            </h1>
+            <p class="text-sm text-slate-600 dark:text-neutral-400 mt-1">Quản trị hệ thống</p>
+        </div>
+        
+        <!-- Navigation -->
+        <ul class="space-y-2">
+            <li>
+                <a href="/admin" class="<%= activeTab === 'dashboard' ? 'bg-gradient-to-r from-orange-500 to-yellow-500 dark:from-yellow-500 dark:to-yellow-400 text-white dark:text-black shadow-lg' : 'text-slate-600 dark:text-neutral-400 hover:text-orange-500 dark:hover:text-yellow-400 hover:bg-slate-50 dark:hover:bg-neutral-800' %> flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all duration-200">
+                    <i class="fas fa-home text-lg"></i>
+                    <span>Tổng quan</span>
+                </a>
+            </li>
+            <li>
+                <a href="/admin/user" class="<%= activeTab === 'users' ? 'bg-gradient-to-r from-orange-500 to-yellow-500 dark:from-yellow-500 dark:to-yellow-400 text-white dark:text-black shadow-lg' : 'text-slate-600 dark:text-neutral-400 hover:text-orange-500 dark:hover:text-yellow-400 hover:bg-slate-50 dark:hover:bg-neutral-800' %> flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all duration-200">
+                    <i class="fas fa-users text-lg"></i>
+                    <span>Quản lý người dùng</span>
+                </a>
+            </li>
+            <li>
+                <a href="/admin/product" class="<%= activeTab === 'products' ? 'bg-gradient-to-r from-orange-500 to-yellow-500 dark:from-yellow-500 dark:to-yellow-400 text-white dark:text-black shadow-lg' : 'text-slate-600 dark:text-neutral-400 hover:text-orange-500 dark:hover:text-yellow-400 hover:bg-slate-50 dark:hover:bg-neutral-800' %> flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all duration-200">
+                    <i class="fas fa-cube text-lg"></i>
+                    <span>Quản lý sản phẩm</span>
+                </a>
+            </li>
+            <li>
+                <a href="/admin/order" class="<%= activeTab === 'orders' ? 'bg-gradient-to-r from-orange-500 to-yellow-500 dark:from-yellow-500 dark:to-yellow-400 text-white dark:text-black shadow-lg' : 'text-slate-600 dark:text-neutral-400 hover:text-orange-500 dark:hover:text-yellow-400 hover:bg-slate-50 dark:hover:bg-neutral-800' %> flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all duration-200">
+                    <i class="fas fa-box text-lg"></i>
+                    <span>Quản lý đơn hàng</span>
+                </a>
+            </li>
+            <li>
+                <a href="/admin/category" class="<%= activeTab === 'categories' ? 'bg-gradient-to-r from-orange-500 to-yellow-500 dark:from-yellow-500 dark:to-yellow-400 text-white dark:text-black shadow-lg' : 'text-slate-600 dark:text-neutral-400 hover:text-orange-500 dark:hover:text-yellow-400 hover:bg-slate-50 dark:hover:bg-neutral-800' %> flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all duration-200">
+                    <i class="fas fa-tags text-lg"></i>
+                    <span>Danh mục & Thương hiệu</span>
+                </a>
+            </li>
+            <li>
+                <a href="/admin/report" class="<%= activeTab === 'reports' ? 'bg-gradient-to-r from-orange-500 to-yellow-500 dark:from-yellow-500 dark:to-yellow-400 text-white dark:text-black shadow-lg' : 'text-slate-600 dark:text-neutral-400 hover:text-orange-500 dark:hover:text-yellow-400 hover:bg-slate-50 dark:hover:bg-neutral-800' %> flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all duration-200">
+                    <i class="fas fa-chart-line text-lg"></i>
+                    <span>Báo cáo & Thống kê</span>
+                </a>
+            </li>
+            <li>
+                <a href="/admin/coupon" class="<%= activeTab === 'coupons' ? 'bg-gradient-to-r from-orange-500 to-yellow-500 dark:from-yellow-500 dark:to-yellow-400 text-white dark:text-black shadow-lg' : 'text-slate-600 dark:text-neutral-400 hover:text-orange-500 dark:hover:text-yellow-400 hover:bg-slate-50 dark:hover:bg-neutral-800' %> flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all duration-200">
+                    <i class="fas fa-ticket-alt text-lg"></i>
+                    <span>Mã giảm giá</span>
+                </a>
+            </li>
+            <li>
+                <a href="/admin/setting" class="<%= activeTab === 'settings' ? 'bg-gradient-to-r from-orange-500 to-yellow-500 dark:from-yellow-500 dark:to-yellow-400 text-white dark:text-black shadow-lg' : 'text-slate-600 dark:text-neutral-400 hover:text-orange-500 dark:hover:text-yellow-400 hover:bg-slate-50 dark:hover:bg-neutral-800' %> flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all duration-200">
+                    <i class="fas fa-cog text-lg"></i>
+                    <span>Cài đặt hệ thống</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+</nav>

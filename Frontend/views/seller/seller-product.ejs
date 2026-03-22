@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Quản Lý Sản Phẩm – MegaStore VN</title>
+  <link rel="stylesheet" href="/css/seller.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet"/>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      background-color: #f0faf5;
+    }
+    .main-content {
+      background-color: #f0faf5;
+    }
+    .content-section {
+      background-color: #f0faf5;
+    }
+    .product-form {
+      background-color: white;
+      border-radius: 12px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+    .product-table {
+      background-color: white;
+      border-radius: 12px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #22c55e, #16a34a);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 20px;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
+    }
+    .btn-secondary {
+      background-color: #f3f4f6;
+      color: #374151;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      padding: 10px 20px;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+    .btn-secondary:hover {
+      background-color: #e5e7eb;
+    }
+    .form-group input, .form-group select, .form-group textarea {
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      padding: 10px 12px;
+      transition: border-color 0.2s;
+    }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+      border-color: #22c55e;
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.1);
+    }
+    .product-thumb {
+      width: 50px;
+      height: 50px;
+      object-fit: cover;
+      border-radius: 8px;
+    }
+    .edit, .delete {
+      background-color: #f3f4f6;
+      border: none;
+      border-radius: 6px;
+      padding: 8px 12px;
+      margin: 0 2px;
+      transition: all 0.2s;
+    }
+    .edit:hover {
+      background-color: #dbeafe;
+      color: #2563eb;
+    }
+    .delete:hover {
+      background-color: #fee2e2;
+      color: #dc2626;
+    }
+    
+  </style>
+</head>
+<body>
+
+  <!-- Navbar include -->
+  <%- include('./../elements/navbarseller') %>
+
+  <main class="main-content">
+    <section class="content-section" id="products">
+      <div class="bg-white dark:bg-slate-800 border-b border-emerald-200 dark:border-emerald-700 px-6 py-4">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h1 class="text-2xl font-bold text-slate-900 dark:text-white">Quản Lý Sản Phẩm</h1>
+                        <p class="text-slate-600 dark:text-neutral-400">Thêm, sửa và quản lý sản phẩm của bạn</p>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <div class="relative">
+                            <button class="p-2 text-slate-600 dark:text-neutral-400 hover:text-emerald-500 dark:hover:text-emerald-400 transition-colors">
+                                <i class="fas fa-bell text-lg"></i>
+                                <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">2</span>
+                            </button>
+                        </div>
+                        <div class="relative group">
+                            <button class="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-emerald-500 to-green-500 dark:from-green-500 dark:to-emerald-500 text-white rounded-xl font-medium hover:shadow-lg transition-all">
+                                <i class="fas fa-store"></i>
+                                <span id="seller-username">Seller</span>
+                                <i class="fas fa-chevron-down text-sm"></i>
+                            </button>
+                            <div class="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-slate-800 rounded-xl shadow-lg border border-emerald-200 dark:border-emerald-700 py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                                <a href="/" class="flex items-center gap-3 px-4 py-2 text-slate-700 dark:text-neutral-300 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 transition-colors">
+                                    <i class="fas fa-home"></i>
+                                    <span>Trang chủ</span>
+                                </a>
+                                <a href="#" onclick="logout()" class="flex items-center gap-3 px-4 py-2 text-slate-700 dark:text-neutral-300 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 transition-colors">
+                                    <i class="fas fa-sign-out-alt"></i>
+                                    <span>Đăng xuất</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+<button class="btn-primary" id="addProductBtn"><i class="fas fa-plus"></i> Đăng Sản Phẩm Mới</button>
+      <!-- PRODUCT FORM -->
+      <form id="productForm" class="product-form" style="display:none" enctype="multipart/form-data" >
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Tên Sản Phẩm</label>
+            <input type="text" name="tenSP" id="tenSP" placeholder="Nhập tên sản phẩm" required>
+          </div>
+          <input type="hidden" name="maUserBan" id="maUserBan"  />
+          <div class="form-group">
+            <label>Danh Mục</label>
+            <select name="maDM" id="categorySelect" required>
+              <option value="">Chọn danh mục</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Giá Gốc (VNĐ)</label>
+            <input type="number" name="giaGoc" id="giaGoc" placeholder="0" value="0" required>
+          </div>
+          <div class="form-group">
+            <label>Mã Giảm Giá</label>
+            <select name="maKM" id="promoSelect">
+              <option value="">-- Không dùng --</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Giá Đã Giảm (VNĐ)</label>
+            <input type="number" name="giaGiam" id="giaGiam" placeholder="Giá đã giảm" readonly>
+          </div>
+          <div class="form-group">
+            <label>Số Lượng</label>
+            <input type="number" name="soLuong" id="soLuong" placeholder="0" value="0" required>
+          </div>
+          <div class="form-group full-width">
+            <label>Hình Ảnh</label>
+            <div class="image-upload">
+              <label for="fileInput"><i class="fas fa-cloud-upload-alt"></i><p>Kéo thả hoặc click để tải ảnh lên</p></label>
+              <input type="file" id="fileInput" name="hinhAnh" accept="image/*" style="display:none">
+              <div id="imagePreview" class="image-preview"></div>
+            </div>
+          </div>
+          <div class="form-group full-width">
+            <label>Mô Tả</label>
+            <textarea name="moTa" id="moTa" placeholder="Nhập mô tả chi tiết"></textarea>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="button" class="btn-secondary" id="cancelBtn"><i class="fas fa-times"></i> Hủy</button>
+          <button type="submit" class="btn-primary"><i class="fas fa-save"></i> Lưu sản phẩm</button>
+        </div>
+      </form>
+
+      <!-- PRODUCT LIST -->
+      <div class="product-management" id="productListContainer">
+        <table class="product-table">
+          <thead>
+            <tr><th>Ảnh</th><th>STT</th><th>Tên</th><th>DM</th><th>Giá</th><th>Số lượng</th><th>Hành động</th></tr>
+          </thead>
+          <tbody id="productTableBody">
+            <!-- render JS -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    // references
+    const addBtn = document.getElementById('addProductBtn');
+    const form = document.getElementById('productForm');
+    const cancelBtn = document.getElementById('cancelBtn');
+    const catSel = document.getElementById('categorySelect');
+    const promoSel = document.getElementById('promoSelect');
+    const priceIn = document.getElementById('giaGoc');
+    const finalIn = document.getElementById('giaGiam');
+    const fileIn = document.getElementById('fileInput');
+    const preview = document.getElementById('imagePreview');
+    const tableBody = document.getElementById('productTableBody');
+
+    let editingId = null;
+
+   const userInfo = JSON.parse(localStorage.getItem('userInfo')); 
+   const userBanId =userInfo.userBanId;
+      document.getElementById('maUserBan').value = userBanId;
+ 
+  
+ 
+
+    // show/hide form
+    addBtn.onclick = () => {
+      editingId = null;
+      form.reset();
+      finalIn.value = 0;
+      preview.innerHTML = '';
+      form.style.display = 'block';
+      form.scrollIntoView({behavior:'smooth'});
+    };
+    cancelBtn.onclick = () => form.style.display = 'none';
+
+    // preview image
+    fileIn.onchange = e => {
+      preview.innerHTML = '';
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = ev => {
+        const img = document.createElement('img');
+        img.src = ev.target.result;
+        img.style.maxWidth = '200px';
+        preview.appendChild(img);
+      };
+      reader.readAsDataURL(file);
+    };
+
+
+    // load products
+    async function loadProducts(){
+      const token = localStorage.getItem('authToken');
+      const list = await fetch('http://localhost:3001/api/sanphams', {
+    headers: {
+      'Authorization': `Bearer ${token}`, // Gửi token qua header
+    }
+  }).then(r => r.json());
+     console.log(list);
+      tableBody.innerHTML = list.map((p,i)=>
+        `<tr>
+           <td>${p.hinhAnh? `<img src="${p.hinhAnh}" class="product-thumb">`:'—'}</td>
+           <td>${i+1}</td>
+           <td><a href="/seller/product/version?maSanpham=${p._id}">${p.tenSP}</a></td>
+           <td>${p.maDM?.tenDM || '—'}</td>
+           <td>${p.giaGoc.toLocaleString()}₫</td>
+           <td>${p.soLuong}</td>
+           <td>
+             <button class="edit" data-id="${p._id}"><i class="fas fa-edit"></i></button>
+             <button class="delete" data-id="${p._id}"><i class="fas fa-trash"></i></button>
+           </td>
+         </tr>`).join('');
+    }
+
+    // submit form
+    form.onsubmit = async e => {
+  e.preventDefault();
+  const formData = new FormData(form);
+    console.log([...formData]); // In tất cả dữ liệu form ra console để kiểm tra
+  const token = localStorage.getItem('authToken');
+  // Thêm thông tin người bán nếu có (nếu bạn có ID người bán từ session)
+  // Ví dụ: gán giá trị vào input ẩn nếu bạn chưa có
+  
+
+  // Kiểm tra và xử lý maKM
+  const maKM = formData.get('maKM');
+  if (!maKM) {
+  formData.set('maKM', '');
+}
+
+  const url = editingId
+    ? `http://localhost:3001/api/sanphams/${editingId}`
+    : 'http://localhost:3001/api/sanphams';
+
+  const res = await fetch(url, {
+    method: editingId ? 'PUT' : 'POST',
+    headers: {
+    'Authorization': `Bearer ${token}`
+  },
+    body: formData    // Gửi FormData trực tiếp
+  });
+
+  if (!res.ok) {
+    alert('Lỗi ' + res.status);
+  } else {
+    form.style.display = 'none';
+    loadProducts();
+  }
+};
+
+
+
+    // delegate edit/delete
+    document.addEventListener('click', e=>{
+      const token = localStorage.getItem('authToken');
+      const d = e.target.closest('.delete');
+      const edt = e.target.closest('.edit');
+      
+      if(d){
+        const id=d.dataset.id;
+        if(confirm('Xóa sản phẩm?')) fetch(`http://localhost:3001/api/sanphams/${id}`,{method:'DELETE',
+        headers: {
+    'Authorization': `Bearer ${token}`
+  },
+        })
+          .then(r=>r.ok && loadProducts());
+      }
+      if(edt){
+        editingId=edt.dataset.id;
+        fetch(`http://localhost:3001/api/sanphams/${editingId}`,{ headers: {
+    'Authorization': `Bearer ${token}`
+  },})
+          .then(r=>r.json()).then(p=>{
+            form.style.display='block';
+            form.tenSP.value = p.tenSP;
+            catSel.value = p.maDM._id;
+            priceIn.value = p.giaGoc;
+            promoSel.value = p.maKM._id||'';
+            calcFinal();
+            form.soLuong.value = p.soLuong;
+            form.moTa.value = p.moTa||'';
+            preview.innerHTML = p.hinhAnh? `<img src="${p.hinhAnh}" style="max-width:200px">`: '';
+          });
+      }
+    });
+
+    // init
+    window.addEventListener('DOMContentLoaded', ()=>{
+      loadSelectors();
+      loadProducts();
+    });
+    
+    // load categories & promotions
+async function loadSelectors(){
+  const token = localStorage.getItem('authToken');
+
+  const cats = await fetch('http://localhost:3001/api/danhmucs', {
+    headers: { 'Cache-Control': 'no-cache' }
+  }).then(r => r.json());
+
+  const activePromosResp = await fetch('http://localhost:3001/api/khuyenmai/active', {
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'Cache-Control': 'no-cache'
+    }
+  });
+
+  let promos = [];
+  if (activePromosResp.ok) {
+    promos = await activePromosResp.json();
+  } else {
+    console.warn('khuyenmai/active failed', activePromosResp.status, await activePromosResp.text());
+    const allPromosResp = await fetch('http://localhost:3001/api/khuyenmai', {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Cache-Control': 'no-cache'
+      }
+    });
+    if (allPromosResp.ok) {
+      promos = await allPromosResp.json();
+      if (Array.isArray(promos)) {
+        promos = promos.filter(km => new Date(km.ngayKetThuc) >= new Date());
+      } else {
+        promos = [];
+      }
+    }
+  }
+
+  console.log('Loaded promotions for seller-product:', promos);
+
+  catSel.innerHTML = '<option value="">Chọn danh mục</option>' + cats.map(c =>
+    `<option value="${c._id}">${c.tenDM}</option>`).join('');
+
+  promoSel.innerHTML = '<option value="">-- Không dùng --</option>' + (promos || []).map(km =>
+    `<option value="${km._id}" data-code="${km.ma}" data-type="${km.loaiGiamGia}" data-value="${km.giaTriGiam}">
+       ${km.ma} — ${km.loaiGiamGia === 'phanTram' ? km.giaTriGiam + '%' : km.giaTriGiam.toLocaleString() + '₫'}
+     </option>`).join('');
+}
+
+
+
+// function để tính giá sau khi giảm
+function calcFinal() {
+  const price = parseFloat(priceIn.value) || 0; // lấy giá gốc
+  const opt = promoSel.selectedOptions[0]; // lấy mã giảm giá đã chọn
+  const type = opt ? opt.dataset.type : '';  // loại giảm giá
+  const value = parseFloat(opt ? opt.dataset.value : 0);  // giá trị giảm
+
+  let finalPrice = price; // giá sau khi giảm (mặc định là giá gốc)
+
+  // tính toán theo loại giảm giá
+  if (type === 'phanTram') {
+    finalPrice = price - price * value / 100;  // giảm theo phần trăm
+  } else if (type === 'soTien') {
+    finalPrice = price - value;  // giảm theo số tiền cố định
+  }
+
+  // đảm bảo giá không âm
+  finalPrice = Math.max(0, Math.round(finalPrice));
+
+  // cập nhật vào trường giá đã giảm
+  finalIn.value = finalPrice;
+}
+
+// gắn sự kiện tính toán giá khi thay đổi giá gốc hoặc mã giảm giá
+priceIn.oninput = calcFinal;
+promoSel.onchange = calcFinal;
+function logout() {
+                localStorage.removeItem('authToken');
+                localStorage.removeItem('userInfo');
+                localStorage.removeItem('hoTen');
+                window.location.href = '/';
+            }
+  </script>
+
+</body>
+</html>

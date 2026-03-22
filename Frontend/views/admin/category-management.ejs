@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý danh mục & thương hiệu - MegaStore VN</title>
+    <meta name="description" content="Quản lý danh mục và thương hiệu trong hệ thống MegaStore VN - Admin Panel">
+    
+    <!-- Tailwind CSS (CDN) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        if (window.tailwind) { 
+            tailwind.config = { 
+                darkMode: 'class',
+                theme: {
+                    extend: {
+                        animation: {
+                            'fade-in': 'fadeIn 0.5s ease-in',
+                            'slide-up': 'slideUp 0.6s ease-out',
+                            'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        },
+                        keyframes: {
+                            fadeIn: {
+                                '0%': { opacity: '0' },
+                                '100%': { opacity: '1' }
+                            },
+                            slideUp: {
+                                '0%': { transform: 'translateY(20px)', opacity: '0' },
+                                '100%': { transform: 'translateY(0)', opacity: '1' }
+                            }
+                        }
+                    }
+                }
+            } 
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        /* Custom styles to override any conflicting CSS */
+        .admin-layout {
+            display: flex;
+            min-height: 100vh;
+        }
+        .main-content {
+            flex: 1;
+            margin-left: 16rem; /* 64 * 0.25rem = 16rem */
+            margin-top: 0;
+            padding-top: 0;
+        }
+        
+        /* Override header styles for admin pages */
+        .seller-header {
+            position: relative !important;
+            z-index: 10 !important;
+            margin-bottom: 0 !important;
+        }
+        
+        /* Ensure sidebar is positioned correctly */
+        nav.sidebar {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            height: 100vh !important;
+            z-index: 30 !important;
+        }
+        
+        @media (max-width: 768px) {
+            .main-content {
+                margin-left: 0;
+                padding-top: 1rem;
+            }
+            nav.sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+            nav.sidebar.active {
+                transform: translateX(0);
+            }
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-slate-50 via-white to-slate-50 dark:from-neutral-900 dark:via-black dark:to-neutral-900 min-h-screen transition-colors duration-300" style="font-family: 'Inter', sans-serif;">
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <%- include('./../elements/navbaradmin') %>
+        
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Admin Header -->
+            <div class="bg-white dark:bg-neutral-900 border-b border-slate-200 dark:border-neutral-800 px-6 py-4">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h1 class="text-2xl font-bold text-slate-900 dark:text-white">Quản lý danh mục & thương hiệu</h1>
+                        <p class="text-slate-600 dark:text-neutral-400">Quản lý danh mục sản phẩm và thương hiệu trong hệ thống</p>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <div class="relative">
+                            <button class="p-2 text-slate-600 dark:text-neutral-400 hover:text-orange-500 dark:hover:text-yellow-400 transition-colors">
+                                <i class="fas fa-bell text-lg"></i>
+                                <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">3</span>
+                            </button>
+                        </div>
+                        <div class="relative group">
+                            <button class="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-orange-500 to-yellow-500 dark:from-yellow-500 dark:to-yellow-400 text-white dark:text-black rounded-xl font-medium hover:shadow-lg transition-all">
+                                <i class="fas fa-user-circle"></i>
+                                <span id="admin-username">Admin</span>
+                                <i class="fas fa-chevron-down text-sm"></i>
+                            </button>
+                            <div class="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-neutral-800 rounded-xl shadow-lg border border-slate-200 dark:border-neutral-700 py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                                <a href="/" class="flex items-center gap-3 px-4 py-2 text-slate-700 dark:text-neutral-300 hover:bg-slate-50 dark:hover:bg-neutral-700 transition-colors">
+                                    <i class="fas fa-home"></i>
+                                    <span>Quay lại trang chính</span>
+                                </a>
+                                <a href="#" onclick="logout()" class="flex items-center gap-3 px-4 py-2 text-slate-700 dark:text-neutral-300 hover:bg-slate-50 dark:hover:bg-neutral-700 transition-colors">
+                                    <i class="fas fa-sign-out-alt"></i>
+                                    <span>Đăng xuất</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Dashboard Content -->
+            <div class="p-6 space-y-8">
+                <!-- Tabs -->
+                <div class="bg-white dark:bg-neutral-900 rounded-2xl shadow-lg shadow-orange-500/5 dark:shadow-yellow-500/5 border border-slate-200 dark:border-neutral-800">
+                    <div class="border-b border-slate-200 dark:border-neutral-800">
+                        <nav class="flex space-x-8 px-6">
+                            <button class="py-4 px-1 border-b-2 border-orange-500 dark:border-yellow-500 text-orange-600 dark:text-yellow-400 font-semibold text-sm" onclick="switchTab('categories')">
+                                <i class="fas fa-tags mr-2"></i>
+                                Danh mục
+                            </button>
+                            <button class="py-4 px-1 border-b-2 border-transparent text-slate-500 dark:text-neutral-400 hover:text-slate-700 dark:hover:text-neutral-300 font-semibold text-sm" onclick="switchTab('brands')">
+                                <i class="fas fa-star mr-2"></i>
+                                Thương hiệu
+                            </button>
+                        </nav>
+                    </div>
+
+                    <!-- Categories Tab -->
+                    <div id="categories-tab" class="tab-content p-6">
+                        <!-- Action Bar -->
+                        <div class="flex items-center justify-between mb-6">
+                            <h2 class="text-xl font-bold text-slate-900 dark:text-white">Quản lý danh mục</h2>
+                            <button class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-orange-500 to-yellow-500 dark:from-yellow-500 dark:to-yellow-400 text-white dark:text-black font-bold rounded-xl shadow-lg shadow-orange-500/25 dark:shadow-yellow-500/25 hover:shadow-xl hover:shadow-orange-500/40 dark:hover:shadow-yellow-500/40 hover:-translate-y-0.5 transition-all duration-200" id="addCategoryBtn">
+                                <i class="fas fa-plus"></i>
+                                <span>Thêm danh mục mới</span>
+                            </button>
+                        </div>
+
+                        <!-- Category Form -->
+                        <div id="categoryForm" class="hidden bg-slate-50 dark:bg-neutral-800 rounded-2xl p-6 mb-6">
+                            <form id="createCategoryForm" class="space-y-6">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div>
+                                        <label for="categoryName" class="block text-sm font-semibold text-slate-700 dark:text-neutral-300 mb-2">
+                                            Tên danh mục
+                                        </label>
+                                        <input type="text" id="categoryName" name="tenDM" required class="w-full px-4 py-3 border border-slate-300 dark:border-neutral-700 rounded-xl bg-white dark:bg-neutral-900 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-orange-500 dark:focus:ring-yellow-500 focus:border-transparent transition-all" placeholder="Nhập tên danh mục">
+                                    </div>
+                                    <div>
+                                        <label for="categoryImage" class="block text-sm font-semibold text-slate-700 dark:text-neutral-300 mb-2">
+                                            Hình ảnh danh mục
+                                        </label>
+                                        <input type="file" id="categoryImage" name="hinhAnh" accept="image/*" class="w-full px-4 py-3 border border-slate-300 dark:border-neutral-700 rounded-xl bg-white dark:bg-neutral-900 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-orange-500 dark:focus:ring-yellow-500 focus:border-transparent transition-all">
+                                    </div>
+                                </div>
+                                
+                                <div id="imagePreview" class="hidden">
+                                    <label class="block text-sm font-semibold text-slate-700 dark:text-neutral-300 mb-2">Xem trước</label>
+                                    <img id="previewImage" src="#" alt="Xem trước ảnh" class="w-32 h-32 object-cover rounded-xl border border-slate-300 dark:border-neutral-700">
+                                </div>
+
+                                <div class="flex items-center gap-4">
+                                    <button type="submit" class="px-6 py-3 bg-gradient-to-r from-orange-500 to-yellow-500 dark:from-yellow-500 dark:to-yellow-400 text-white dark:text-black font-bold rounded-xl shadow-lg hover:shadow-xl transition-all">
+                                        <i class="fas fa-save mr-2"></i>
+                                        <span id="submitText">Lưu</span>
+                                    </button>
+                                    <button type="button" id="cancelCategoryBtn" class="px-6 py-3 border border-slate-300 dark:border-neutral-700 rounded-xl bg-white dark:bg-neutral-800 text-slate-700 dark:text-neutral-300 hover:bg-slate-50 dark:hover:bg-neutral-700 transition-colors">
+                                        <i class="fas fa-times mr-2"></i>
+                                        Hủy
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- Categories Table -->
+                        <div class="overflow-x-auto">
+                            <table class="w-full">
+                                <thead class="bg-slate-50 dark:bg-neutral-800">
+                                    <tr>
+                                        <th class="text-left py-4 px-6 font-semibold text-slate-600 dark:text-neutral-400">STT</th>
+                                        <th class="text-left py-4 px-6 font-semibold text-slate-600 dark:text-neutral-400">Hình ảnh</th>
+                                        <th class="text-left py-4 px-6 font-semibold text-slate-600 dark:text-neutral-400">Tên danh mục</th>
+                                        <th class="text-left py-4 px-6 font-semibold text-slate-600 dark:text-neutral-400">Ngày tạo</th>
+                                        <th class="text-left py-4 px-6 font-semibold text-slate-600 dark:text-neutral-400">Thao tác</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="categoryTableBody" class="divide-y divide-slate-200 dark:divide-neutral-800">
+                                    <!-- Các danh mục sẽ được hiển thị ở đây -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Brands Tab -->
+                    <div id="brands-tab" class="tab-content hidden p-6">
+                        <!-- Action Bar -->
+                        <div class="flex items-center justify-between mb-6">
+                            <h2 class="text-xl font-bold text-slate-900 dark:text-white">Quản lý thương hiệu</h2>
+                            <button class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-orange-500 to-yellow-500 dark:from-yellow-500 dark:to-yellow-400 text-white dark:text-black font-bold rounded-xl shadow-lg shadow-orange-500/25 dark:shadow-yellow-500/25 hover:shadow-xl hover:shadow-orange-500/40 dark:hover:shadow-yellow-500/40 hover:-translate-y-0.5 transition-all duration-200" id="addBrandBtn">
+                                <i class="fas fa-plus"></i>
+                                <span>Thêm thương hiệu mới</span>
+                            </button>
+                        </div>
+
+                        <!-- Brand Form -->
+                        <div id="brandForm" class="hidden bg-slate-50 dark:bg-neutral-800 rounded-2xl p-6 mb-6">
+                            <form id="createBrandForm" class="space-y-6">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div>
+                                        <label for="brandName" class="block text-sm font-semibold text-slate-700 dark:text-neutral-300 mb-2">
+                                            Tên thương hiệu
+                                        </label>
+                                        <input type="text" id="brandName" name="tenTH" required class="w-full px-4 py-3 border border-slate-300 dark:border-neutral-700 rounded-xl bg-white dark:bg-neutral-900 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-orange-500 dark:focus:ring-yellow-500 focus:border-transparent transition-all" placeholder="Nhập tên thương hiệu">
+                                    </div>
+                                    <div>
+                                        <label for="brandImage" class="block text-sm font-semibold text-slate-700 dark:text-neutral-300 mb-2">
+                                            Logo thương hiệu
+                                        </label>
+                                        <input type="file" id="brandImage" name="logo" accept="image/*" class="w-full px-4 py-3 border border-slate-300 dark:border-neutral-700 rounded-xl bg-white dark:bg-neutral-900 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-orange-500 dark:focus:ring-yellow-500 focus:border-transparent transition-all">
+                                    </div>
+                                </div>
+                                
+                                <div id="brandImagePreview" class="hidden">
+                                    <label class="block text-sm font-semibold text-slate-700 dark:text-neutral-300 mb-2">Xem trước</label>
+                                    <img id="previewBrandImage" src="#" alt="Xem trước logo" class="w-32 h-32 object-cover rounded-xl border border-slate-300 dark:border-neutral-700">
+                                </div>
+
+                                <div class="flex items-center gap-4">
+                                    <button type="submit" class="px-6 py-3 bg-gradient-to-r from-orange-500 to-yellow-500 dark:from-yellow-500 dark:to-yellow-400 text-white dark:text-black font-bold rounded-xl shadow-lg hover:shadow-xl transition-all">
+                                        <i class="fas fa-save mr-2"></i>
+                                        <span id="submitBrandText">Lưu</span>
+                                    </button>
+                                    <button type="button" id="cancelBrandBtn" class="px-6 py-3 border border-slate-300 dark:border-neutral-700 rounded-xl bg-white dark:bg-neutral-800 text-slate-700 dark:text-neutral-300 hover:bg-slate-50 dark:hover:bg-neutral-700 transition-colors">
+                                        <i class="fas fa-times mr-2"></i>
+                                        Hủy
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- Brands Table -->
+                        <div class="overflow-x-auto">
+                            <table class="w-full">
+                                <thead class="bg-slate-50 dark:bg-neutral-800">
+                                    <tr>
+                                        <th class="text-left py-4 px-6 font-semibold text-slate-600 dark:text-neutral-400">STT</th>
+                                        <th class="text-left py-4 px-6 font-semibold text-slate-600 dark:text-neutral-400">Logo</th>
+                                        <th class="text-left py-4 px-6 font-semibold text-slate-600 dark:text-neutral-400">Tên thương hiệu</th>
+                                        <th class="text-left py-4 px-6 font-semibold text-slate-600 dark:text-neutral-400">Ngày tạo</th>
+                                        <th class="text-left py-4 px-6 font-semibold text-slate-600 dark:text-neutral-400">Thao tác</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="brandTableBody" class="divide-y divide-slate-200 dark:divide-neutral-800">
+                                    <!-- Các thương hiệu sẽ được hiển thị ở đây -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <script>
+        const token = localStorage.getItem('authToken');
+        if (!token) {
+            window.location.href = '/admin/login';
+        }
+
+        function logout() {
+            localStorage.removeItem('authToken');
+            localStorage.removeItem('userInfo');
+            localStorage.removeItem('hoTen');
+            window.location.href = '/';
+        }
+
+        // Update admin username
+        document.addEventListener('DOMContentLoaded', function() {
+            const userName = 'Admin';
+            try {
+                const userInfo = localStorage.getItem('userInfo');
+                if (userInfo) {
+                    const userObj = JSON.parse(userInfo);
+                    if (userObj.hoTen) userName = userObj.hoTen;
+                    else if (userObj.name) userName = userObj.name;
+                } else if (localStorage.getItem('hoTen')) {
+                    userName = localStorage.getItem('hoTen');
+                }
+            } catch(e) {}
+            const el = document.getElementById('admin-username');
+            if (el) el.textContent = userName;
+        });
+
+        // Tab switching
+        function switchTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.add('hidden');
+            });
+            
+            // Remove active class from all buttons
+            document.querySelectorAll('nav button').forEach(btn => {
+                btn.classList.remove('border-orange-500', 'dark:border-yellow-500', 'text-orange-600', 'dark:text-yellow-400');
+                btn.classList.add('border-transparent', 'text-slate-500', 'dark:text-neutral-400');
+            });
+            
+            // Show selected tab
+            document.getElementById(tabName + '-tab').classList.remove('hidden');
+            
+            // Add active class to selected button
+            event.target.classList.remove('border-transparent', 'text-slate-500', 'dark:text-neutral-400');
+            event.target.classList.add('border-orange-500', 'dark:border-yellow-500', 'text-orange-600', 'dark:text-yellow-400');
+        }
+
+        // Category management
+        let editingCategoryId = null;
+        let editingBrandId = null;
+        let isSubmitting = false;
+
+        // Load categories
+        async function loadCategories() {
+            try {
+                const response = await fetch('http://localhost:3001/api/danhmucs');
+                const categories = await response.json();
+                const tableBody = document.getElementById('categoryTableBody');
+                tableBody.innerHTML = '';
+                
+                categories.forEach((category, index) => {
+                    const row = `
+                        <tr class="hover:bg-slate-50 dark:hover:bg-neutral-800 transition-colors">
+                            <td class="py-4 px-6 text-slate-900 dark:text-white">${index + 1}</td>
+                            <td class="py-4 px-6">
+                                <img src="${category.hinhAnh || '/images/placeholder-category.png'}" alt="Ảnh danh mục" class="w-16 h-16 object-cover rounded-xl shadow-sm" />
+                            </td>
+                            <td class="py-4 px-6">
+                                <div class="font-semibold text-slate-900 dark:text-white">${category.tenDM}</div>
+                            </td>
+                            <td class="py-4 px-6 text-slate-600 dark:text-neutral-400">
+                                ${new Date(category.createdAt || Date.now()).toLocaleDateString('vi-VN')}
+                            </td>
+                            <td class="py-4 px-6">
+                                <div class="flex items-center gap-2">
+                                    <button class="p-2 text-slate-400 hover:text-orange-500 hover:bg-orange-50 dark:hover:bg-orange-900/20 rounded-lg transition-colors edit-category-btn" data-id="${category._id}" title="Chỉnh sửa">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors delete-category-btn" data-id="${category._id}" title="Xóa">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>`;
+                    tableBody.insertAdjacentHTML('beforeend', row);
+                });
+            } catch (error) {
+                console.error('Error loading categories:', error);
+            }
+        }
+
+        // Load brands
+        async function loadBrands() {
+            try {
+                const response = await fetch('http://localhost:3001/api/thuonghieus');
+                const brands = await response.json();
+                const tableBody = document.getElementById('brandTableBody');
+                tableBody.innerHTML = '';
+                
+                brands.forEach((brand, index) => {
+                    const row = `
+                        <tr class="hover:bg-slate-50 dark:hover:bg-neutral-800 transition-colors">
+                            <td class="py-4 px-6 text-slate-900 dark:text-white">${index + 1}</td>
+                            <td class="py-4 px-6">
+                                <img src="${brand.logo || '/images/placeholder-brand.png'}" alt="Logo thương hiệu" class="w-16 h-16 object-cover rounded-xl shadow-sm" />
+                            </td>
+                            <td class="py-4 px-6">
+                                <div class="font-semibold text-slate-900 dark:text-white">${brand.tenTH}</div>
+                            </td>
+                            <td class="py-4 px-6 text-slate-600 dark:text-neutral-400">
+                                ${new Date(brand.createdAt || Date.now()).toLocaleDateString('vi-VN')}
+                            </td>
+                            <td class="py-4 px-6">
+                                <div class="flex items-center gap-2">
+                                    <button class="p-2 text-slate-400 hover:text-orange-500 hover:bg-orange-50 dark:hover:bg-orange-900/20 rounded-lg transition-colors edit-brand-btn" data-id="${brand._id}" title="Chỉnh sửa">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors delete-brand-btn" data-id="${brand._id}" title="Xóa">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>`;
+                    tableBody.insertAdjacentHTML('beforeend', row);
+                });
+            } catch (error) {
+                console.error('Error loading brands:', error);
+            }
+        }
+
+        // Category form submission
+        document.getElementById('createCategoryForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if (isSubmitting) return;
+
+            isSubmitting = true;
+            const tenDM = document.getElementById('categoryName').value;
+            const hinhAnhFile = document.getElementById('categoryImage').files[0];
+            const formData = new FormData();
+            formData.append('tenDM', tenDM);
+
+            if (hinhAnhFile) {
+                formData.append('hinhAnh', hinhAnhFile);
+            }
+
+            const url = editingCategoryId
+                ? `http://localhost:3001/api/danhmucs/${editingCategoryId}`
+                : 'http://localhost:3001/api/danhmucs';
+            const method = editingCategoryId ? 'PUT' : 'POST';
+
+            try {
+                await fetch(url, {
+                    method,
+                    body: formData,
+                });
+
+                loadCategories();
+                document.getElementById('categoryForm').classList.add('hidden');
+                document.getElementById('createCategoryForm').reset();
+                document.getElementById('imagePreview').classList.add('hidden');
+                editingCategoryId = null;
+                document.getElementById('submitText').textContent = 'Lưu';
+            } catch (error) {
+                console.error('Error saving category:', error);
+            } finally {
+                isSubmitting = false;
+            }
+        });
+
+        // Brand form submission
+        document.getElementById('createBrandForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if (isSubmitting) return;
+
+            isSubmitting = true;
+            const tenTH = document.getElementById('brandName').value;
+            const logoFile = document.getElementById('brandImage').files[0];
+            const formData = new FormData();
+            formData.append('tenTH', tenTH);
+
+            if (logoFile) {
+                formData.append('logo', logoFile);
+            }
+
+            const url = editingBrandId
+                ? `http://localhost:3001/api/thuonghieus/${editingBrandId}`
+                : 'http://localhost:3001/api/thuonghieus';
+            const method = editingBrandId ? 'PUT' : 'POST';
+
+            try {
+                await fetch(url, {
+                    method,
+                    body: formData,
+                });
+
+                loadBrands();
+                document.getElementById('brandForm').classList.add('hidden');
+                document.getElementById('createBrandForm').reset();
+                document.getElementById('brandImagePreview').classList.add('hidden');
+                editingBrandId = null;
+                document.getElementById('submitBrandText').textContent = 'Lưu';
+            } catch (error) {
+                console.error('Error saving brand:', error);
+            } finally {
+                isSubmitting = false;
+            }
+        });
+
+        // Event listeners
+        document.getElementById('addCategoryBtn').addEventListener('click', () => {
+            editingCategoryId = null;
+            document.getElementById('categoryForm').classList.remove('hidden');
+            document.getElementById('createCategoryForm').reset();
+            document.getElementById('imagePreview').classList.add('hidden');
+            document.getElementById('submitText').textContent = 'Lưu';
+        });
+
+        document.getElementById('cancelCategoryBtn').addEventListener('click', () => {
+            document.getElementById('categoryForm').classList.add('hidden');
+            document.getElementById('createCategoryForm').reset();
+            document.getElementById('imagePreview').classList.add('hidden');
+            editingCategoryId = null;
+            document.getElementById('submitText').textContent = 'Lưu';
+        });
+
+        document.getElementById('addBrandBtn').addEventListener('click', () => {
+            editingBrandId = null;
+            document.getElementById('brandForm').classList.remove('hidden');
+            document.getElementById('createBrandForm').reset();
+            document.getElementById('brandImagePreview').classList.add('hidden');
+            document.getElementById('submitBrandText').textContent = 'Lưu';
+        });
+
+        document.getElementById('cancelBrandBtn').addEventListener('click', () => {
+            document.getElementById('brandForm').classList.add('hidden');
+            document.getElementById('createBrandForm').reset();
+            document.getElementById('brandImagePreview').classList.add('hidden');
+            editingBrandId = null;
+            document.getElementById('submitBrandText').textContent = 'Lưu';
+        });
+
+        // Image preview for categories
+        document.getElementById('categoryImage').addEventListener('change', function() {
+            const file = this.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('imagePreview').classList.remove('hidden');
+                    document.getElementById('previewImage').src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            } else {
+                document.getElementById('imagePreview').classList.add('hidden');
+            }
+        });
+
+        // Image preview for brands
+        document.getElementById('brandImage').addEventListener('change', function() {
+            const file = this.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('brandImagePreview').classList.remove('hidden');
+                    document.getElementById('previewBrandImage').src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            } else {
+                document.getElementById('brandImagePreview').classList.add('hidden');
+            }
+        });
+
+        // Category table event listeners
+        document.getElementById('categoryTableBody').addEventListener('click', async (e) => {
+            if (e.target.closest('.delete-category-btn')) {
+                const id = e.target.closest('.delete-category-btn').dataset.id;
+                if (confirm('Bạn có chắc chắn muốn xóa danh mục này?')) {
+                    try {
+                        await fetch(`http://localhost:3001/api/danhmucs/${id}`, {
+                            method: 'DELETE',
+                        });
+                        loadCategories();
+                    } catch (error) {
+                        console.error('Error deleting category:', error);
+                    }
+                }
+            }
+
+            if (e.target.closest('.edit-category-btn')) {
+                const id = e.target.closest('.edit-category-btn').dataset.id;
+                try {
+                    const response = await fetch(`http://localhost:3001/api/danhmucs/${id}`);
+                    const category = await response.json();
+
+                    editingCategoryId = id;
+                    document.getElementById('categoryName').value = category.tenDM;
+                    document.getElementById('categoryForm').classList.remove('hidden');
+                    document.getElementById('submitText').textContent = 'Cập nhật';
+
+                    if (category.hinhAnh) {
+                        document.getElementById('imagePreview').classList.remove('hidden');
+                        document.getElementById('previewImage').src = category.hinhAnh;
+                    }
+                } catch (error) {
+                    console.error('Error loading category:', error);
+                }
+            }
+        });
+
+        // Brand table event listeners
+        document.getElementById('brandTableBody').addEventListener('click', async (e) => {
+            if (e.target.closest('.delete-brand-btn')) {
+                const id = e.target.closest('.delete-brand-btn').dataset.id;
+                if (confirm('Bạn có chắc chắn muốn xóa thương hiệu này?')) {
+                    try {
+                        await fetch(`http://localhost:3001/api/thuonghieus/${id}`, {
+                            method: 'DELETE',
+                        });
+                        loadBrands();
+                    } catch (error) {
+                        console.error('Error deleting brand:', error);
+                    }
+                }
+            }
+
+            if (e.target.closest('.edit-brand-btn')) {
+                const id = e.target.closest('.edit-brand-btn').dataset.id;
+                try {
+                    const response = await fetch(`http://localhost:3001/api/thuonghieus/${id}`);
+                    const brand = await response.json();
+
+                    editingBrandId = id;
+                    document.getElementById('brandName').value = brand.tenTH;
+                    document.getElementById('brandForm').classList.remove('hidden');
+                    document.getElementById('submitBrandText').textContent = 'Cập nhật';
+
+                    if (brand.logo) {
+                        document.getElementById('brandImagePreview').classList.remove('hidden');
+                        document.getElementById('previewBrandImage').src = brand.logo;
+                    }
+                } catch (error) {
+                    console.error('Error loading brand:', error);
+                }
+            }
+        });
+
+        // Load data on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            loadCategories();
+            loadBrands();
+        });
+    </script>
+</body>
+</html>

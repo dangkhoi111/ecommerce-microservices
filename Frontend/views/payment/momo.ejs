@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thanh toán MoMo - MegaStore VN</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .momo-gradient {
+            background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+        }
+        .qr-code {
+            width: 200px;
+            height: 200px;
+            background: white;
+            border: 2px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+        }
+        .countdown {
+            font-variant-numeric: tabular-nums;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <div class="container mx-auto px-4 py-8 max-w-md">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <div class="inline-flex items-center justify-center w-16 h-16 momo-gradient rounded-full mb-4">
+                <img src="/images/momo-icon.png" alt="MoMo" class="w-10 h-10">
+            </div>
+            <h1 class="text-2xl font-bold text-gray-800">Thanh toán MoMo</h1>
+            <p class="text-gray-600 mt-2">Quét mã QR để hoàn tất thanh toán</p>
+        </div>
+
+        <!-- Payment Card -->
+        <div class="bg-white rounded-2xl shadow-lg p-6">
+            <!-- Order Info -->
+            <div class="mb-6">
+                <div class="flex justify-between items-center mb-4">
+                    <span class="text-gray-600">Mã đơn hàng:</span>
+                    <span class="font-semibold"><%= orderId %></span>
+                </div>
+                <div class="flex justify-between items-center">
+                    <span class="text-gray-600">Số tiền:</span>
+                    <span class="text-2xl font-bold text-orange-500">
+                        <%= new Intl.NumberFormat('vi-VN').format(amount) %>₫
+                    </span>
+                </div>
+            </div>
+
+            <!-- QR Code -->
+            <div class="text-center mb-6">
+                <div class="qr-code mb-4">
+                    <i class="fas fa-qrcode text-6xl text-gray-300"></i>
+                </div>
+                <p class="text-sm text-gray-600">Sử dụng ứng dụng MoMo để quét mã QR</p>
+            </div>
+
+            <!-- Timer -->
+            <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
+                <div class="flex items-center justify-center gap-2">
+                    <i class="fas fa-clock text-yellow-600"></i>
+                    <span class="text-yellow-800">Thời gian còn lại:</span>
+                    <span class="font-bold text-yellow-800 countdown" id="countdown">05:00</span>
+                </div>
+            </div>
+
+            <!-- Instructions -->
+            <div class="bg-gray-50 rounded-lg p-4 mb-6">
+                <h3 class="font-semibold text-gray-800 mb-2">Hướng dẫn thanh toán:</h3>
+                <ol class="text-sm text-gray-600 space-y-1">
+                    <li>1. Mở ứng dụng MoMo trên điện thoại</li>
+                    <li>2. Chọn "Quét mã QR"</li>
+                    <li>3. Đưa camera vào mã QR trên màn hình</li>
+                    <li>4. Xác nhận thanh toán</li>
+                </ol>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="space-y-3">
+                <button onclick="checkPaymentStatus()" class="w-full momo-gradient text-white py-3 rounded-lg font-semibold hover:opacity-90 transition-opacity">
+                    <i class="fas fa-check-circle mr-2"></i>
+                    Tôi đã thanh toán
+                </button>
+                <button onclick="window.history.back()" class="w-full bg-gray-200 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-300 transition-colors">
+                    <i class="fas fa-arrow-left mr-2"></i>
+                    Quay lại
+                </button>
+            </div>
+        </div>
+
+        <!-- Help Section -->
+        <div class="text-center mt-6">
+            <p class="text-sm text-gray-600">
+                <i class="fas fa-phone-alt mr-1"></i>
+                Cần hỗ trợ? <a href="#" class="text-orange-500 hover:underline">1900 1234</a>
+            </p>
+        </div>
+    </div>
+
+    <script>
+        let timeLeft = 300; // 5 minutes in seconds
+
+        function updateCountdown() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            const display = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            document.getElementById('countdown').textContent = display;
+
+            if (timeLeft <= 60) {
+                document.getElementById('countdown').classList.add('text-red-600');
+            }
+
+            if (timeLeft <= 0) {
+                clearInterval(countdownInterval);
+                alert('Thời gian thanh toán đã hết. Vui lòng thực hiện lại.');
+                window.history.back();
+            }
+
+            timeLeft--;
+        }
+
+        const countdownInterval = setInterval(updateCountdown, 1000);
+
+        function checkPaymentStatus() {
+            // In a real implementation, this would check with the server
+            // For now, simulate successful payment
+            if (confirm('Xác nhận bạn đã thanh toán thành công qua MoMo?')) {
+                window.location.href = `/payment/success?orderId=<%= orderId %>&paymentMethod=MoMo`;
+            }
+        }
+
+        // Auto-check payment status every 10 seconds
+        setInterval(() => {
+            // In a real implementation, this would make an API call to check status
+            console.log('Checking payment status...');
+        }, 10000);
+    </script>
+</body>
+</html>

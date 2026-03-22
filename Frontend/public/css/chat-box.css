@@ -1,0 +1,121 @@
+/* Modern Chat Box Styles - Minimal CSS for Tailwind compatibility */
+
+/* Custom scrollbar for chat messages */
+.chat-messages::-webkit-scrollbar {
+    width: 4px;
+}
+
+.chat-messages::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.chat-messages::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 2px;
+}
+
+.chat-messages::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
+
+/* Dark mode scrollbar */
+.dark .chat-messages::-webkit-scrollbar-thumb {
+    background: #475569;
+}
+
+.dark .chat-messages::-webkit-scrollbar-thumb:hover {
+    background: #64748b;
+}
+
+/* Animation for message appearance */
+@keyframes messageSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.message-animate {
+    animation: messageSlideIn 0.3s ease-out;
+}
+
+/* Custom focus styles for better accessibility */
+.chat-input input:focus {
+    box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.1);
+}
+
+/* Hover effects for better interactivity */
+.shop-item:hover {
+    transform: translateY(-1px);
+}
+
+/* Notification badge pulse animation */
+.notification-badge {
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.7;
+    }
+}
+
+/* Mobile responsiveness */
+@media (max-width: 640px) {
+    .chat-box {
+        width: 100vw !important;
+        height: 100vh !important;
+        right: 0 !important;
+        bottom: 0 !important;
+        border-radius: 0 !important;
+    }
+    
+    .chat-icon {
+        bottom: 20px;
+        right: 20px;
+    }
+}
+
+/* Ensure proper z-index layering */
+.chat-box-container {
+    z-index: 9999;
+}
+
+/* Smooth transitions for all interactive elements */
+* {
+    transition: all 0.2s ease-in-out;
+}
+
+/* Custom styles for better visual hierarchy */
+.shop-item:active {
+    transform: scale(0.98);
+}
+
+/* Loading state styles */
+.loading-shimmer {
+    background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+    0% {
+        background-position: -200% 0;
+    }
+    100% {
+        background-position: 200% 0;
+    }
+}
+
+/* Dark mode loading shimmer */
+.dark .loading-shimmer {
+    background: linear-gradient(90deg, #1e293b 25%, #334155 50%, #1e293b 75%);
+    background-size: 200% 100%;
+}

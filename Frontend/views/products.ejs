@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cửa Hàng - MegaStore VN</title>
+    <!-- Tailwind CSS (CDN) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>if (window.tailwind) { tailwind.config = { darkMode: 'class' } }</script>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="bg-white dark:bg-black text-slate-900 dark:text-white min-h-screen transition-colors duration-300">
+
+
+    <!-- Hero Banner -->
+    <section class="relative bg-gradient-to-br from-slate-50 via-white to-slate-50 dark:from-neutral-900 dark:via-black dark:to-neutral-900 py-20 overflow-hidden">
+        <!-- Large Logo Background -->
+        <div class="absolute top-1/2 right-0 -translate-y-1/2 translate-x-1/4 w-[500px] h-[500px] opacity-5 dark:opacity-10 pointer-events-none">
+            <div class="w-full h-full rounded-full border-8 border-slate-900 dark:border-white flex items-center justify-center">
+                <div class="text-[350px] font-black text-slate-900 dark:text-white">M</div>
+            </div>
+        </div>
+        
+        <div class="container mx-auto px-4 relative z-10">
+            <div class="max-w-4xl mx-auto">
+                <a href="/" class="inline-flex items-center gap-2 text-slate-600 dark:text-neutral-400 hover:text-orange-500 dark:hover:text-yellow-500 mb-6 transition-colors font-semibold">
+                    <i class="fas fa-arrow-left"></i>
+                    Quay lại Trang chủ
+                </a>
+                <h1 class="text-5xl md:text-6xl font-extrabold mb-4 text-slate-900 dark:text-white">
+                    Khám Phá
+                    <br/>
+                    <span class="bg-gradient-to-r from-orange-500 via-yellow-500 to-orange-500 dark:from-yellow-400 dark:via-yellow-200 dark:to-yellow-400 bg-clip-text text-transparent" id="page-title">Tất Cả Sản Phẩm</span>
+                </h1>
+                <p class="text-xl md:text-2xl text-slate-600 dark:text-neutral-300 max-w-2xl mb-4" id="page-subtitle">
+                    Hàng ngàn sản phẩm chất lượng, giá tốt nhất thị trường
+                </p>
+                <p class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-yellow-500/30 bg-yellow-500/10 text-yellow-600 dark:text-yellow-500 font-semibold text-sm">
+                    <i class="fas fa-star"></i>
+                    MIỄN PHÍ VẬN CHUYỂN - BẢO HÀNH CHÍNH HÃNG
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sticky Navigation -->
+    <section class="py-6 bg-white/80 dark:bg-black/80 sticky top-0 z-40 backdrop-blur-md border-b border-slate-200 dark:border-neutral-800 shadow-sm">
+        <div class="container mx-auto px-4">
+            <!-- Mobile Dropdown Menu -->
+            <div class="md:hidden">
+                <div class="relative">
+                    <select 
+                        id="mobile-nav"
+                        class="w-full bg-slate-100 dark:bg-neutral-900 border-2 border-orange-500/50 dark:border-yellow-500/50 text-slate-900 dark:text-white rounded-xl px-4 py-3 text-lg font-medium appearance-none cursor-pointer focus:outline-none focus:border-orange-500 dark:focus:border-yellow-500"
+                    >
+                        <option value="">Chọn danh mục</option>
+                        <option value="/">🏠 Trang chủ</option>
+                        <option value="#all-products">⭐ Tất cả sản phẩm</option>
+                    </select>
+                    <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                        <i class="fas fa-chevron-down h-4 w-4 text-orange-500 dark:text-yellow-500"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Desktop Horizontal Layout -->
+            <div class="hidden md:block">
+                <div class="flex justify-center flex-wrap gap-2" id="category-nav">
+                    <!-- Categories will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <div class="container mx-auto px-4 py-12">
+        
+        <!-- All Products Section -->
+        <section id="all-products" class="mb-20">
+            <div class="text-center mb-12">
+                <div class="inline-block px-4 py-2 rounded-full bg-slate-200 dark:bg-neutral-800 text-slate-700 dark:text-neutral-300 text-sm font-semibold mb-4">
+                    Sản phẩm nổi bật
+                </div>
+                <h2 class="text-4xl md:text-5xl font-extrabold mb-4 text-slate-900 dark:text-white">
+                    Tất Cả
+                    <span class="bg-gradient-to-r from-orange-500 to-yellow-500 dark:from-yellow-400 dark:to-yellow-200 bg-clip-text text-transparent"> Sản Phẩm</span>
+                </h2>
+                <p class="text-slate-600 dark:text-neutral-400 max-w-2xl mx-auto text-lg">
+                    Khám phá bộ sưu tập đầy đủ các sản phẩm chất lượng cao
+                </p>
+            </div>
+
+            <!-- Filter & Sort Bar -->
+            <div class="mb-8 bg-white dark:bg-neutral-900 backdrop-blur-md rounded-2xl shadow-lg p-6 border border-slate-200 dark:border-neutral-800">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <!-- Price Range Filter -->
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 dark:text-neutral-300 mb-2">
+                            <i class="fas fa-dollar-sign text-orange-500 dark:text-yellow-500 mr-2"></i>
+                            Khoảng giá
+                        </label>
+                        <select id="price-filter" class="w-full px-4 py-3 rounded-xl border-2 border-slate-200 dark:border-neutral-800 bg-slate-50 dark:bg-black text-slate-900 dark:text-white focus:border-orange-500 dark:focus:border-yellow-500 focus:ring-2 focus:ring-orange-500/20 dark:focus:ring-yellow-500/20 transition-all cursor-pointer text-sm">
+                            <option value="all">Tất cả</option>
+                            <option value="0-1000000">Dưới 1 triệu</option>
+                            <option value="1000000-5000000">1 - 5 triệu</option>
+                            <option value="5000000-10000000">5 - 10 triệu</option>
+                            <option value="10000000-20000000">10 - 20 triệu</option>
+                            <option value="20000000-999999999">Trên 20 triệu</option>
+                        </select>
+                    </div>
+
+                    <!-- Rating Filter -->
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 dark:text-neutral-300 mb-2">
+                            <i class="fas fa-star text-orange-500 dark:text-yellow-500 mr-2"></i>
+                            Đánh giá
+                        </label>
+                        <select id="rating-filter" class="w-full px-4 py-3 rounded-xl border-2 border-slate-200 dark:border-neutral-800 bg-slate-50 dark:bg-black text-slate-900 dark:text-white focus:border-orange-500 dark:focus:border-yellow-500 focus:ring-2 focus:ring-orange-500/20 dark:focus:ring-yellow-500/20 transition-all cursor-pointer text-sm">
+                            <option value="0">Tất cả</option>
+                            <option value="4">4+ sao trở lên</option>
+                            <option value="3">3+ sao trở lên</option>
+                        </select>
+                    </div>
+
+                    <!-- Sort Dropdown -->
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 dark:text-neutral-300 mb-2">
+                            <i class="fas fa-sort text-orange-500 dark:text-yellow-500 mr-2"></i>
+                            Sắp xếp
+                        </label>
+                        <select id="sort-select" class="w-full px-4 py-3 rounded-xl border-2 border-slate-200 dark:border-neutral-800 bg-slate-50 dark:bg-black text-slate-900 dark:text-white focus:border-orange-500 dark:focus:border-yellow-500 focus:ring-2 focus:ring-orange-500/20 dark:focus:ring-yellow-500/20 transition-all cursor-pointer text-sm">
+                            <option value="default">Mặc định</option>
+                            <option value="price-asc">Giá: Thấp → Cao</option>
+                            <option value="price-desc">Giá: Cao → Thấp</option>
+                            <option value="name-asc">Tên: A → Z</option>
+                            <option value="name-desc">Tên: Z → A</option>
+                            <option value="newest">Mới nhất</option>
+                        </select>
+                    </div>
+
+                    <!-- Clear Filters Button -->
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 dark:text-neutral-300 mb-2 invisible">
+                            Action
+                        </label>
+                        <button id="clear-all-filters" class="w-full px-4 py-3 rounded-xl border-2 border-orange-500/50 dark:border-yellow-500/50 bg-orange-50 dark:bg-yellow-500/10 text-orange-600 dark:text-yellow-500 font-semibold hover:bg-orange-100 dark:hover:bg-yellow-500/20 hover:border-orange-500 dark:hover:border-yellow-500 transition-all text-sm">
+                            <i class="fas fa-refresh mr-2"></i>
+                            Xóa bộ lọc
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Loading Skeleton -->
+            <div id="products-skeleton" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-8">
+                <!-- Skeleton cards -->
+            </div>
+
+            <!-- Products Grid -->
+            <div id="products-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-8">
+                <!-- Products will be loaded here -->
+            </div>
+
+            <!-- No Results Message -->
+            <div id="no-results" class="hidden text-center py-16">
+                <div class="inline-block p-8 bg-white dark:bg-neutral-900 rounded-2xl border border-slate-200 dark:border-neutral-800 shadow-lg">
+                    <i class="fas fa-search text-6xl text-orange-500/30 dark:text-yellow-500/30 mb-4"></i>
+                    <h3 class="text-2xl font-bold mb-2 text-slate-900 dark:text-white">Không tìm thấy sản phẩm</h3>
+                    <p class="text-slate-600 dark:text-neutral-400">Hãy thử tìm kiếm với từ khóa khác</p>
+                </div>
+            </div>
+
+            <!-- Pagination -->
+            <div id="pagination" class="flex justify-center gap-2 flex-wrap">
+                <!-- Pagination will be inserted here -->
+            </div>
+    </section>
+
+        <!-- Category Sections (will be dynamically generated) -->
+        <div id="category-sections"></div>
+
+  </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+        const productsGrid = document.getElementById('products-grid');
+        const productsSkeleton = document.getElementById('products-skeleton');
+        const paginationContainer = document.getElementById('pagination');
+        const noResults = document.getElementById('no-results');
+        const categorySections = document.getElementById('category-sections');
+        const categoryNav = document.getElementById('category-nav');
+        const mobileNav = document.getElementById('mobile-nav');
+
+        let allProducts = [];
+        let allCategories = [];
+        let filteredProducts = [];
+        let currentPage = 1;
+        const itemsPerPage = 12;
+
+        // Get URL params
+  const urlParams = new URLSearchParams(window.location.search);
+  const keyword = urlParams.get('q');
+  const categoryId = urlParams.get('id');
+
+        // Update page title
+        const pageTitle = document.getElementById('page-title');
+        const pageSubtitle = document.getElementById('page-subtitle');
+
+  if (keyword) {
+            if (pageTitle) pageTitle.textContent = `"${keyword}"`;
+            if (pageSubtitle) pageSubtitle.textContent = 'Kết quả tìm kiếm phù hợp nhất';
+            // Update search input in header if it exists
+            const searchInput = document.getElementById('search-input');
+            if (searchInput) searchInput.value = keyword;
+  } else if (categoryId) {
+            if (pageTitle) pageTitle.textContent = 'Danh Mục Được Chọn';
+            if (pageSubtitle) pageSubtitle.textContent = 'Khám phá bộ sưu tập được chọn lọc';
+        }
+
+        // Scroll to section
+        window.scrollToSection = (sectionId) => {
+            const element = document.getElementById(sectionId);
+            if (element) {
+                element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        };
+
+        // Mobile nav
+        mobileNav.addEventListener('change', (e) => {
+            const value = e.target.value;
+            if (value === '/') {
+                window.location.href = '/';
+            } else if (value.startsWith('#')) {
+                scrollToSection(value.substring(1));
+            } else if (value) {
+                window.location.href = `/products?id=${value}`;
+            }
+        });
+
+        // Fetch categories
+        async function fetchCategories() {
+            try {
+                const res = await fetch('http://localhost:3001/api/danhmucs');
+                const categories = await res.json();
+                allCategories = categories;
+                renderCategoryNav(categories);
+            } catch (err) {
+                console.error('Error fetching categories:', err);
+            }
+        }
+
+        // Render category navigation
+        function renderCategoryNav(categories) {
+            const categoryButtons = categories.map(cat => `
+                <button 
+                    onclick="window.location.href='/products?id=${cat._id}'"
+                    class="px-6 py-3 ${categoryId === cat._id ? 'bg-gradient-to-r from-orange-500 to-yellow-500 dark:bg-yellow-500 text-white dark:text-black shadow-lg' : 'bg-slate-100 dark:bg-neutral-900 hover:bg-gradient-to-r hover:from-orange-500 hover:to-yellow-500 dark:hover:bg-yellow-500 text-slate-900 dark:text-white hover:text-white dark:hover:text-black'} font-medium rounded-xl border-2 border-orange-500/50 dark:border-yellow-500/50 hover:border-orange-500 dark:hover:border-yellow-500 transition-all"
+                >
+                    ${cat.tenDM}
+                </button>
+            `).join('');
+
+            if (categoryNav) {
+                categoryNav.innerHTML += categoryButtons;
+            }
+
+            // Mobile dropdown
+            const mobileOptions = categories.map(cat => 
+                `<option value="${cat._id}" ${categoryId === cat._id ? 'selected' : ''}>${cat.tenDM}</option>`
+            ).join('');
+            if (mobileNav) {
+                mobileNav.innerHTML += mobileOptions;
+            }
+        }
+
+        // Determine API endpoint
+        let apiUrl = 'http://localhost:3001/api/public/sanphams';
+        if (keyword) {
+            apiUrl = `http://localhost:3001/api/public/sanphams/search?q=${encodeURIComponent(keyword)}`;
+        } else if (categoryId) {
+            apiUrl = `http://localhost:3001/api/sanphams/danhmuc/${categoryId}`;
+        }
+
+        // Fetch products
+        async function fetchProducts() {
+            showSkeleton();
+            
+            try {
+                console.log('🔍 Fetching products from:', apiUrl);
+                const res = await fetch(apiUrl, {
+                    headers: {
+                        'Cache-Control': 'no-cache'
+                    }
+                });
+                
+                if (!res.ok) {
+                    throw new Error(`HTTP error! status: ${res.status}`);
+                }
+                
+                const products = await res.json();
+                console.log('✅ Products received:', products.length, 'items');
+                
+                // Kiểm tra nếu là mảng
+                if (!Array.isArray(products)) {
+                    console.error('❌ API response is not an array:', products);
+                    throw new Error('Dữ liệu sản phẩm không hợp lệ');
+                }
+                
+                allProducts = products;
+                filteredProducts = [...allProducts];
+                
+                console.log('📦 Total products:', allProducts.length);
+                console.log('🔍 Filtered products:', filteredProducts.length);
+                
+                hideSkeleton();
+                
+                // Kiểm tra nếu không có sản phẩm và đang tìm kiếm
+                if (keyword && filteredProducts.length === 0) {
+                    productsGrid.classList.add('hidden');
+                    noResults.classList.remove('hidden');
+                    const noResultsTitle = noResults.querySelector('h3');
+                    const noResultsText = noResults.querySelector('p');
+                    if (noResultsTitle) noResultsTitle.textContent = `Không tìm thấy sản phẩm cho "${keyword}"`;
+                    if (noResultsText) noResultsText.textContent = 'Hãy thử tìm kiếm với từ khóa khác hoặc xem tất cả sản phẩm';
+                } else {
+                renderProducts();
+                renderPagination();
+                }
+                
+                // Render category sections if on main products page
+                if (!keyword && !categoryId) {
+                    renderCategorySections();
+                }
+            } catch (err) {
+                console.error('❌ Lỗi tải sản phẩm:', err);
+                hideSkeleton();
+                productsGrid.classList.add('hidden');
+                noResults.classList.remove('hidden');
+                const noResultsTitle = noResults.querySelector('h3');
+                const noResultsText = noResults.querySelector('p');
+                if (noResultsTitle) noResultsTitle.textContent = 'Không thể tải sản phẩm';
+                if (noResultsText) noResultsText.textContent = 'Vui lòng thử lại sau hoặc kiểm tra kết nối mạng';
+            }
+        }
+
+        // Render category sections
+        async function renderCategorySections() {
+            if (!allCategories.length) return;
+
+            for (const category of allCategories) {
+                try {
+                    const res = await fetch(`http://localhost:3001/api/sanphams/danhmuc/${category._id}`, {
+                        headers: {
+                            'Cache-Control': 'no-cache'
+                        }
+                    });
+                    const products = await res.json();
+                    
+                    if (products.length === 0) continue;
+
+                    const sectionHTML = `
+                        <section id="category-${category._id}" class="py-20 border-t border-slate-200 dark:border-neutral-800">
+                            <div class="text-center mb-12">
+                                <div class="inline-block px-4 py-2 rounded-full bg-slate-200 dark:bg-neutral-800 text-slate-700 dark:text-neutral-300 text-sm font-semibold mb-4">
+                                    <i class="fas fa-tag mr-2"></i>
+                                    ${category.tenDM}
+                                </div>
+                                <h2 class="text-4xl md:text-5xl font-extrabold mb-4 text-slate-900 dark:text-white">
+                                    <span class="bg-gradient-to-r from-orange-500 to-yellow-500 dark:from-yellow-400 dark:to-yellow-200 bg-clip-text text-transparent">${category.tenDM}</span>
+                                </h2>
+                                <p class="text-slate-600 dark:text-neutral-400 max-w-2xl mx-auto text-lg">
+                                    Khám phá bộ sưu tập ${category.tenDM.toLowerCase()}
+                                </p>
+          </div>
+                            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6" id="category-grid-${category._id}">
+                                <!-- Products will be loaded here -->
+          </div>
+                            ${products.length > 8 ? `
+                                <div class="text-center mt-8">
+                                    <a href="/products?id=${category._id}" class="inline-flex items-center gap-2 px-8 py-3 bg-gradient-to-r from-orange-500 to-yellow-500 dark:bg-yellow-500 text-white dark:text-black font-bold rounded-xl transition-all shadow-lg hover:shadow-xl hover:-translate-y-1">
+                                        Xem tất cả ${category.tenDM}
+                                        <i class="fas fa-arrow-right"></i>
+                                    </a>
+                                </div>
+                            ` : ''}
+                        </section>
+                    `;
+
+                    categorySections.innerHTML += sectionHTML;
+                    
+                    // Render products for this category async
+                    const categoryGrid = document.getElementById(`category-grid-${category._id}`);
+                    if (categoryGrid) {
+                        categoryGrid.innerHTML = '';
+                        for (const product of products.slice(0, 8)) {
+                            const cardHTML = await renderProductCard(product);
+                            categoryGrid.innerHTML += cardHTML;
+                        }
+                    }
+                } catch (err) {
+                    console.error(`Error loading category ${category.tenDM}:`, err);
+                }
+            }
+        }
+
+        // Render product card - async để load rating và sold count
+        async function renderProductCard(product) {
+            const discount = product.giaGoc > product.giaGiam ? Math.round(((product.giaGoc - product.giaGiam) / product.giaGoc) * 100) : 0;
+            
+            // Lấy rating và số đánh giá từ API
+            let avgRating = 0;
+            let reviewCount = 0;
+            let soldCount = 0;
+            
+            try {
+                // Lấy reviews - chỉ cần page 1 để lấy totalReviews, sau đó tính avgRating từ tất cả reviews
+                const reviewsRes = await fetch(`http://localhost:3010/api/reviews/sanpham/${product._id}?page=1&limit=100`);
+                if (reviewsRes.ok) {
+                    const reviewsData = await reviewsRes.json();
+                    reviewCount = reviewsData.totalReviews || 0;
+                    
+                    if (reviewCount > 0 && reviewsData.reviews && reviewsData.reviews.length > 0) {
+                        // Tính avgRating từ tất cả reviews trong response
+                        const reviews = reviewsData.reviews;
+                        const totalRating = reviews.reduce((sum, r) => sum + Number(r.diemSo || 0), 0);
+                        avgRating = totalRating / reviews.length; // Tính từ số reviews thực tế đã load
+                    }
+                }
+            } catch (err) {
+                console.log('Lỗi khi lấy reviews cho sản phẩm:', product._id, err);
+            }
+            
+            try {
+                // Lấy số lượt đã bán
+                const encodedProductName = encodeURIComponent(product.tenSP);
+                const soldRes = await fetch(`http://localhost:3006/api/orderitems/sold-count/${encodedProductName}`);
+                if (soldRes.ok) {
+                    const soldData = await soldRes.json();
+                    soldCount = soldData.soldCount || 0;
+                }
+            } catch (err) {
+                console.log('Lỗi khi lấy số lượt đã bán cho sản phẩm:', product._id, err);
+            }
+            
+            // Hiển thị sao dựa trên rating thực tế
+            const fullStars = Math.floor(avgRating);
+            const hasHalfStar = avgRating % 1 >= 0.5;
+            const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+            
+            let starsHTML = '';
+            for (let i = 0; i < fullStars; i++) {
+                starsHTML += '<i class="fas fa-star text-yellow-500 text-sm"></i>';
+            }
+            if (hasHalfStar) {
+                starsHTML += '<i class="fas fa-star-half-alt text-yellow-500 text-sm"></i>';
+            }
+            for (let i = 0; i < emptyStars; i++) {
+                starsHTML += '<i class="far fa-star text-slate-300 dark:text-neutral-600 text-sm"></i>';
+            }
+            
+            // Nếu chưa có đánh giá, hiển thị 5 sao trống
+            if (reviewCount === 0) {
+                starsHTML = '<i class="far fa-star text-slate-300 dark:text-neutral-600 text-sm"></i>'.repeat(5);
+                avgRating = 0;
+            }
+
+            return `
+                <div class="group bg-white dark:bg-neutral-900 border border-slate-200 dark:border-neutral-800 rounded-xl overflow-hidden shadow-md hover:shadow-2xl hover:shadow-orange-500/10 dark:hover:shadow-yellow-500/10 transition-all duration-300 hover:-translate-y-2 hover:border-orange-500 dark:hover:border-yellow-500/50 h-full flex flex-col">
+                    ${discount > 0 ? `
+                        <div class="absolute top-3 left-3 z-10 bg-gradient-to-r from-orange-500 to-yellow-500 dark:bg-yellow-500 text-white dark:text-black px-3 py-1 rounded-lg text-xs font-black shadow-lg">
+                            -${discount}%
+                        </div>
+                    ` : ''}
+
+                    <a href="/products/detail/${product._id}" class="relative block">
+                        <div class="aspect-[4/3] overflow-hidden bg-slate-50 dark:bg-neutral-950 p-3">
+                            <img 
+                                src="${product.hinhAnh || '/images/default-product.jpg'}" 
+                                alt="${product.tenSP}"
+                                class="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300"
+                                onerror="this.src='/images/default-product.jpg'"
+                            >
+                        </div>
+                    </a>
+
+                    <div class="p-4 flex flex-col grow">
+                        <a href="/products/detail/${product._id}" class="block mb-2">
+                            <h3 class="font-semibold text-slate-900 dark:text-white text-lg line-clamp-2 group-hover:text-orange-500 dark:group-hover:text-yellow-400 transition-colors">
+                                ${product.tenSP}
+                            </h3>
+                        </a>
+
+                        <div class="flex items-center gap-1 mb-3">
+                            ${starsHTML}
+                            <span class="text-slate-600 dark:text-neutral-400 text-sm ml-2">(${reviewCount > 0 ? avgRating.toFixed(1) : '0.0'})</span>
+                            ${reviewCount > 0 ? `<span class="text-slate-500 dark:text-neutral-500 text-xs ml-1">${reviewCount} đánh giá</span>` : ''}
+                        </div>
+                        
+                        ${soldCount > 0 ? `
+                            <div class="text-xs text-slate-500 dark:text-neutral-400 mb-2">
+                                Đã bán: <span class="font-semibold text-orange-600 dark:text-yellow-500">${soldCount.toLocaleString('vi-VN')}</span>
+                            </div>
+                        ` : ''}
+
+                        <div class="mb-4">
+                            <div class="text-xl font-bold bg-gradient-to-r from-orange-500 to-yellow-500 dark:from-yellow-400 dark:to-yellow-200 bg-clip-text text-transparent">
+                                ${product.giaGiam.toLocaleString('vi-VN')}đ
+                            </div>
+                            ${product.giaGoc > product.giaGiam ? `
+                                <div class="text-sm text-slate-400 dark:text-neutral-500 line-through">
+                                    ${product.giaGoc.toLocaleString('vi-VN')}đ
+                                </div>
+                            ` : ''}
+                        </div>
+
+                        <div class="mb-4 p-3 bg-orange-50 dark:bg-yellow-500/5 rounded-lg border border-orange-200 dark:border-yellow-500/20">
+                            <p class="text-slate-600 dark:text-neutral-300 text-sm italic line-clamp-2">
+                                "Sản phẩm tuyệt vời! Chất lượng xuất sắc, đáng đồng tiền bát gạo!"
+                            </p>
+                            <p class="text-orange-600 dark:text-yellow-400 text-xs mt-2 font-semibold">⭐ Khách hàng đã mua</p>
+                        </div>
+
+                        <button 
+                            onclick='addToCart({productId: "${product._id}", name: "${product.tenSP}", price: ${product.giaGiam}, image: "${product.hinhAnh}", quantity: 1}, this)'
+                            class="w-full bg-gradient-to-r from-orange-500 to-yellow-500 dark:bg-yellow-500 hover:from-orange-600 hover:to-yellow-600 text-white dark:text-black font-bold py-3 rounded-xl transition-all duration-300 flex items-center justify-center gap-2 shadow-lg hover:shadow-orange-500/50 dark:hover:shadow-yellow-500/50 mt-auto"
+                        >
+                            <i class="fas fa-shopping-cart"></i>
+                            <span>Thêm vào giỏ</span>
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Show skeleton
+        function showSkeleton() {
+            productsSkeleton.innerHTML = Array(8).fill(0).map(() => `
+                <div class="bg-white dark:bg-neutral-900 rounded-xl overflow-hidden shadow-lg animate-pulse border border-slate-200 dark:border-neutral-800">
+                    <div class="aspect-[4/3] bg-slate-200 dark:bg-neutral-800"></div>
+                    <div class="p-4 space-y-3">
+                        <div class="h-4 bg-slate-200 dark:bg-neutral-800 rounded"></div>
+                        <div class="h-4 bg-slate-200 dark:bg-neutral-800 rounded w-3/4"></div>
+                        <div class="h-6 bg-orange-200 dark:bg-yellow-500/30 rounded w-1/2"></div>
+                    </div>
+                </div>
+            `).join('');
+            productsSkeleton.classList.remove('hidden');
+            productsGrid.classList.add('hidden');
+        }
+
+        function hideSkeleton() {
+            productsSkeleton.classList.add('hidden');
+            productsGrid.classList.remove('hidden');
+        }
+
+        // Update cart count
+        const updateCartCount = (count) => {
+            document.querySelectorAll('.cart-count').forEach(el => {
+                el.textContent = String(count);
+            });
+        };
+
+        // Add to cart function
+        window.addToCart = async ({ productId, name, price, image, quantity }, buttonEl) => {
+            try {
+                if (buttonEl) {
+                    buttonEl.disabled = true;
+                    buttonEl.classList.add('opacity-70');
+                }
+
+                const userInfo = JSON.parse(localStorage.getItem('userInfo') || 'null');
+                if (!userInfo || !userInfo.id) {
+                    alert('Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng');
+                    if (buttonEl) {
+                        buttonEl.disabled = false;
+                        buttonEl.classList.remove('opacity-70');
+                    }
+                    window.location.href = '/login';
+                    return;
+                }
+
+                const maKH = userInfo.id;
+                const variantRes = await fetch(`http://localhost:3001/api/phienban?maSanPham=${productId}`);
+                if (!variantRes.ok) throw new Error('Không thể lấy phiên bản sản phẩm');
+                
+                const variantData = await variantRes.json();
+                if (!variantData || !Array.isArray(variantData) || variantData.length === 0) {
+                    alert('Sản phẩm này chưa có phiên bản. Vui lòng liên hệ người bán.');
+                    if (buttonEl) {
+                        buttonEl.disabled = false;
+                        buttonEl.classList.remove('opacity-70');
+                    }
+                    return;
+                }
+
+                const defaultVariant = variantData.find(v => v.mausac === null && v.kichco === null) || variantData[0];
+                if (!defaultVariant || !defaultVariant._id) throw new Error('Phiên bản sản phẩm không hợp lệ');
+                
+                const variantId = defaultVariant._id;
+                const cartRes = await fetch(`http://localhost:3003/api/cart/${maKH}`);
+                if (!cartRes.ok) throw new Error('Không thể lấy thông tin giỏ hàng');
+                const cartData = await cartRes.json();
+                const cartId = cartData._id;
+
+                const cartDetailData = { maGH: cartId, maPB: variantId, soluong: quantity };
+                const detailCartRes = await fetch('http://localhost:3003/api/detailcart/', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(cartDetailData),
+                });
+
+                if (detailCartRes.ok) {
+                    const detailRes = await fetch(`http://localhost:3003/api/detailcart/${cartId}`);
+                    if (detailRes.ok) {
+                        const items = await detailRes.json();
+                        updateCartCount(items.length);
+                    }
+
+                    if (buttonEl) {
+                        const original = buttonEl.innerHTML;
+                        buttonEl.innerHTML = '<i class="fas fa-check"></i> Đã thêm';
+                        buttonEl.classList.add('bg-green-600');
+                        buttonEl.classList.remove('bg-yellow-500');
+                        
+                        setTimeout(() => {
+                            buttonEl.innerHTML = original;
+                            buttonEl.classList.remove('bg-green-600');
+                            buttonEl.classList.add('bg-yellow-500');
+                            buttonEl.disabled = false;
+                            buttonEl.classList.remove('opacity-70');
+                        }, 1500);
+                    }
+                } else {
+                    const errorData = await detailCartRes.json();
+                    throw new Error(errorData.message || 'Không thêm được vào giỏ hàng');
+                }
+            } catch (err) {
+                console.error('Add to cart error:', err);
+                alert(`Có lỗi khi thêm vào giỏ: ${err.message}`);
+                if (buttonEl) {
+                    buttonEl.disabled = false;
+                    buttonEl.classList.remove('opacity-70');
+                }
+            }
+        };
+
+        // Render products
+        async function renderProducts() {
+            const start = (currentPage - 1) * itemsPerPage;
+            const end = start + itemsPerPage;
+            const productsToShow = filteredProducts.slice(start, end);
+
+            if (productsToShow.length === 0) {
+                productsGrid.classList.add('hidden');
+                noResults.classList.remove('hidden');
+                return;
+            }
+
+            productsGrid.classList.remove('hidden');
+            noResults.classList.add('hidden');
+
+            // Render products async để load rating và sold count
+            productsGrid.innerHTML = '';
+            for (const product of productsToShow) {
+                const cardHTML = await renderProductCard(product);
+                productsGrid.innerHTML += cardHTML;
+            }
+        }
+
+        // Render pagination
+        function renderPagination() {
+            const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
+            
+            if (totalPages <= 1) {
+                paginationContainer.innerHTML = '';
+                return;
+            }
+
+            const buttons = [];
+            
+            buttons.push(`
+                <button 
+                    class="px-4 py-2 rounded-lg bg-slate-100 dark:bg-neutral-900 text-slate-900 dark:text-white border-2 border-slate-200 dark:border-neutral-800 hover:border-orange-500 dark:hover:border-yellow-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                    ${currentPage === 1 ? 'disabled' : ''}
+                    onclick="changePage(${currentPage - 1})"
+                >
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+            `);
+
+            for (let i = 1; i <= totalPages; i++) {
+                if (i === 1 || i === totalPages || (i >= currentPage - 1 && i <= currentPage + 1)) {
+                    buttons.push(`
+                        <button 
+                            class="px-4 py-2 rounded-lg ${i === currentPage ? 'bg-gradient-to-r from-orange-500 to-yellow-500 dark:bg-yellow-500 text-white dark:text-black shadow-lg' : 'bg-slate-100 dark:bg-neutral-900 text-slate-900 dark:text-white border-2 border-slate-200 dark:border-neutral-800 hover:border-orange-500 dark:hover:border-yellow-500'} font-semibold transition-all"
+                            onclick="changePage(${i})"
+                        >
+                            ${i}
+                        </button>
+                    `);
+                } else if (i === currentPage - 2 || i === currentPage + 2) {
+                    buttons.push(`<span class="px-2 text-slate-500 dark:text-neutral-500">...</span>`);
+                }
+            }
+
+            buttons.push(`
+                <button 
+                    class="px-4 py-2 rounded-lg bg-slate-100 dark:bg-neutral-900 text-slate-900 dark:text-white border-2 border-slate-200 dark:border-neutral-800 hover:border-orange-500 dark:hover:border-yellow-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                    ${currentPage === totalPages ? 'disabled' : ''}
+                    onclick="changePage(${currentPage + 1})"
+                >
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            `);
+
+            paginationContainer.innerHTML = buttons.join('');
+        }
+
+        // Change page
+        window.changePage = (page) => {
+            currentPage = page;
+            renderProducts();
+            renderPagination();
+            scrollToSection('all-products');
+        };
+
+        // Filter state
+        let selectedPriceRange = 'all';
+        let selectedRating = 0;
+
+        // Apply all filters
+        function applyFilters() {
+            filteredProducts = [...allProducts];
+
+            // Price filter
+            if (selectedPriceRange !== 'all') {
+                const [min, max] = selectedPriceRange.split('-').map(Number);
+                filteredProducts = filteredProducts.filter(p => p.giaGiam >= min && p.giaGiam <= max);
+            }
+
+            // Rating filter
+            if (selectedRating > 0) {
+                filteredProducts = filteredProducts.filter(p => (p.rating || 5) >= selectedRating);
+            }
+
+            // Apply current sort
+            const sortType = document.getElementById('sort-select').value;
+            switch(sortType) {
+                case 'price-asc':
+                    filteredProducts.sort((a, b) => a.giaGiam - b.giaGiam);
+                    break;
+                case 'price-desc':
+                    filteredProducts.sort((a, b) => b.giaGiam - a.giaGiam);
+                    break;
+                case 'name-asc':
+                    filteredProducts.sort((a, b) => a.tenSP.localeCompare(b.tenSP));
+                    break;
+                case 'name-desc':
+                    filteredProducts.sort((a, b) => b.tenSP.localeCompare(a.tenSP));
+                    break;
+                case 'newest':
+                    filteredProducts.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+                    break;
+            }
+
+            currentPage = 1;
+            renderProducts();
+            renderPagination();
+        }
+
+        // Price filter
+        const priceFilter = document.getElementById('price-filter');
+        if (priceFilter) {
+            priceFilter.addEventListener('change', (e) => {
+                selectedPriceRange = e.target.value;
+                applyFilters();
+            });
+        }
+
+        // Rating filter
+        const ratingFilter = document.getElementById('rating-filter');
+        if (ratingFilter) {
+            ratingFilter.addEventListener('change', (e) => {
+                selectedRating = parseInt(e.target.value);
+                applyFilters();
+            });
+        }
+
+        // Sort
+        const sortSelect = document.getElementById('sort-select');
+        if (sortSelect) {
+            sortSelect.addEventListener('change', () => {
+                applyFilters();
+            });
+        }
+
+        // Clear all filters
+        const clearAllFilters = document.getElementById('clear-all-filters');
+        if (clearAllFilters) {
+            clearAllFilters.addEventListener('click', () => {
+                selectedPriceRange = 'all';
+                selectedRating = 0;
+                
+                if (priceFilter) priceFilter.value = 'all';
+                if (ratingFilter) ratingFilter.value = '0';
+                if (sortSelect) sortSelect.value = 'default';
+                
+                filteredProducts = [...allProducts];
+                currentPage = 1;
+                renderProducts();
+                renderPagination();
+            });
+        }
+
+        // Initialize
+        fetchCategories();
+        fetchProducts();
+});
+</script>
+
+</html>

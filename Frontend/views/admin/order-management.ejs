@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý đơn hàng - MegaStore VN</title>
+    <meta name="description" content="Quản lý đơn hàng trong hệ thống MegaStore VN - Admin Panel">
+    
+    <!-- Tailwind CSS (CDN) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        if (window.tailwind) { 
+            tailwind.config = { 
+                darkMode: 'class',
+                theme: {
+                    extend: {
+                        animation: {
+                            'fade-in': 'fadeIn 0.5s ease-in',
+                            'slide-up': 'slideUp 0.6s ease-out',
+                            'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        },
+                        keyframes: {
+                            fadeIn: {
+                                '0%': { opacity: '0' },
+                                '100%': { opacity: '1' }
+                            },
+                            slideUp: {
+                                '0%': { transform: 'translateY(20px)', opacity: '0' },
+                                '100%': { transform: 'translateY(0)', opacity: '1' }
+                            }
+                        }
+                    }
+                }
+            } 
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        /* Custom styles to override any conflicting CSS */
+        .admin-layout {
+            display: flex;
+            min-height: 100vh;
+        }
+        .main-content {
+            flex: 1;
+            margin-left: 16rem; /* 64 * 0.25rem = 16rem */
+            margin-top: 0;
+            padding-top: 0;
+        }
+        
+        /* Override header styles for admin pages */
+        .seller-header {
+            position: relative !important;
+            z-index: 10 !important;
+            margin-bottom: 0 !important;
+        }
+        
+        /* Ensure sidebar is positioned correctly */
+        nav.sidebar {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            height: 100vh !important;
+            z-index: 30 !important;
+        }
+        
+        @media (max-width: 768px) {
+            .main-content {
+                margin-left: 0;
+                padding-top: 1rem;
+            }
+            nav.sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+            nav.sidebar.active {
+                transform: translateX(0);
+            }
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-slate-50 via-white to-slate-50 dark:from-neutral-900 dark:via-black dark:to-neutral-900 min-h-screen transition-colors duration-300" style="font-family: 'Inter', sans-serif;">
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <%- include('./../elements/navbaradmin') %>
+        
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Admin Header -->
+            <div class="bg-white dark:bg-neutral-900 border-b border-slate-200 dark:border-neutral-800 px-6 py-4">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h1 class="text-2xl font-bold text-slate-900 dark:text-white">Quản lý đơn hàng</h1>
+                        <p class="text-slate-600 dark:text-neutral-400">Theo dõi và quản lý tất cả đơn hàng trong hệ thống</p>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <div class="relative">
+                            <button class="p-2 text-slate-600 dark:text-neutral-400 hover:text-orange-500 dark:hover:text-yellow-400 transition-colors">
+                                <i class="fas fa-bell text-lg"></i>
+                                <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">3</span>
+                            </button>
+                        </div>
+                        <div class="relative group">
+                            <button class="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-orange-500 to-yellow-500 dark:from-yellow-500 dark:to-yellow-400 text-white dark:text-black rounded-xl font-medium hover:shadow-lg transition-all">
+                                <i class="fas fa-user-circle"></i>
+                                <span id="admin-username">Admin</span>
+                                <i class="fas fa-chevron-down text-sm"></i>
+                            </button>
+                            <div class="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-neutral-800 rounded-xl shadow-lg border border-slate-200 dark:border-neutral-700 py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                                <a href="/" class="flex items-center gap-3 px-4 py-2 text-slate-700 dark:text-neutral-300 hover:bg-slate-50 dark:hover:bg-neutral-700 transition-colors">
+                                    <i class="fas fa-home"></i>
+                                    <span>Quay lại trang chính</span>
+                                </a>
+                                <a href="#" onclick="logout()" class="flex items-center gap-3 px-4 py-2 text-slate-700 dark:text-neutral-300 hover:bg-slate-50 dark:hover:bg-neutral-700 transition-colors">
+                                    <i class="fas fa-sign-out-alt"></i>
+                                    <span>Đăng xuất</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Dashboard Content -->
+            <div class="p-6 space-y-8">
+                <!-- Stats Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                    <div class="bg-white dark:bg-neutral-900 rounded-2xl shadow-lg shadow-orange-500/5 dark:shadow-yellow-500/5 border border-slate-200 dark:border-neutral-800 p-6">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-orange-500 to-yellow-500 dark:from-yellow-500 dark:to-yellow-400 flex items-center justify-center">
+                                <i class="fas fa-shopping-cart text-white dark:text-black text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-2xl font-black text-slate-900 dark:text-white" id="totalOrders">0</h3>
+                                <p class="text-slate-600 dark:text-neutral-400 font-medium">Tổng đơn hàng</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white dark:bg-neutral-900 rounded-2xl shadow-lg shadow-orange-500/5 dark:shadow-yellow-500/5 border border-slate-200 dark:border-neutral-800 p-6">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-yellow-500 to-orange-500 flex items-center justify-center">
+                                <i class="fas fa-clock text-white text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-2xl font-black text-slate-900 dark:text-white" id="pendingOrders">0</h3>
+                                <p class="text-slate-600 dark:text-neutral-400 font-medium">Chờ xử lý</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white dark:bg-neutral-900 rounded-2xl shadow-lg shadow-orange-500/5 dark:shadow-yellow-500/5 border border-slate-200 dark:border-neutral-800 p-6">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center">
+                                <i class="fas fa-check-circle text-white text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-2xl font-black text-slate-900 dark:text-white" id="completedOrders">0</h3>
+                                <p class="text-slate-600 dark:text-neutral-400 font-medium">Hoàn thành</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white dark:bg-neutral-900 rounded-2xl shadow-lg shadow-orange-500/5 dark:shadow-yellow-500/5 border border-slate-200 dark:border-neutral-800 p-6">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-red-500 to-pink-500 flex items-center justify-center">
+                                <i class="fas fa-times-circle text-white text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-2xl font-black text-slate-900 dark:text-white" id="cancelledOrders">0</h3>
+                                <p class="text-slate-600 dark:text-neutral-400 font-medium">Đã hủy</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Filter Bar -->
+                <div class="bg-white dark:bg-neutral-900 rounded-2xl shadow-lg shadow-orange-500/5 dark:shadow-yellow-500/5 border border-slate-200 dark:border-neutral-800 p-6">
+                    <div class="flex flex-wrap items-center gap-4">
+                        <div class="flex-1 min-w-64">
+                            <div class="relative">
+                                <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 dark:text-neutral-500"></i>
+                                <input type="text" placeholder="Tìm kiếm đơn hàng..." class="w-full pl-10 pr-4 py-2 border border-slate-300 dark:border-neutral-700 rounded-xl bg-slate-50 dark:bg-neutral-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-orange-500 dark:focus:ring-yellow-500 focus:border-transparent" id="searchInput">
+                            </div>
+                        </div>
+                        
+                        <select class="px-4 py-2 border border-slate-300 dark:border-neutral-700 rounded-xl bg-slate-50 dark:bg-neutral-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-orange-500 dark:focus:ring-yellow-500 focus:border-transparent" id="statusFilter">
+                            <option value="">Tất cả trạng thái</option>
+                            <option value="pending">Chờ xác nhận</option>
+                            <option value="processing">Đang xử lý</option>
+                            <option value="shipping">Đang giao hàng</option>
+                            <option value="completed">Hoàn thành</option>
+                            <option value="cancelled">Đã hủy</option>
+                        </select>
+                        
+                        <input type="date" class="px-4 py-2 border border-slate-300 dark:border-neutral-700 rounded-xl bg-slate-50 dark:bg-neutral-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-orange-500 dark:focus:ring-yellow-500 focus:border-transparent" id="fromDate" placeholder="Từ ngày">
+                        
+                        <input type="date" class="px-4 py-2 border border-slate-300 dark:border-neutral-700 rounded-xl bg-slate-50 dark:bg-neutral-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-orange-500 dark:focus:ring-yellow-500 focus:border-transparent" id="toDate" placeholder="Đến ngày">
+                        
+                        <button class="px-6 py-2 bg-gradient-to-r from-orange-500 to-yellow-500 dark:from-yellow-500 dark:to-yellow-400 text-white dark:text-black font-bold rounded-xl shadow-lg hover:shadow-xl transition-all">
+                            <i class="fas fa-filter mr-2"></i>
+                            Lọc
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Orders Table -->
+                <div class="bg-white dark:bg-neutral-900 rounded-2xl shadow-lg shadow-orange-500/5 dark:shadow-yellow-500/5 border border-slate-200 dark:border-neutral-800 overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead class="bg-slate-50 dark:bg-neutral-800">
+                                <tr>
+                                    <th class="text-left py-4 px-6 font-semibold text-slate-600 dark:text-neutral-400">Mã đơn hàng</th>
+                                    <th class="text-left py-4 px-6 font-semibold text-slate-600 dark:text-neutral-400">Khách hàng</th>
+                                    <th class="text-left py-4 px-6 font-semibold text-slate-600 dark:text-neutral-400">Ngày đặt</th>
+                                    <th class="text-left py-4 px-6 font-semibold text-slate-600 dark:text-neutral-400">Tổng tiền</th>
+                                    <th class="text-left py-4 px-6 font-semibold text-slate-600 dark:text-neutral-400">Phương thức</th>
+                                    <th class="text-left py-4 px-6 font-semibold text-slate-600 dark:text-neutral-400">Trạng thái</th>
+                                    <th class="text-left py-4 px-6 font-semibold text-slate-600 dark:text-neutral-400">Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody id="orders-tbody" class="divide-y divide-slate-200 dark:divide-neutral-800">
+                                <!-- Dữ liệu đơn hàng sẽ được load ở đây -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Pagination -->
+                <div class="flex items-center justify-between">
+                    <div class="text-sm text-slate-600 dark:text-neutral-400">
+                        Hiển thị <span id="showingStart">1</span> - <span id="showingEnd">10</span> của <span id="totalCount">0</span> đơn hàng
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button class="px-3 py-2 border border-slate-300 dark:border-neutral-700 rounded-lg bg-white dark:bg-neutral-800 text-slate-700 dark:text-neutral-300 hover:bg-slate-50 dark:hover:bg-neutral-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed" id="prevPage" disabled>
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <div id="pageNumbers" class="flex items-center gap-1">
+                            <!-- Page numbers will be added here dynamically -->
+                        </div>
+                        <button class="px-3 py-2 border border-slate-300 dark:border-neutral-700 rounded-lg bg-white dark:bg-neutral-800 text-slate-700 dark:text-neutral-300 hover:bg-slate-50 dark:hover:bg-neutral-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed" id="nextPage">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Invoice Modal -->
+    <div id="invoice-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center px-4 hidden z-50">
+        <div class="bg-white dark:bg-neutral-900 rounded-2xl shadow-2xl w-full max-w-2xl border border-slate-200 dark:border-neutral-700">
+            <div class="flex items-center justify-between px-6 py-4 border-b border-slate-200 dark:border-neutral-800">
+                <div>
+                    <h2 class="text-xl font-bold text-slate-900 dark:text-white">Quét hóa đơn</h2>
+                    <p class="text-sm text-slate-500 dark:text-neutral-400">Đơn hàng: <span id="invoice-order-label"></span></p>
+                </div>
+                <button onclick="closeInvoiceModal()" class="p-2 rounded-full text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="px-6 py-5 space-y-5">
+                <div class="space-y-3">
+                    <label class="block text-sm font-semibold text-slate-700 dark:text-neutral-300">Chọn ảnh hóa đơn</label>
+                    <div class="border-2 border-dashed border-slate-300 dark:border-neutral-600 rounded-xl p-4 text-center">
+                        <input type="file" id="invoice-file" accept="image/*" class="hidden">
+                        <button type="button" onclick="document.getElementById('invoice-file').click()" class="px-4 py-2 bg-purple-50 dark:bg-purple-900/30 text-purple-600 dark:text-purple-300 rounded-lg hover:bg-purple-100 dark:hover:bg-purple-900/50 transition-colors mb-2">
+                            <i class="fas fa-upload mr-2"></i>Chọn ảnh
+                        </button>
+                        <p class="text-xs text-slate-500 dark:text-neutral-400 mt-2" id="invoice-file-name">Chưa chọn file</p>
+                    </div>
+                    <div id="invoice-image-preview-container" class="hidden">
+                        <img id="invoice-image-preview" class="w-full max-h-48 object-contain rounded-lg border border-slate-200 dark:border-neutral-700" alt="Preview">
+                    </div>
+                    <p id="invoice-upload-error" class="text-sm text-red-500"></p>
+                    <button id="invoice-upload-btn" onclick="submitInvoiceUpload()" class="w-full px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-xl font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed">
+                        <i class="fas fa-magic mr-2"></i>Tải & quét hóa đơn
+                    </button>
+                </div>
+
+                <div class="border border-slate-200 dark:border-neutral-800 rounded-xl p-4 bg-slate-50 dark:bg-neutral-800/50 space-y-3">
+                    <div>
+                        <p class="text-sm uppercase tracking-wide text-slate-500 dark:text-neutral-400 font-semibold">Trạng thái xử lý</p>
+                        <p id="invoice-status" class="text-lg font-bold text-slate-900 dark:text-white">Chưa có dữ liệu</p>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <div>
+                            <p class="text-sm uppercase tracking-wide text-slate-500 dark:text-neutral-400 font-semibold mb-2">Thông tin trích xuất</p>
+                            <ul id="invoice-details" class="text-sm text-slate-700 dark:text-neutral-300 space-y-1">
+                                <li>• Chưa có dữ liệu OCR</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <p class="text-sm uppercase tracking-wide text-slate-500 dark:text-neutral-400 font-semibold mb-2">Ghi chú</p>
+                            <pre id="invoice-raw-text" class="text-xs whitespace-pre-wrap bg-white dark:bg-neutral-900 border border-slate-200 dark:border-neutral-800 rounded-lg p-2 h-32 overflow-y-auto">Chưa có nội dung</pre>
+                        </div>
+                    </div>
+                    <a id="invoice-image-link" href="#" target="_blank" class="inline-flex items-center gap-2 text-sm text-purple-600 dark:text-purple-300 hover:underline hidden">
+                        <i class="fas fa-external-link-alt"></i>
+                        Xem ảnh hóa đơn đã tải lên
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        const token = localStorage.getItem('authToken');
+        let currentPage = 1;
+        const ordersPerPage = 10;
+        let totalOrders = 0;
+        let allOrders = [];
+        let currentInvoiceOrderId = null;
+
+        const invoiceModal = document.getElementById('invoice-modal');
+        const invoiceOrderLabel = document.getElementById('invoice-order-label');
+        const invoiceStatusEl = document.getElementById('invoice-status');
+        const invoiceDetailsEl = document.getElementById('invoice-details');
+        const invoiceRawTextEl = document.getElementById('invoice-raw-text');
+        const invoiceFileInput = document.getElementById('invoice-file');
+        const invoiceUploadBtn = document.getElementById('invoice-upload-btn');
+        const invoiceUploadError = document.getElementById('invoice-upload-error');
+        const invoiceImageLink = document.getElementById('invoice-image-link');
+        const invoiceFileName = document.getElementById('invoice-file-name');
+        const invoiceImagePreview = document.getElementById('invoice-image-preview');
+        const invoiceImagePreviewContainer = document.getElementById('invoice-image-preview-container');
+
+        // Preview image before upload
+        if (invoiceFileInput) {
+            invoiceFileInput.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    if (invoiceFileName) invoiceFileName.textContent = file.name;
+                    const reader = new FileReader();
+                    reader.onload = (event) => {
+                        if (invoiceImagePreview) invoiceImagePreview.src = event.target.result;
+                        if (invoiceImagePreviewContainer) invoiceImagePreviewContainer.classList.remove('hidden');
+                    };
+                    reader.readAsDataURL(file);
+                } else {
+                    if (invoiceFileName) invoiceFileName.textContent = 'Chưa chọn file';
+                    if (invoiceImagePreviewContainer) invoiceImagePreviewContainer.classList.add('hidden');
+                }
+            });
+        }
+
+        if (!token) {
+            window.location.href = '/admin/login';
+        }
+
+        function logout() {
+            localStorage.removeItem('authToken');
+            localStorage.removeItem('userInfo');
+            localStorage.removeItem('hoTen');
+            window.location.href = '/';
+        }
+
+        // Update admin username
+        document.addEventListener('DOMContentLoaded', function() {
+            const userName = 'Admin';
+            try {
+                const userInfo = localStorage.getItem('userInfo');
+                if (userInfo) {
+                    const userObj = JSON.parse(userInfo);
+                    if (userObj.hoTen) userName = userObj.hoTen;
+                    else if (userObj.name) userName = userObj.name;
+                } else if (localStorage.getItem('hoTen')) {
+                    userName = localStorage.getItem('hoTen');
+                }
+            } catch(e) {}
+            const el = document.getElementById('admin-username');
+            if (el) el.textContent = userName;
+        });
+
+        // Format ngày tháng sang dd/mm/yyyy
+        function formatDate(dateStr) {
+            const d = new Date(dateStr);
+            const day = String(d.getDate()).padStart(2, '0');
+            const month = String(d.getMonth() + 1).padStart(2, '0');
+            const year = d.getFullYear();
+            return `${day}/${month}/${year}`;
+        }
+
+        // Format tiền VNĐ
+        function formatMoney(amount) {
+            return amount.toLocaleString('vi-VN') + ' VNĐ';
+        }
+
+        // Map trạng thái sang badge class và tên hiển thị
+        function getStatusBadge(status) {
+            switch (status.toLowerCase()) {
+                case 'chờ xác nhận':
+                case 'pending':
+                    return '<span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-400"><i class="fas fa-clock text-xs mr-2"></i>Chờ xác nhận</span>';
+                case 'đang xử lý':
+                case 'processing':
+                    return '<span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-400"><i class="fas fa-cog text-xs mr-2"></i>Đang xử lý</span>';
+                case 'đang giao hàng':
+                case 'shipping':
+                    return '<span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-400"><i class="fas fa-truck text-xs mr-2"></i>Đang giao hàng</span>';
+                case 'hoàn thành':
+                case 'completed':
+                    return '<span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-400"><i class="fas fa-check-circle text-xs mr-2"></i>Hoàn thành</span>';
+                case 'đã hủy':
+                case 'cancelled':
+                    return '<span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-400"><i class="fas fa-times-circle text-xs mr-2"></i>Đã hủy</span>';
+                default:
+                    return `<span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold bg-gray-100 dark:bg-gray-900/30 text-gray-800 dark:text-gray-400">${status}</span>`;
+            }
+        }
+
+        function updateStats(orders) {
+            const total = orders.length;
+            const pending = orders.filter(o => o.TrangThai.toLowerCase().includes('chờ') || o.TrangThai.toLowerCase().includes('pending')).length;
+            const completed = orders.filter(o => o.TrangThai.toLowerCase().includes('hoàn thành') || o.TrangThai.toLowerCase().includes('completed')).length;
+            const cancelled = orders.filter(o => o.TrangThai.toLowerCase().includes('hủy') || o.TrangThai.toLowerCase().includes('cancelled')).length;
+
+            document.getElementById('totalOrders').textContent = total;
+            document.getElementById('pendingOrders').textContent = pending;
+            document.getElementById('completedOrders').textContent = completed;
+            document.getElementById('cancelledOrders').textContent = cancelled;
+        }
+
+        function updatePagination(currentPage, totalPages) {
+            const pageNumbers = document.getElementById('pageNumbers');
+            const prevButton = document.getElementById('prevPage');
+            const nextButton = document.getElementById('nextPage');
+            
+            // Update prev/next buttons
+            prevButton.disabled = currentPage === 1;
+            nextButton.disabled = currentPage === totalPages;
+
+            // Generate page numbers
+            let pageNumbersHTML = '';
+            const maxVisiblePages = 5;
+            let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+            let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+
+            if (endPage - startPage + 1 < maxVisiblePages) {
+                startPage = Math.max(1, endPage - maxVisiblePages + 1);
+            }
+
+            for (let i = startPage; i <= endPage; i++) {
+                pageNumbersHTML += `
+                    <button class="px-3 py-2 border rounded-lg text-sm font-medium transition-colors ${
+                        i === currentPage 
+                            ? 'bg-orange-500 dark:bg-yellow-500 text-white dark:text-black border-orange-500 dark:border-yellow-500' 
+                            : 'border-slate-300 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-slate-700 dark:text-neutral-300 hover:bg-slate-50 dark:hover:bg-neutral-700'
+                    }" onclick="changePage(${i})">${i}</button>
+                `;
+            }
+
+            pageNumbers.innerHTML = pageNumbersHTML;
+        }
+
+        function updatePaginationInfo(currentPage, totalOrders) {
+            const start = (currentPage - 1) * ordersPerPage + 1;
+            const end = Math.min(currentPage * ordersPerPage, totalOrders);
+            
+            document.getElementById('showingStart').textContent = start;
+            document.getElementById('showingEnd').textContent = end;
+            document.getElementById('totalCount').textContent = totalOrders;
+        }
+
+        function changePage(page) {
+            currentPage = page;
+            displayOrders();
+        }
+
+        function displayOrders() {
+            const tbody = document.getElementById('orders-tbody');
+            const startIndex = (currentPage - 1) * ordersPerPage;
+            const endIndex = startIndex + ordersPerPage;
+            const ordersToShow = allOrders.slice(startIndex, endIndex);
+
+            if (!ordersToShow || ordersToShow.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7" class="py-12 text-center text-slate-500 dark:text-neutral-400">
+                            <i class="fas fa-shopping-cart text-4xl mb-4 block"></i>
+                            <p class="text-lg font-medium">Không có đơn hàng nào</p>
+                            <p class="text-sm">Hãy thử thay đổi bộ lọc để xem thêm kết quả</p>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            tbody.innerHTML = ordersToShow
+                .map((order) => {
+                    return `
+                    <tr class="hover:bg-slate-50 dark:hover:bg-neutral-800 transition-colors">
+                        <td class="py-4 px-6">
+                            <div class="font-mono font-semibold text-slate-900 dark:text-white">#${order._id.slice(-8)}</div>
+                        </td>
+                        <td class="py-4 px-6">
+                            <div>
+                                <div class="font-semibold text-slate-900 dark:text-white">${order.hoTenNguoiNhan || 'N/A'}</div>
+                                <div class="text-sm text-slate-500 dark:text-neutral-400">${order.email || ''}</div>
+                            </div>
+                        </td>
+                        <td class="py-4 px-6">
+                            <div class="text-slate-900 dark:text-white">${formatDate(order.NgayLap)}</div>
+                        </td>
+                        <td class="py-4 px-6">
+                            <div class="font-semibold text-slate-900 dark:text-white">${formatMoney(order.TongTien)}</div>
+                        </td>
+                        <td class="py-4 px-6">
+                            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-400">
+                                ${order.PhuongThucGiaoHang.toUpperCase()}
+                            </span>
+                        </td>
+                        <td class="py-4 px-6">
+                            ${getStatusBadge(order.TrangThai)}
+                        </td>
+                        <td class="py-4 px-6">
+                            <div class="flex items-center gap-2">
+                                <button class="p-2 text-slate-400 hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-colors" title="Xem chi tiết">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button class="p-2 text-slate-400 hover:text-orange-500 hover:bg-orange-50 dark:hover:bg-orange-900/20 rounded-lg transition-colors" title="Cập nhật trạng thái">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="p-2 text-slate-400 hover:text-green-500 hover:bg-green-50 dark:hover:bg-green-900/20 rounded-lg transition-colors" title="Tạo/Xem hóa đơn" onclick="generateInvoice('${order._id}')">
+                                    <i class="fas fa-print"></i>
+                                </button>
+                                <button class="p-2 text-slate-400 hover:text-purple-500 hover:bg-purple-50 dark:hover:bg-purple-900/20 rounded-lg transition-colors" title="Quét/Xem hóa đơn" onclick="openInvoiceModal('${order._id}')">
+                                    <i class="fas fa-file-invoice"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+                })
+                .join('');
+
+            // Update pagination
+            const totalPages = Math.ceil(allOrders.length / ordersPerPage);
+            updatePagination(currentPage, totalPages);
+            updatePaginationInfo(currentPage, allOrders.length);
+        }
+
+        async function loadOrders() {
+            try {
+                const response = await fetch('http://localhost:3006/api/orders/admin/all', {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+                if (!response.ok) throw new Error('Không thể tải dữ liệu đơn hàng');
+
+                allOrders = await response.json();
+                totalOrders = allOrders.length;
+                
+                // Update stats
+                updateStats(allOrders);
+                
+                displayOrders();
+            } catch (error) {
+                console.error(error);
+                alert('Lỗi khi tải dữ liệu đơn hàng!');
+            }
+        }
+
+        // Event listeners for prev/next buttons
+        document.getElementById('prevPage').addEventListener('click', () => {
+            if (currentPage > 1) {
+                changePage(currentPage - 1);
+            }
+        });
+
+        document.getElementById('nextPage').addEventListener('click', () => {
+            const totalPages = Math.ceil(totalOrders / ordersPerPage);
+            if (currentPage < totalPages) {
+                changePage(currentPage + 1);
+            }
+        });
+
+        // Search functionality
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+            const filteredOrders = allOrders.filter(order => 
+                order._id.toLowerCase().includes(searchTerm) ||
+                (order.hoTenNguoiNhan && order.hoTenNguoiNhan.toLowerCase().includes(searchTerm)) ||
+                (order.email && order.email.toLowerCase().includes(searchTerm))
+            );
+            // Update table with filtered results
+            updateTableWithOrders(filteredOrders);
+        });
+
+        // Filter functionality
+        document.getElementById('statusFilter').addEventListener('change', (e) => {
+            const status = e.target.value;
+            const filteredOrders = allOrders.filter(order => 
+                !status || order.TrangThai.toLowerCase().includes(status.toLowerCase())
+            );
+            updateTableWithOrders(filteredOrders);
+        });
+
+        function updateTableWithOrders(orders) {
+            const tbody = document.getElementById('orders-tbody');
+            const startIndex = (currentPage - 1) * ordersPerPage;
+            const endIndex = startIndex + ordersPerPage;
+            const ordersToShow = orders.slice(startIndex, endIndex);
+
+            if (!ordersToShow || ordersToShow.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7" class="py-12 text-center text-slate-500 dark:text-neutral-400">
+                            <i class="fas fa-search text-4xl mb-4 block"></i>
+                            <p class="text-lg font-medium">Không tìm thấy đơn hàng</p>
+                            <p class="text-sm">Hãy thử thay đổi từ khóa tìm kiếm</p>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            tbody.innerHTML = ordersToShow
+                .map((order) => {
+                    return `
+                    <tr class="hover:bg-slate-50 dark:hover:bg-neutral-800 transition-colors">
+                        <td class="py-4 px-6">
+                            <div class="font-mono font-semibold text-slate-900 dark:text-white">#${order._id.slice(-8)}</div>
+                        </td>
+                        <td class="py-4 px-6">
+                            <div>
+                                <div class="font-semibold text-slate-900 dark:text-white">${order.hoTenNguoiNhan || 'N/A'}</div>
+                                <div class="text-sm text-slate-500 dark:text-neutral-400">${order.email || ''}</div>
+                            </div>
+                        </td>
+                        <td class="py-4 px-6">
+                            <div class="text-slate-900 dark:text-white">${formatDate(order.NgayLap)}</div>
+                        </td>
+                        <td class="py-4 px-6">
+                            <div class="font-semibold text-slate-900 dark:text-white">${formatMoney(order.TongTien)}</div>
+                        </td>
+                        <td class="py-4 px-6">
+                            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-400">
+                                ${order.PhuongThucGiaoHang.toUpperCase()}
+                            </span>
+                        </td>
+                        <td class="py-4 px-6">
+                            ${getStatusBadge(order.TrangThai)}
+                        </td>
+                        <td class="py-4 px-6">
+                            <div class="flex items-center gap-2">
+                                <button class="p-2 text-slate-400 hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-colors" title="Xem chi tiết">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button class="p-2 text-slate-400 hover:text-orange-500 hover:bg-orange-50 dark:hover:bg-orange-900/20 rounded-lg transition-colors" title="Cập nhật trạng thái">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="p-2 text-slate-400 hover:text-green-500 hover:bg-green-50 dark:hover:bg-green-900/20 rounded-lg transition-colors" title="Tạo/Xem hóa đơn" onclick="generateInvoice('${order._id}')">
+                                    <i class="fas fa-print"></i>
+                                </button>
+                                <button class="p-2 text-slate-400 hover:text-purple-500 hover:bg-purple-50 dark:hover:bg-purple-900/20 rounded-lg transition-colors" title="Quét/Xem hóa đơn" onclick="openInvoiceModal('${order._id}')">
+                                    <i class="fas fa-file-invoice"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+                })
+                .join('');
+        }
+
+        function resetInvoiceModal() {
+            invoiceStatusEl.textContent = 'Chưa có dữ liệu';
+            invoiceDetailsEl.innerHTML = '<li>• Chưa có dữ liệu OCR</li>';
+            invoiceRawTextEl.textContent = 'Chưa có nội dung';
+            invoiceUploadError.textContent = '';
+            invoiceImageLink.classList.add('hidden');
+            if (invoiceFileInput) invoiceFileInput.value = '';
+            if (invoiceFileName) invoiceFileName.textContent = 'Chưa chọn file';
+            if (invoiceImagePreviewContainer) invoiceImagePreviewContainer.classList.add('hidden');
+        }
+
+        function renderInvoice(invoice) {
+            if (!invoice) {
+                resetInvoiceModal();
+                return;
+            }
+
+            invoiceStatusEl.textContent = invoice.status === 'processed'
+                ? 'Đã xử lý'
+                : invoice.status === 'failed'
+                    ? 'Xử lý thất bại'
+                    : 'Đang chờ xử lý';
+
+            if (invoice.parsed) {
+                const items = [];
+                // Thông tin đơn hàng
+                if (invoice.parsed.orderCode) {
+                    items.push(`<strong>📋 Mã đơn:</strong> ${invoice.parsed.orderCode}`);
+                }
+                if (invoice.parsed.date) {
+                    items.push(`<strong>📅 Ngày:</strong> ${invoice.parsed.date}`);
+                }
+                if (invoice.parsed.status) {
+                    items.push(`<strong>🔄 Trạng thái:</strong> ${invoice.parsed.status}`);
+                }
+                if (invoice.parsed.paymentMethod) {
+                    items.push(`<strong>💳 Phương thức:</strong> ${invoice.parsed.paymentMethod.toUpperCase()}`);
+                }
+                
+                // Thông tin khách hàng
+                if (invoice.parsed.customer) {
+                    items.push(`<strong>👤 Họ tên:</strong> ${invoice.parsed.customer}`);
+                }
+                if (invoice.parsed.phone) {
+                    items.push(`<strong>📞 SĐT:</strong> ${invoice.parsed.phone}`);
+                }
+                if (invoice.parsed.address) {
+                    items.push(`<strong>📍 Địa chỉ:</strong> ${invoice.parsed.address}`);
+                }
+                if (invoice.parsed.province) {
+                    items.push(`<strong>🏙️ Tỉnh/Thành:</strong> ${invoice.parsed.province}`);
+                }
+                
+                // Sản phẩm
+                if (invoice.parsed.products && invoice.parsed.products.length > 0) {
+                    items.push(`<strong>🛍️ Sản phẩm (${invoice.parsed.products.length}):</strong>`);
+                    invoice.parsed.products.forEach((product, idx) => {
+                        const productPrice = product.price ? `${Number(product.price).toLocaleString('vi-VN')} VNĐ` : '-';
+                        const colorLabel = product.color || '-';
+                        const sizeLabel = product.size || '-';
+                        items.push(`&nbsp;&nbsp;${idx + 1}. ${product.name} - SL: ${product.quantity || 1} - Màu: ${colorLabel} - Kích thước: ${sizeLabel} - Giá: ${productPrice}`);
+                    });
+                }
+                
+                // Tổng tiền
+                if (invoice.parsed.total) {
+                    const totalNumber = Number(invoice.parsed.total);
+                    const formattedTotal = Number.isFinite(totalNumber)
+                        ? `${totalNumber.toLocaleString('vi-VN')} VNĐ`
+                        : `${invoice.parsed.total} VNĐ`;
+                    items.push(`<strong>💰 Tổng tiền:</strong> <span class="text-green-600 font-bold">${formattedTotal}</span>`);
+                }
+                invoiceDetailsEl.innerHTML = items.length ? items.map(item => `<li class="mb-2">${item}</li>`).join('') : '<li>• Không trích xuất được thông tin</li>';
+            } else {
+                invoiceDetailsEl.innerHTML = '<li>• Không trích xuất được thông tin</li>';
+            }
+
+            invoiceRawTextEl.textContent = invoice.rawText || 'Không có nội dung OCR';
+
+            if (invoice.imagePath) {
+                invoiceImageLink.href = `http://localhost:3006/${invoice.imagePath}`;
+                invoiceImageLink.classList.remove('hidden');
+            } else {
+                invoiceImageLink.classList.add('hidden');
+            }
+        }
+
+        async function loadInvoice(orderId) {
+            resetInvoiceModal();
+            invoiceStatusEl.textContent = 'Đang tải dữ liệu hóa đơn...';
+            try {
+                const res = await fetch(`http://localhost:3006/api/invoices/order/${orderId}`);
+                if (res.ok) {
+                    const invoice = await res.json();
+                    renderInvoice(invoice);
+                } else if (res.status === 404) {
+                    invoiceStatusEl.textContent = 'Chưa có hóa đơn được quét.';
+                } else {
+                    invoiceStatusEl.textContent = 'Không thể tải dữ liệu hóa đơn.';
+                }
+            } catch (err) {
+                console.error('Lỗi tải hóa đơn:', err);
+                invoiceStatusEl.textContent = 'Lỗi kết nối khi tải hóa đơn.';
+            }
+        }
+
+        function openInvoiceModal(orderId) {
+            currentInvoiceOrderId = orderId;
+            invoiceOrderLabel.textContent = `#${orderId.slice(-8).toUpperCase()}`;
+            invoiceModal.classList.remove('hidden');
+            loadInvoice(orderId);
+        }
+
+        function closeInvoiceModal() {
+            invoiceModal.classList.add('hidden');
+            currentInvoiceOrderId = null;
+        }
+
+        async function submitInvoiceUpload() {
+            if (!currentInvoiceOrderId) {
+                invoiceUploadError.textContent = 'Không xác định được đơn hàng.';
+                return;
+            }
+
+            const file = invoiceFileInput.files[0];
+            if (!file) {
+                invoiceUploadError.textContent = 'Vui lòng chọn ảnh hóa đơn.';
+                return;
+            }
+
+            invoiceUploadError.textContent = '';
+            invoiceUploadBtn.disabled = true;
+            const originalText = invoiceUploadBtn.textContent;
+            invoiceUploadBtn.textContent = 'Đang xử lý...';
+
+            const formData = new FormData();
+            formData.append('invoice', file);
+            formData.append('orderId', currentInvoiceOrderId);
+
+            try {
+                const response = await fetch('http://localhost:3006/api/invoices', {
+                    method: 'POST',
+                    body: formData,
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    renderInvoice(data.invoice);
+                    throw new Error(data.message || 'Không thể xử lý hóa đơn');
+                }
+
+                renderInvoice(data.invoice);
+                invoiceFileInput.value = '';
+                alert('Quét hóa đơn thành công!');
+            } catch (err) {
+                console.error('Upload invoice error:', err);
+                invoiceUploadError.textContent = err.message || 'Đã xảy ra lỗi khi tải hóa đơn.';
+            } finally {
+                invoiceUploadBtn.disabled = false;
+                invoiceUploadBtn.textContent = originalText;
+            }
+        }
+
+        function generateInvoice(orderId) {
+            window.open(`http://localhost:3006/api/invoices/generate/${orderId}`, '_blank');
+        }
+
+        window.openInvoiceModal = openInvoiceModal;
+        window.closeInvoiceModal = closeInvoiceModal;
+        window.submitInvoiceUpload = submitInvoiceUpload;
+        window.generateInvoice = generateInvoice;
+
+        // Load orders on page load
+        window.onload = () => {
+            loadOrders();
+        };
+    </script>
+</body>
+</html>

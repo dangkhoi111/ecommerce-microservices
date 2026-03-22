@@ -1,0 +1,58 @@
+<!-- Sidebar Seller -->
+<nav class="fixed left-0 top-0 h-full w-64 bg-white dark:bg-slate-800 border-r border-emerald-200 dark:border-emerald-700 shadow-lg z-40">
+    <div class="p-6">
+        <!-- Logo -->
+        <div class="mb-8">
+            <h1 class="text-2xl font-black bg-gradient-to-r from-emerald-500 to-green-500 dark:from-emerald-400 dark:to-green-300 bg-clip-text text-transparent">
+                SellerHub
+            </h1>
+            <p class="text-sm text-slate-600 dark:text-neutral-400 mt-1">Quản lý shop</p>
+        </div>
+        
+        <!-- Navigation -->
+        <ul class="space-y-2">
+            <li>
+                <a href="/seller" class="<%= activeTab === 'dashboard' ? 'bg-gradient-to-r from-emerald-500 to-green-500 dark:from-emerald-500 dark:to-green-400 text-white dark:text-black shadow-lg' : 'text-slate-600 dark:text-neutral-400 hover:text-emerald-500 dark:hover:text-green-400 hover:bg-slate-50 dark:hover:bg-slate-700' %> flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all duration-200">
+                    <i class="fas fa-home text-lg"></i>
+                    <span>Tổng quan</span>
+                </a>
+            </li>
+            <li>
+                <a href="/seller/order" class="<%= activeTab === 'orders' ? 'bg-gradient-to-r from-emerald-500 to-green-500 dark:from-emerald-500 dark:to-green-400 text-white dark:text-black shadow-lg' : 'text-slate-600 dark:text-neutral-400 hover:text-emerald-500 dark:hover:text-green-400 hover:bg-slate-50 dark:hover:bg-slate-700' %> flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all duration-200">
+                    <i class="fas fa-box text-lg"></i>
+                    <span>Quản lý đơn hàng</span>
+                </a>
+            </li>
+            <li>
+                <a href="/seller/product" class="<%= activeTab === 'products' ? 'bg-gradient-to-r from-emerald-500 to-green-500 dark:from-emerald-500 dark:to-green-400 text-white dark:text-black shadow-lg' : 'text-slate-600 dark:text-neutral-400 hover:text-emerald-500 dark:hover:text-green-400 hover:bg-slate-50 dark:hover:bg-slate-700' %> flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all duration-200">
+                    <i class="fas fa-cube text-lg"></i>
+                    <span>Quản lý sản phẩm</span>
+                </a>
+            </li>
+            <li>
+                <a href="/seller/analytic" class="<%= activeTab === 'analytics' ? 'bg-gradient-to-r from-emerald-500 to-green-500 dark:from-emerald-500 dark:to-green-400 text-white dark:text-black shadow-lg' : 'text-slate-600 dark:text-neutral-400 hover:text-emerald-500 dark:hover:text-green-400 hover:bg-slate-50 dark:hover:bg-slate-700' %> flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all duration-200">
+                    <i class="fas fa-chart-line text-lg"></i>
+                    <span>Phân tích bán hàng</span>
+                </a>
+            </li>
+            <li>
+                <a href="/seller/finance" class="<%= activeTab === 'finance' ? 'bg-gradient-to-r from-emerald-500 to-green-500 dark:from-emerald-500 dark:to-green-400 text-white dark:text-black shadow-lg' : 'text-slate-600 dark:text-neutral-400 hover:text-emerald-500 dark:hover:text-green-400 hover:bg-slate-50 dark:hover:bg-slate-700' %> flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all duration-200">
+                    <i class="fas fa-money-bill-wave text-lg"></i>
+                    <span>Tài chính</span>
+                </a>
+            </li>
+            <li>
+                <a href="/seller/sale" class="<%= activeTab === 'promotions' ? 'bg-gradient-to-r from-emerald-500 to-green-500 dark:from-emerald-500 dark:to-green-400 text-white dark:text-black shadow-lg' : 'text-slate-600 dark:text-neutral-400 hover:text-emerald-500 dark:hover:text-green-400 hover:bg-slate-50 dark:hover:bg-slate-700' %> flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all duration-200">
+                    <i class="fas fa-tag text-lg"></i>
+                    <span>Mã giảm giá</span>
+                </a>
+            </li>
+            <li>
+                <a href="/seller/setting" class="<%= activeTab === 'settings' ? 'bg-gradient-to-r from-emerald-500 to-green-500 dark:from-emerald-500 dark:to-green-400 text-white dark:text-black shadow-lg' : 'text-slate-600 dark:text-neutral-400 hover:text-emerald-500 dark:hover:text-green-400 hover:bg-slate-50 dark:hover:bg-slate-700' %> flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all duration-200">
+                    <i class="fas fa-cog text-lg"></i>
+                    <span>Thiết lập shop</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+</nav>

@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý mã giảm giá - Admin</title>
+    <meta name="description" content="Quản lý mã giảm giá cho khách hàng - Admin Panel">
+    
+    <!-- Tailwind CSS (CDN) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        if (window.tailwind) { 
+            tailwind.config = { 
+                darkMode: 'class',
+                theme: {
+                    extend: {
+                        animation: {
+                            'fade-in': 'fadeIn 0.5s ease-in',
+                            'slide-up': 'slideUp 0.6s ease-out',
+                        },
+                        keyframes: {
+                            fadeIn: {
+                                '0%': { opacity: '0' },
+                                '100%': { opacity: '1' }
+                            },
+                            slideUp: {
+                                '0%': { transform: 'translateY(20px)', opacity: '0' },
+                                '100%': { transform: 'translateY(0)', opacity: '1' }
+                            }
+                        }
+                    }
+                }
+            } 
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        .admin-layout {
+            display: flex;
+            min-height: 100vh;
+        }
+        .main-content {
+            flex: 1;
+            margin-left: 16rem;
+            margin-top: 0;
+            padding-top: 0;
+        }
+        .promotion-form {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 24px;
+            margin: 20px 24px;
+            border: 1px solid #e5e7eb;
+            width: calc(100% - 48px);
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.2s;
+            background: white;
+        }
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #f59e0b;
+            box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1);
+        }
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        .form-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
+            padding-top: 20px;
+            border-top: 1px solid #e5e7eb;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 14px;
+        }
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+        }
+        .btn-secondary {
+            background: #f3f4f6;
+            color: #374151;
+            border: 2px solid #e5e7eb;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            flex: 1;
+        }
+        .btn-secondary:hover {
+            background: #e5e7eb;
+        }
+        .section-header {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            margin-bottom: 24px;
+            padding: 16px 24px;
+            border-bottom: 2px solid #f3f4f6;
+            width: 100%;
+        }
+        .section-header h3 {
+            font-size: 18px;
+            font-weight: 600;
+            color: #374151;
+            margin: 0;
+        }
+        .promotions-list {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin: 20px 24px;
+            overflow: hidden;
+            border: 1px solid #e5e7eb;
+            width: calc(100% - 48px);
+        }
+        .promotions-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 24px;
+            padding: 24px;
+        }
+        .promotion-card {
+            background: linear-gradient(135deg, #fff7ed, #ffedd5);
+            border: 2px solid #fed7aa;
+            border-radius: 12px;
+            padding: 20px;
+            min-width: 280px;
+            flex: 1;
+            transition: all 0.3s;
+        }
+        .promotion-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        }
+        .promotion-card.expired {
+            opacity: 0.6;
+            background: #f3f4f6;
+            border-color: #d1d5db;
+        }
+        .promotion-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        .promotion-header h4 {
+            font-size: 18px;
+            font-weight: 700;
+            color: #92400e;
+            margin: 0;
+        }
+        .promotion-code {
+            background: #f59e0b;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 12px;
+        }
+        .promotion-details {
+            margin-bottom: 16px;
+        }
+        .promotion-details p {
+            font-size: 13px;
+            color: #78716c;
+            margin: 6px 0;
+        }
+        .promotion-details i {
+            width: 16px;
+            color: #f59e0b;
+        }
+        .promotion-actions {
+            display: flex;
+            gap: 8px;
+            justify-content: flex-end;
+        }
+        .btn-icon {
+            background: white;
+            border: 1px solid #e5e7eb;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-icon.edit:hover {
+            background: #dbeafe;
+            border-color: #3b82f6;
+            color: #3b82f6;
+        }
+        .btn-icon.delete:hover {
+            background: #fee2e2;
+            border-color: #ef4444;
+            color: #ef4444;
+        }
+        @media (max-width: 768px) {
+            .main-content {
+                margin-left: 0;
+            }
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-slate-50 via-white to-slate-50 dark:from-neutral-900 dark:via-black dark:to-neutral-900 min-h-screen" style="font-family: 'Inter', sans-serif;">
+    <div class="admin-layout">
+        <%- include('./../elements/navbaradmin') %>
+        
+        <main class="main-content">
+            <div class="bg-white dark:bg-neutral-900 border-b border-slate-200 dark:border-neutral-800 px-6 py-4">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h1 class="text-2xl font-bold text-slate-900 dark:text-white">Quản lý mã giảm giá</h1>
+                        <p class="text-slate-600 dark:text-neutral-400">Tạo và quản lý mã giảm giá cho khách hàng</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-6 space-y-8">
+                <main class="main-contentt">
+                    <section id="promotion" class="content-section">
+                        <div class="section-header">
+                            <button class="btn-primary" id="addPromotionBtn">
+                                <i class="fas fa-plus"></i> Tạo mã giảm giá mới
+                            </button>
+                        </div>
+
+                        <form id="promotionForm" class="promotion-form" style="display: none;">
+                            <div class="form-group">
+                                <label>Tên mã giảm giá</label>
+                                <input type="text" name="tenKM" required />
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Mã giảm giá</label>
+                                    <input type="text" name="ma" required placeholder="VD: SALE20" />
+                                </div>
+                                <div class="form-group">
+                                    <label>Danh mục sản phẩm</label>
+                                    <select name="maDM" id="categorySelect" required>
+                                        <option value="">Chọn danh mục</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Loại giảm giá</label>
+                                    <select name="loaiGiamGia" required>
+                                        <option value="phanTram">Phần trăm</option>
+                                        <option value="soTien">Số tiền cố định</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Giá trị giảm</label>
+                                    <input type="number" name="giaTriGiam" required />
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Ngày bắt đầu</label>
+                                    <input type="date" name="ngayBatDau" required />
+                                </div>
+                                <div class="form-group">
+                                    <label>Ngày kết thúc</label>
+                                    <input type="date" name="ngayKetThuc" required />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Đơn hàng tối thiểu (VNĐ)</label>
+                                <input type="number" name="donHangToiThieu" value="0" />
+                            </div>
+                            <div class="form-actions">
+                                <button type="submit" class="btn-primary">Lưu mã giảm giá</button>
+                                <button type="button" class="btn-secondary" id="cancelPromotionBtn">Hủy</button>
+                            </div>
+                        </form>
+
+                        <div class="promotions-list">
+                            <div class="section-header">
+                                <h3>Mã giảm giá đang hoạt động</h3>
+                            </div>
+                            <div class="promotions-grid" id="activePromos"></div>
+                        </div>
+
+                        <div class="promotions-list">
+                            <div class="section-header">
+                                <h3>Mã giảm giá đã hết hạn</h3>
+                            </div>
+                            <div class="promotions-grid" id="expiredPromos"></div>
+                        </div>
+                    </section>
+                </main>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const addPromotionBtn = document.getElementById('addPromotionBtn');
+        const promotionForm = document.getElementById('promotionForm');
+        const cancelPromotionBtn = document.getElementById('cancelPromotionBtn');
+        const categorySelect = document.getElementById('categorySelect');
+
+        // Load danh mục
+        async function loadCategories() {
+            try {
+                const res = await fetch('http://localhost:3001/api/danhmucs');
+                const categories = await res.json();
+                categorySelect.innerHTML = '<option value="">Chọn danh mục</option>' + 
+                    categories.map(c => `<option value="${c._id}">${c.tenDM}</option>`).join('');
+            } catch (err) {
+                console.error('Lỗi khi load danh mục:', err);
+            }
+        }
+
+        addPromotionBtn.addEventListener('click', () => {
+            promotionForm.reset();
+            delete promotionForm.dataset.editingId;
+            promotionForm.style.display = 'block';
+            promotionForm.scrollIntoView({ behavior: 'smooth' });
+        });
+
+        cancelPromotionBtn.addEventListener('click', () => {
+            promotionForm.style.display = 'none';
+            promotionForm.reset();
+            delete promotionForm.dataset.editingId;
+        });
+
+        promotionForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const token = localStorage.getItem('authToken');
+            const formData = new FormData(promotionForm);
+            const payload = Object.fromEntries(formData.entries());
+
+            const editingId = promotionForm.dataset.editingId;
+            const url = editingId 
+                ? `http://localhost:3001/api/khuyenmai/admin/${editingId}`
+                : 'http://localhost:3001/api/khuyenmai/admin';
+            const method = editingId ? 'PUT' : 'POST';
+
+            try {
+                const res = await fetch(url, {
+                    method,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!res.ok) {
+                    const error = await res.json().catch(() => ({ message: 'Lỗi không xác định' }));
+                    throw new Error(error.message || error.error || 'Lỗi khi lưu mã giảm giá');
+                }
+
+                const result = await res.json();
+                console.log('Tạo/cập nhật mã thành công:', result);
+
+                alert(editingId ? '✅ Cập nhật thành công' : '✅ Tạo mã giảm giá thành công');
+                promotionForm.reset();
+                delete promotionForm.dataset.editingId;
+                promotionForm.style.display = 'none';
+                
+                // Reload lại danh sách
+                setTimeout(() => {
+                    loadPromotions();
+                }, 500);
+            } catch (err) {
+                alert('❌ ' + err.message);
+            }
+        });
+
+        async function loadPromotions() {
+            try {
+                const token = localStorage.getItem('authToken');
+                if (!token) {
+                    console.error('Không có token');
+                    document.getElementById('activePromos').innerHTML = '<p class="text-red-500">Vui lòng đăng nhập lại</p>';
+                    return;
+                }
+
+                console.log('Đang load mã giảm giá...');
+                const res = await fetch('http://localhost:3001/api/khuyenmai/admin', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                console.log('Response status:', res.status);
+                
+                if (!res.ok) {
+                    const errorData = await res.json().catch(() => ({ message: 'Lỗi không xác định' }));
+                    console.error('Lỗi API:', errorData);
+                    
+                    // Hiển thị lỗi chi tiết
+                    let errorMessage = errorData.message || `Lỗi ${res.status}: Không thể tải mã giảm giá`;
+                    
+                    if (res.status === 403) {
+                        errorMessage = '❌ Không đủ quyền truy cập. Vui lòng đăng nhập lại với tài khoản Admin.';
+                        if (errorData.debug) {
+                            console.error('Debug info:', errorData.debug);
+                            errorMessage += `\n\nRole hiện tại: ${errorData.debug.userRole || 'Không có'}`;
+                            errorMessage += `\nRole yêu cầu: ${errorData.debug.requiredRoles?.join(', ') || 'admin'}`;
+                        }
+                    } else if (res.status === 401) {
+                        errorMessage = '❌ Chưa đăng nhập. Vui lòng đăng nhập lại.';
+                    }
+                    
+                    document.getElementById('activePromos').innerHTML = `<p class="text-red-500">${errorMessage}</p>`;
+                    document.getElementById('expiredPromos').innerHTML = '';
+                    return;
+                }
+
+                const data = await res.json();
+                console.log('Dữ liệu nhận được:', data);
+
+                const { active = [], expired = [] } = data;
+
+                const renderCard = (km, isExpired = false) => `
+                    <div class="promotion-card${isExpired ? ' expired' : ''}">
+                        <div class="promotion-header">
+                            <h4>${km.displayDiscount}</h4>
+                            <span class="promotion-code">${km.ma}</span>
+                        </div>
+                        <div class="promotion-details">
+                            <p><i class="fas fa-tag"></i> ${km.tenKM}</p>
+                            <p><i class="fas fa-folder"></i> Danh mục: ${km.maDM ? km.maDM.tenDM : 'Tất cả'}</p>
+                            <p><i class="fas fa-calendar"></i> ${km.period}</p>
+                            <p><i class="fas fa-shopping-cart"></i> Đơn tối thiểu: ${km.donHangToiThieu}</p>
+                        </div>
+                        <div class="promotion-actions">
+                            <button class="btn-icon edit" data-id="${km._id}"><i class="fas fa-edit"></i></button>
+                            <button class="btn-icon delete" data-id="${km._id}"><i class="fas fa-trash"></i></button>
+                        </div>
+                    </div>`;
+
+                document.getElementById('activePromos').innerHTML = active.length > 0 
+                    ? active.map(km => renderCard(km, false)).join('') 
+                    : '<p class="text-gray-500">Chưa có mã nào đang hoạt động.</p>';
+                
+                document.getElementById('expiredPromos').innerHTML = expired.length > 0
+                    ? expired.map(km => renderCard(km, true)).join('') 
+                    : '<p class="text-gray-500">Chưa có mã nào hết hạn.</p>';
+
+                console.log(`Đã load: ${active.length} mã đang hoạt động, ${expired.length} mã đã hết hạn`);
+
+                // Bind events
+                document.querySelectorAll('.btn-icon.delete').forEach(btn => {
+                    btn.onclick = () => deletePromotion(btn.dataset.id);
+                });
+                document.querySelectorAll('.btn-icon.edit').forEach(btn => {
+                    btn.onclick = () => editPromotion(btn.dataset.id);
+                });
+            } catch (err) {
+                console.error('Lỗi khi load mã giảm giá:', err);
+                document.getElementById('activePromos').innerHTML = `<p class="text-red-500">❌ ${err.message}</p>`;
+                document.getElementById('expiredPromos').innerHTML = '';
+            }
+        }
+
+        async function deletePromotion(id) {
+            if (!confirm('Bạn có chắc chắn muốn xóa mã giảm giá này?')) return;
+            try {
+                const token = localStorage.getItem('authToken');
+                const res = await fetch(`http://localhost:3001/api/khuyenmai/admin/${id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                if (!res.ok) throw new Error('Không thể xóa');
+                alert('✅ Đã xóa mã giảm giá');
+                loadPromotions();
+            } catch (err) {
+                alert('❌ ' + err.message);
+            }
+        }
+
+        async function editPromotion(id) {
+            try {
+                const token = localStorage.getItem('authToken');
+                const res = await fetch(`http://localhost:3001/api/khuyenmai/${id}`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                if (!res.ok) throw new Error('Không tìm thấy mã khuyến mãi');
+                const km = await res.json();
+
+                promotionForm.style.display = 'block';
+                promotionForm.scrollIntoView({ behavior: 'smooth' });
+                promotionForm.dataset.editingId = id;
+
+                promotionForm.tenKM.value = km.tenKM || '';
+                promotionForm.ma.value = km.ma || '';
+                promotionForm.maDM.value = km.maDM ? (km.maDM._id || km.maDM) : '';
+                promotionForm.loaiGiamGia.value = km.loaiGiamGia || '';
+                promotionForm.giaTriGiam.value = km.giaTriGiam || '';
+                promotionForm.ngayBatDau.value = km.ngayBatDau?.slice(0,10) || '';
+                promotionForm.ngayKetThuc.value = km.ngayKetThuc?.slice(0,10) || '';
+                promotionForm.donHangToiThieu.value = km.donHangToiThieu || 0;
+            } catch (err) {
+                alert('❌ ' + err.message);
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            loadCategories();
+            loadPromotions();
+        });
+    </script>
+</body>
+</html>
+

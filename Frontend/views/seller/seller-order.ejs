@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý đơn hàng - Seller Dashboard</title>
+    <meta name="description" content="Quản lý đơn hàng cho người bán - MegaStore VN">
+    
+    <!-- Tailwind CSS (CDN) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        if (window.tailwind) { 
+            tailwind.config = { 
+                darkMode: 'class',
+                theme: {
+                    extend: {
+                        animation: {
+                            'fade-in': 'fadeIn 0.5s ease-in',
+                            'slide-up': 'slideUp 0.6s ease-out',
+                            'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        },
+                        keyframes: {
+                            fadeIn: {
+                                '0%': { opacity: '0' },
+                                '100%': { opacity: '1' }
+                            },
+                            slideUp: {
+                                '0%': { transform: 'translateY(20px)', opacity: '0' },
+                                '100%': { transform: 'translateY(0)', opacity: '1' }
+                            }
+                        }
+                    }
+                }
+            } 
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    <style>
+        /* Custom styles for seller layout */
+        .seller-layout {
+            display: flex;
+            min-height: 100vh;
+        }
+        .main-content {
+            flex: 1;
+            margin-left: 16rem; /* 64 * 0.25rem = 16rem */
+            margin-top: 0;
+            padding-top: 0;
+        }
+        
+        /* Override header styles for seller pages */
+        .seller-header {
+            position: relative !important;
+            z-index: 10 !important;
+            margin-bottom: 0 !important;
+        }
+        
+        @media (max-width: 768px) {
+            .main-content {
+                margin-left: 0;
+                padding-top: 1rem;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-emerald-50 via-green-50 to-teal-50 dark:from-slate-900 dark:via-emerald-900 dark:to-green-900 min-h-screen transition-colors duration-300" style="font-family: 'Inter', sans-serif;">
+    <div class="seller-layout">
+        <!-- Sidebar -->
+        <%- include('./../elements/navbarseller') %>
+        
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Seller Header -->
+            <div class="bg-white dark:bg-slate-800 border-b border-emerald-200 dark:border-emerald-700 px-6 py-4">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h1 class="text-2xl font-bold text-slate-900 dark:text-white">Quản lý đơn hàng</h1>
+                        <p class="text-slate-600 dark:text-neutral-400">Theo dõi và xử lý đơn hàng từ khách hàng</p>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <div class="relative">
+                            <button class="p-2 text-slate-600 dark:text-neutral-400 hover:text-emerald-500 dark:hover:text-emerald-400 transition-colors">
+                                <i class="fas fa-bell text-lg"></i>
+                                <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">2</span>
+                            </button>
+                        </div>
+                        <div class="relative group">
+                            <button class="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-emerald-500 to-green-500 dark:from-green-500 dark:to-emerald-500 text-white rounded-xl font-medium hover:shadow-lg transition-all">
+                                <i class="fas fa-store"></i>
+                                <span id="seller-username">Seller</span>
+                                <i class="fas fa-chevron-down text-sm"></i>
+                            </button>
+                            <div class="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-slate-800 rounded-xl shadow-lg border border-emerald-200 dark:border-emerald-700 py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                                <a href="/" class="flex items-center gap-3 px-4 py-2 text-slate-700 dark:text-neutral-300 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 transition-colors">
+                                    <i class="fas fa-home"></i>
+                                    <span>Trang chủ</span>
+                                </a>
+                                <a href="#" onclick="logout()" class="flex items-center gap-3 px-4 py-2 text-slate-700 dark:text-neutral-300 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 transition-colors">
+                                    <i class="fas fa-sign-out-alt"></i>
+                                    <span>Đăng xuất</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Dashboard Content -->
+            <div class="p-6 space-y-8">
+                <!-- Order Stats -->
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                    <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-lg shadow-emerald-500/5 border border-emerald-200 dark:border-emerald-700 p-6">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-yellow-500 to-orange-500 flex items-center justify-center">
+                                <i class="fas fa-clock text-white text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-2xl font-black text-slate-900 dark:text-white" id="pendingOrders">0</h3>
+                                <p class="text-slate-600 dark:text-neutral-400 font-medium">Chờ xác nhận</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-lg shadow-emerald-500/5 border border-emerald-200 dark:border-emerald-700 p-6">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center">
+                                <i class="fas fa-truck text-white text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-2xl font-black text-slate-900 dark:text-white" id="shippingOrders">0</h3>
+                                <p class="text-slate-600 dark:text-neutral-400 font-medium">Đang vận chuyển</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-lg shadow-emerald-500/5 border border-emerald-200 dark:border-emerald-700 p-6">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500 to-green-500 flex items-center justify-center">
+                                <i class="fas fa-check-circle text-white text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-2xl font-black text-slate-900 dark:text-white" id="completedOrders">0</h3>
+                                <p class="text-slate-600 dark:text-neutral-400 font-medium">Đã hoàn thành</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-lg shadow-emerald-500/5 border border-emerald-200 dark:border-emerald-700 p-6">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-red-500 to-pink-500 flex items-center justify-center">
+                                <i class="fas fa-times-circle text-white text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-2xl font-black text-slate-900 dark:text-white" id="cancelledOrders">0</h3>
+                                <p class="text-slate-600 dark:text-neutral-400 font-medium">Đã hủy</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Filter Bar -->
+                <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-lg shadow-emerald-500/5 border border-emerald-200 dark:border-emerald-700 p-6">
+                    <div class="flex flex-wrap items-center gap-4">
+                        <div class="flex-1 min-w-64">
+                            <div class="relative">
+                                <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 dark:text-neutral-500"></i>
+                                <input type="text" placeholder="Tìm kiếm đơn hàng..." class="w-full pl-10 pr-4 py-2 border border-emerald-300 dark:border-emerald-600 rounded-xl bg-emerald-50 dark:bg-slate-700 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent" id="searchInput">
+                            </div>
+                        </div>
+                        
+                        <select class="px-4 py-2 border border-emerald-300 dark:border-emerald-600 rounded-xl bg-emerald-50 dark:bg-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent" id="filterSelect">
+                            <option value="">Tất cả trạng thái</option>
+                            <option value="Chờ xác nhận">Chờ xác nhận</option>
+                            <option value="Đang vận chuyển">Đang vận chuyển</option>
+                            <option value="Đã hoàn thành">Đã hoàn thành</option>
+                            <option value="Đã hủy">Đã hủy</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Orders Table -->
+                <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-lg shadow-emerald-500/5 border border-emerald-200 dark:border-emerald-700 overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead class="bg-emerald-50 dark:bg-emerald-900/20">
+                                <tr>
+                                    <th class="text-left py-4 px-6 font-semibold text-slate-600 dark:text-neutral-400">Mã đơn hàng</th>
+                                    <th class="text-left py-4 px-6 font-semibold text-slate-600 dark:text-neutral-400">Khách hàng</th>
+                                    <th class="text-left py-4 px-6 font-semibold text-slate-600 dark:text-neutral-400">Người nhận</th>
+                                    <th class="text-left py-4 px-6 font-semibold text-slate-600 dark:text-neutral-400">Ngày đặt</th>
+                                    <th class="text-left py-4 px-6 font-semibold text-slate-600 dark:text-neutral-400">Tổng tiền</th>
+                                    <th class="text-left py-4 px-6 font-semibold text-slate-600 dark:text-neutral-400">Trạng thái</th>
+                                    <th class="text-left py-4 px-6 font-semibold text-slate-600 dark:text-neutral-400">Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody id="orderTableBody" class="divide-y divide-emerald-200 dark:divide-emerald-700">
+                                <tr>
+                                    <td colspan="7" class="py-12 text-center text-slate-500 dark:text-neutral-400">
+                                        <i class="fas fa-spinner fa-spin text-2xl mb-4 block"></i>
+                                        <p>Đang tải dữ liệu...</p>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Invoice Modal -->
+    <div id="seller-invoice-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center px-4 hidden z-50">
+        <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl w-full max-w-xl border border-emerald-200 dark:border-emerald-700">
+            <div class="flex items-center justify-between px-6 py-4 border-b border-emerald-200 dark:border-emerald-700">
+                <div>
+                    <h2 class="text-xl font-bold text-slate-900 dark:text-white">Quét hóa đơn giao hàng</h2>
+                    <p class="text-sm text-slate-500 dark:text-neutral-400">Đơn hàng: <span id="seller-invoice-order-label"></span></p>
+                </div>
+                <button onclick="closeSellerInvoiceModal()" class="p-2 rounded-full text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="px-6 py-5 space-y-4">
+                <div class="space-y-3">
+                    <label class="block text-sm font-semibold text-slate-700 dark:text-neutral-300">Chọn ảnh hóa đơn</label>
+                    <input type="file" id="seller-invoice-file" accept="image/*" class="w-full text-sm text-slate-600 dark:text-neutral-300 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-purple-50 file:text-purple-600 hover:file:bg-purple-100 dark:file:bg-purple-900/30 dark:file:text-purple-300">
+                    <p id="seller-invoice-upload-error" class="text-sm text-red-500"></p>
+                    <button id="seller-invoice-upload-btn" onclick="submitSellerInvoiceUpload()" class="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-xl font-semibold transition-all">
+                        Tải & quét hóa đơn
+                    </button>
+                </div>
+
+                <div class="border border-emerald-200 dark:border-emerald-700 rounded-xl p-4 bg-emerald-50/60 dark:bg-emerald-900/20 space-y-3">
+                    <div>
+                        <p class="text-sm uppercase tracking-wide text-emerald-600 dark:text-emerald-300 font-semibold">Trạng thái xử lý</p>
+                        <p id="seller-invoice-status" class="text-lg font-bold text-slate-900 dark:text-white">Chưa có dữ liệu</p>
+                    </div>
+                    <div class="space-y-2">
+                        <p class="text-sm uppercase tracking-wide text-emerald-600 dark:text-emerald-300 font-semibold">Thông tin trích xuất</p>
+                        <ul id="seller-invoice-details" class="text-sm text-slate-700 dark:text-neutral-300 space-y-1">
+                            <li>• Chưa có dữ liệu OCR</li>
+                        </ul>
+                    </div>
+                    <pre id="seller-invoice-raw-text" class="text-xs whitespace-pre-wrap bg-white dark:bg-slate-900 border border-emerald-200 dark:border-emerald-700 rounded-lg p-2 h-28 overflow-y-auto">Chưa có nội dung</pre>
+                    <a id="seller-invoice-image-link" href="#" target="_blank" class="inline-flex items-center gap-2 text-sm text-purple-600 dark:text-purple-300 hover:underline hidden">
+                        <i class="fas fa-external-link-alt"></i>
+                        Xem ảnh hóa đơn đã tải lên
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+            const sellerId = userInfo?.userBanId;
+            console.log('SellerId raw:', sellerId, 'Type:', typeof sellerId);
+            const userIdClean = typeof sellerId === 'string' ? sellerId.trim() : String(sellerId).trim();
+            console.log('SellerId cleaned:', userIdClean);
+
+            function logout() {
+                localStorage.removeItem('authToken');
+                localStorage.removeItem('userInfo');
+                localStorage.removeItem('hoTen');
+                window.location.href = '/';
+            }
+
+            // Update seller username
+            const userName = 'Seller';
+            try {
+                if (userInfo && userInfo.hoTen) userName = userInfo.hoTen;
+                else if (userInfo && userInfo.name) userName = userInfo.name;
+            } catch(e) {}
+            const el = document.getElementById('seller-username');
+            if (el) el.textContent = userName;
+
+            // Kết nối socket tới server notification (Gateway)
+            let socket = null;
+            try {
+                socket = io('http://localhost:4000');
+                
+                // Đăng ký user bán để nhận notification
+                socket.emit('register', { userId: userIdClean });
+
+                // Lắng nghe notification realtime
+                socket.on('receive_notification', (data) => {
+                    console.log('🔔 Nhận thông báo mới:', data);
+                    alert(`Thông báo: ${data.tieuDe}\nNội dung: ${data.noiDung}`);
+                    fetchOrders();
+                });
+                
+                socket.on('connect_error', (error) => {
+                    console.warn('Socket connection failed:', error);
+                });
+            } catch (error) {
+                console.warn('Socket.io not available:', error);
+            }
+
+            const tableBody = document.getElementById('orderTableBody');
+            const filterSelect = document.getElementById('filterSelect');
+            const searchInput = document.getElementById('searchInput');
+
+            let currentInvoiceOrderId = null;
+            const invoiceModal = document.getElementById('seller-invoice-modal');
+            const invoiceOrderLabel = document.getElementById('seller-invoice-order-label');
+            const invoiceStatusEl = document.getElementById('seller-invoice-status');
+            const invoiceDetailsEl = document.getElementById('seller-invoice-details');
+            const invoiceRawTextEl = document.getElementById('seller-invoice-raw-text');
+            const invoiceFileInput = document.getElementById('seller-invoice-file');
+            const invoiceUploadBtn = document.getElementById('seller-invoice-upload-btn');
+            const invoiceUploadError = document.getElementById('seller-invoice-upload-error');
+            const invoiceImageLink = document.getElementById('seller-invoice-image-link');
+
+            let allOrders = [];
+            const userCache = {};
+
+            async function fetchOrders() {
+                try {
+                    if (!sellerId) {
+                        throw new Error('Seller ID not found');
+                    }
+                    
+                    const res = await fetch(`http://localhost:3006/api/orders/seller/${sellerId}`);
+                    
+                    if (!res.ok) {
+                        throw new Error(`HTTP error! status: ${res.status}`);
+                    }
+                    
+                    const data = await res.json();
+                    allOrders = data;
+                    renderOrders(data);
+                    updateOrderStats(data);
+                } catch (err) {
+                    console.error('Error fetching orders:', err);
+                    tableBody.innerHTML = `
+                        <tr>
+                            <td colspan="7" class="py-12 text-center text-slate-500 dark:text-neutral-400">
+                                <i class="fas fa-exclamation-triangle text-2xl mb-4 block"></i>
+                                <p>Không thể tải dữ liệu đơn hàng.</p>
+                                <p class="text-sm mt-2">Lỗi: ${err.message}</p>
+                            </td>
+                        </tr>
+                    `;
+                }
+            }
+
+            async function getCustomerName(customerId) {
+                if (userCache[customerId]) return userCache[customerId];
+                try {
+                    const res = await fetch(`http://localhost:3002/api/auth/${customerId}`);
+                    const data = await res.json();
+                    const name = data.data?.hoTen || 'Không rõ';
+                    userCache[customerId] = name;
+                    return name;
+                } catch (err) {
+                    console.error('Lỗi lấy tên khách hàng:', err);
+                    return 'Không rõ';
+                }
+            }
+
+            function getStatusBadge(status) {
+                const badges = {
+                    'Chờ xác nhận': 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-400',
+                    'Đang vận chuyển': 'bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-400',
+                    'Đã hoàn thành': 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-400',
+                    'Đã hủy': 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-400'
+                };
+                return badges[status] || 'bg-gray-100 dark:bg-gray-900/30 text-gray-800 dark:text-gray-400';
+            }
+
+            async function renderOrders(orders) {
+                tableBody.innerHTML = '';
+                if (orders.length === 0) {
+                    tableBody.innerHTML = `
+                        <tr>
+                            <td colspan="7" class="py-12 text-center text-slate-500 dark:text-neutral-400">
+                                <i class="fas fa-shopping-cart text-4xl mb-4 block"></i>
+                                <p class="text-lg font-medium">Không có đơn hàng</p>
+                                <p class="text-sm">Hãy thử thay đổi bộ lọc để xem thêm kết quả</p>
+                            </td>
+                        </tr>
+                    `;
+                    return;
+                }
+
+                for (const order of orders) {
+                    const date = new Date(order.NgayLap).toLocaleDateString('vi-VN');
+                    const tongTien = order.TongTien.toLocaleString('vi-VN') + ' VNĐ';
+                    const tenKH = await getCustomerName(order.MaKH);
+
+                    const row = document.createElement('tr');
+                    row.className = 'hover:bg-emerald-50 dark:hover:bg-emerald-900/10 transition-colors';
+                    row.innerHTML = `
+                        <td class="py-4 px-6">
+                            <div class="font-mono font-semibold text-slate-900 dark:text-white">#${order._id.slice(-8).toUpperCase()}</div>
+                        </td>
+                        <td class="py-4 px-6">
+                            <div>
+                                <div class="font-semibold text-slate-900 dark:text-white">${tenKH}</div>
+                                <div class="text-sm text-slate-500 dark:text-neutral-400">ID: ${order.MaKH}</div>
+                            </div>
+                        </td>
+                        <td class="py-4 px-6">
+                            <div>
+                                <div class="font-semibold text-slate-900 dark:text-white">${order.hoTenNguoiNhan}</div>
+                                <div class="text-sm text-slate-500 dark:text-neutral-400">${order.sdtNguoiNhan}</div>
+                                <div class="text-sm text-slate-500 dark:text-neutral-400">${order.diaChiChiTiet}, ${order.tinhThanh}</div>
+                            </div>
+                        </td>
+                        <td class="py-4 px-6 text-slate-900 dark:text-white">${date}</td>
+                        <td class="py-4 px-6">
+                            <div class="font-semibold text-slate-900 dark:text-white">${tongTien}</div>
+                        </td>
+                        <td class="py-4 px-6">
+                            <select class="px-3 py-1 rounded-full text-sm font-semibold border-0 focus:ring-2 focus:ring-emerald-500 ${getStatusBadge(order.TrangThai)}" data-order-id="${order._id}">
+                                <option value="Chờ xác nhận" ${order.TrangThai === 'Chờ xác nhận' ? 'selected' : ''}>Chờ xác nhận</option>
+                                <option value="Đang vận chuyển" ${order.TrangThai === 'Đang vận chuyển' ? 'selected' : ''}>Đang vận chuyển</option>
+                                <option value="Đã hoàn thành" ${order.TrangThai === 'Đã hoàn thành' ? 'selected' : ''}>Đã hoàn thành</option>
+                                <option value="Đã hủy" ${order.TrangThai === 'Đã hủy' ? 'selected' : ''}>Đã hủy</option>
+                            </select>
+                        </td>
+                        <td class="py-4 px-6">
+                            <div class="flex items-center gap-2">
+                                <button class="p-2 text-slate-400 hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-colors" onclick="viewOrder('${order._id}')" title="Xem chi tiết">
+                                    <i class="fas fa-eye text-sm"></i>
+                                </button>
+                                <button class="p-2 text-slate-400 hover:text-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 rounded-lg transition-colors" onclick="generateSellerInvoice('${order._id}')" title="Tạo/Xem hóa đơn">
+                                    <i class="fas fa-print text-sm"></i>
+                                </button>
+                                <button class="p-2 text-slate-400 hover:text-purple-500 hover:bg-purple-50 dark:hover:bg-purple-900/20 rounded-lg transition-colors" onclick="openSellerInvoiceModal('${order._id}')" title="Quét/Xem hóa đơn">
+                                    <i class="fas fa-file-invoice text-sm"></i>
+                                </button>
+                            </div>
+                        </td>
+                    `;
+                    tableBody.appendChild(row);
+                }
+
+                // Gắn sự kiện thay đổi trạng thái
+                document.querySelectorAll('select[data-order-id]').forEach(select => {
+                    select.addEventListener('change', async (e) => {
+                        const orderId = e.target.getAttribute('data-order-id');
+                        const newStatus = e.target.value;
+
+                        try {
+                            const res = await fetch(`http://localhost:3006/api/orders/${orderId}/status`, {
+                                method: 'PUT',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ TrangThai: newStatus })
+                            });
+                            if (res.ok) {
+                                alert('Cập nhật trạng thái thành công');
+                                fetchOrders();
+                            } else {
+                                alert('Cập nhật thất bại');
+                            }
+                        } catch (err) {
+                            console.error('Lỗi cập nhật trạng thái:', err);
+                            alert('Có lỗi xảy ra');
+                        }
+                    });
+                });
+            }
+
+            function updateOrderStats(orders) {
+                const count = {
+                    "Chờ xác nhận": 0,
+                    "Đang vận chuyển": 0,
+                    "Đã hoàn thành": 0,
+                    "Đã hủy": 0
+                };
+
+                orders.forEach(o => count[o.TrangThai] = (count[o.TrangThai] || 0) + 1);
+
+                document.getElementById('pendingOrders').textContent = count["Chờ xác nhận"];
+                document.getElementById('shippingOrders').textContent = count["Đang vận chuyển"];
+                document.getElementById('completedOrders').textContent = count["Đã hoàn thành"];
+                document.getElementById('cancelledOrders').textContent = count["Đã hủy"];
+            }
+            function resetSellerInvoiceModal() {
+                invoiceStatusEl.textContent = 'Chưa có dữ liệu';
+                invoiceDetailsEl.innerHTML = '<li>• Chưa có dữ liệu OCR</li>';
+                invoiceRawTextEl.textContent = 'Chưa có nội dung';
+                invoiceUploadError.textContent = '';
+                invoiceImageLink.classList.add('hidden');
+                invoiceFileInput.value = '';
+            }
+            function renderSellerInvoice(invoice) {
+                if (!invoice) {
+                    resetSellerInvoiceModal();
+                    return;
+                }
+
+                invoiceStatusEl.textContent = invoice.status === 'processed'
+                    ? 'Đã xử lý'
+                    : invoice.status === 'failed'
+                        ? 'Xử lý thất bại'
+                        : 'Đang chờ xử lý';
+
+                if (invoice.error) {
+                    invoiceUploadError.textContent = invoice.error;
+                }
+
+                if (invoice.parsed) {
+                    const items = [];
+                    // Thông tin đơn hàng
+                    if (invoice.parsed.orderCode) {
+                        items.push(`<strong>📋 Mã đơn:</strong> ${invoice.parsed.orderCode}`);
+                    }
+                    if (invoice.parsed.date) {
+                        items.push(`<strong>📅 Ngày:</strong> ${invoice.parsed.date}`);
+                    }
+                    if (invoice.parsed.status) {
+                        items.push(`<strong>🔄 Trạng thái:</strong> ${invoice.parsed.status}`);
+                    }
+                    if (invoice.parsed.paymentMethod) {
+                        items.push(`<strong>💳 Phương thức:</strong> ${invoice.parsed.paymentMethod.toUpperCase()}`);
+                    }
+                    
+                    // Thông tin khách hàng
+                    if (invoice.parsed.customer) {
+                        items.push(`<strong>👤 Họ tên:</strong> ${invoice.parsed.customer}`);
+                    }
+                    if (invoice.parsed.phone) {
+                        items.push(`<strong>📞 SĐT:</strong> ${invoice.parsed.phone}`);
+                    }
+                    if (invoice.parsed.address) {
+                        items.push(`<strong>📍 Địa chỉ:</strong> ${invoice.parsed.address}`);
+                    }
+                    if (invoice.parsed.province) {
+                        items.push(`<strong>🏙️ Tỉnh/Thành:</strong> ${invoice.parsed.province}`);
+                    }
+                    
+                    // Sản phẩm
+                    if (invoice.parsed.products && invoice.parsed.products.length > 0) {
+                        items.push(`<strong>🛍️ Sản phẩm (${invoice.parsed.products.length}):</strong>`);
+                        invoice.parsed.products.forEach((product, idx) => {
+                            const productPrice = product.price ? `${Number(product.price).toLocaleString('vi-VN')} VNĐ` : '-';
+                            const colorLabel = product.color || '-';
+                            const sizeLabel = product.size || '-';
+                            items.push(`&nbsp;&nbsp;${idx + 1}. ${product.name} - SL: ${product.quantity || 1} - Màu: ${colorLabel} - Kích thước: ${sizeLabel} - Giá: ${productPrice}`);
+                        });
+                    }
+                    
+                    // Tổng tiền
+                    if (invoice.parsed.total) {
+                        const totalNumber = Number(invoice.parsed.total);
+                        const formattedTotal = Number.isFinite(totalNumber)
+                            ? `${totalNumber.toLocaleString('vi-VN')} VNĐ`
+                            : `${invoice.parsed.total} VNĐ`;
+                        items.push(`<strong>💰 Tổng tiền:</strong> <span class="text-emerald-600 font-bold">${formattedTotal}</span>`);
+                    }
+                    invoiceDetailsEl.innerHTML = items.length ? items.map(item => `<li class="mb-2">${item}</li>`).join('') : '<li>• Không trích xuất được thông tin</li>';
+                } else {
+                    invoiceDetailsEl.innerHTML = '<li>• Không trích xuất được thông tin</li>';
+                }
+
+                invoiceRawTextEl.textContent = invoice.rawText || 'Không có nội dung OCR';
+
+                if (invoice.imagePath) {
+                    invoiceImageLink.href = `http://localhost:3006/${invoice.imagePath}`;
+                    invoiceImageLink.classList.remove('hidden');
+                } else {
+                    invoiceImageLink.classList.add('hidden');
+                }
+            }
+            async function loadSellerInvoice(orderId) {
+                resetSellerInvoiceModal();
+                invoiceStatusEl.textContent = 'Đang tải dữ liệu hóa đơn...';
+                try {
+                    const res = await fetch(`http://localhost:3006/api/invoices/order/${orderId}`);
+                    if (res.ok) {
+                        const invoice = await res.json();
+                        renderSellerInvoice(invoice);
+                    } else if (res.status === 404) {
+                        invoiceStatusEl.textContent = 'Chưa có hóa đơn được quét.';
+                    } else {
+                        invoiceStatusEl.textContent = 'Không thể tải dữ liệu hóa đơn.';
+                    }
+                } catch (err) {
+                    console.error('Lỗi tải hóa đơn:', err);
+                    invoiceStatusEl.textContent = 'Lỗi kết nối khi tải hóa đơn.';
+                }
+            }
+            function openSellerInvoiceModal(orderId) {
+                currentInvoiceOrderId = orderId;
+                invoiceOrderLabel.textContent = `#${orderId.slice(-8).toUpperCase()}`;
+                invoiceModal.classList.remove('hidden');
+                loadSellerInvoice(orderId);
+            }
+            function closeSellerInvoiceModal() {
+                invoiceModal.classList.add('hidden');
+                currentInvoiceOrderId = null;
+            }
+            async function submitSellerInvoiceUpload() {
+                if (!currentInvoiceOrderId) {
+                    invoiceUploadError.textContent = 'Không xác định được đơn hàng.';
+                    return;
+                }
+
+                const file = invoiceFileInput.files[0];
+                if (!file) {
+                    invoiceUploadError.textContent = 'Vui lòng chọn ảnh hóa đơn.';
+                    return;
+                }
+
+                invoiceUploadError.textContent = '';
+                invoiceUploadBtn.disabled = true;
+                const originalText = invoiceUploadBtn.textContent;
+                invoiceUploadBtn.textContent = 'Đang xử lý...';
+
+                const formData = new FormData();
+                formData.append('invoice', file);
+                formData.append('orderId', currentInvoiceOrderId);
+
+                try {
+                    const response = await fetch('http://localhost:3006/api/invoices', {
+                        method: 'POST',
+                        body: formData,
+                    });
+
+                    const data = await response.json();
+
+                    if (!response.ok) {
+                        renderSellerInvoice(data.invoice);
+                        throw new Error(data.message || 'Không thể xử lý hóa đơn');
+                    }
+
+                    renderSellerInvoice(data.invoice);
+                    invoiceFileInput.value = '';
+                    alert('Quét hóa đơn thành công!');
+                } catch (err) {
+                    console.error('Upload invoice error:', err);
+                    invoiceUploadError.textContent = err.message || 'Đã xảy ra lỗi khi tải hóa đơn.';
+                } finally {
+                    invoiceUploadBtn.disabled = false;
+                    invoiceUploadBtn.textContent = originalText;
+                }
+            }
+            window.openSellerInvoiceModal = openSellerInvoiceModal;
+            window.closeSellerInvoiceModal = closeSellerInvoiceModal;
+            window.submitSellerInvoiceUpload = submitSellerInvoiceUpload;
+            function viewOrder(id) {
+                window.location.href = `/seller/order-detail/${id}`;
+            }
+            window.viewOrder = viewOrder;
+
+            function generateSellerInvoice(orderId) {
+                window.open(`http://localhost:3006/api/invoices/generate/${orderId}`, '_blank');
+            }
+            window.generateSellerInvoice = generateSellerInvoice;
+
+            filterSelect.addEventListener('change', () => {
+                const status = filterSelect.value;
+                const filtered = status ? allOrders.filter(o => o.TrangThai === status) : allOrders;
+                renderOrders(filtered);
+                updateOrderStats(filtered);
+            });
+
+            searchInput.addEventListener('input', () => {
+                const keyword = searchInput.value.toLowerCase();
+                const filtered = allOrders.filter(o =>
+                    o._id.toLowerCase().includes(keyword) || o.MaKH.toLowerCase().includes(keyword)
+                );
+                renderOrders(filtered);
+                updateOrderStats(filtered);
+            });
+
+            fetchOrders();
+        });
+    </script>
+</body>
+</html>

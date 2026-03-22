@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cài đặt hệ thống - MegaStore VN</title>
+    <meta name="description" content="Cài đặt hệ thống MegaStore VN - Admin Panel">
+    
+    <!-- Tailwind CSS (CDN) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        if (window.tailwind) { 
+            tailwind.config = { 
+                darkMode: 'class',
+                theme: {
+                    extend: {
+                        animation: {
+                            'fade-in': 'fadeIn 0.5s ease-in',
+                            'slide-up': 'slideUp 0.6s ease-out',
+                            'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        },
+                        keyframes: {
+                            fadeIn: {
+                                '0%': { opacity: '0' },
+                                '100%': { opacity: '1' }
+                            },
+                            slideUp: {
+                                '0%': { transform: 'translateY(20px)', opacity: '0' },
+                                '100%': { transform: 'translateY(0)', opacity: '1' }
+                            }
+                        }
+                    }
+                }
+            } 
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        /* Custom styles to override any conflicting CSS */
+        .admin-layout {
+            display: flex;
+            min-height: 100vh;
+        }
+        .main-content {
+            flex: 1;
+            margin-left: 16rem; /* 64 * 0.25rem = 16rem */
+            margin-top: 0;
+            padding-top: 0;
+        }
+        
+        /* Override header styles for admin pages */
+        .seller-header {
+            position: relative !important;
+            z-index: 10 !important;
+            margin-bottom: 0 !important;
+        }
+        
+        /* Ensure sidebar is positioned correctly */
+        nav.sidebar {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            height: 100vh !important;
+            z-index: 30 !important;
+        }
+        
+        @media (max-width: 768px) {
+            .main-content {
+                margin-left: 0;
+                padding-top: 1rem;
+            }
+            nav.sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+            nav.sidebar.active {
+                transform: translateX(0);
+            }
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-slate-50 via-white to-slate-50 dark:from-neutral-900 dark:via-black dark:to-neutral-900 min-h-screen transition-colors duration-300" style="font-family: 'Inter', sans-serif;">
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <%- include('./../elements/navbaradmin') %>
+        
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Admin Header -->
+            <div class="bg-white dark:bg-neutral-900 border-b border-slate-200 dark:border-neutral-800 px-6 py-4">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h1 class="text-2xl font-bold text-slate-900 dark:text-white">Cài đặt hệ thống</h1>
+                        <p class="text-slate-600 dark:text-neutral-400">Quản lý cấu hình và thiết lập hệ thống</p>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <div class="relative">
+                            <button class="p-2 text-slate-600 dark:text-neutral-400 hover:text-orange-500 dark:hover:text-yellow-400 transition-colors">
+                                <i class="fas fa-bell text-lg"></i>
+                                <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">3</span>
+                            </button>
+                        </div>
+                        <div class="relative group">
+                            <button class="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-orange-500 to-yellow-500 dark:from-yellow-500 dark:to-yellow-400 text-white dark:text-black rounded-xl font-medium hover:shadow-lg transition-all">
+                                <i class="fas fa-user-circle"></i>
+                                <span id="admin-username">Admin</span>
+                                <i class="fas fa-chevron-down text-sm"></i>
+                            </button>
+                            <div class="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-neutral-800 rounded-xl shadow-lg border border-slate-200 dark:border-neutral-700 py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                                <a href="/" class="flex items-center gap-3 px-4 py-2 text-slate-700 dark:text-neutral-300 hover:bg-slate-50 dark:hover:bg-neutral-700 transition-colors">
+                                    <i class="fas fa-home"></i>
+                                    <span>Quay lại trang chính</span>
+                                </a>
+                                <a href="#" onclick="logout()" class="flex items-center gap-3 px-4 py-2 text-slate-700 dark:text-neutral-300 hover:bg-slate-50 dark:hover:bg-neutral-700 transition-colors">
+                                    <i class="fas fa-sign-out-alt"></i>
+                                    <span>Đăng xuất</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Dashboard Content -->
+            <div class="p-6 space-y-8">
+                <!-- Settings Grid -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <!-- General Settings -->
+                    <div class="bg-white dark:bg-neutral-900 rounded-2xl shadow-lg shadow-orange-500/5 dark:shadow-yellow-500/5 border border-slate-200 dark:border-neutral-800 p-6">
+                        <div class="flex items-center gap-3 mb-6">
+                            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-orange-500 to-yellow-500 dark:from-yellow-500 dark:to-yellow-400 flex items-center justify-center">
+                                <i class="fas fa-cog text-white dark:text-black"></i>
+                            </div>
+                            <h2 class="text-xl font-bold text-slate-900 dark:text-white">Cài đặt chung</h2>
+                        </div>
+                        
+                        <form class="space-y-6">
+                            <div>
+                                <label for="siteName" class="block text-sm font-semibold text-slate-700 dark:text-neutral-300 mb-2">
+                                    Tên website
+                                </label>
+                                <input type="text" id="siteName" class="w-full px-4 py-3 border border-slate-300 dark:border-neutral-700 rounded-xl bg-slate-50 dark:bg-neutral-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-orange-500 dark:focus:ring-yellow-500 focus:border-transparent transition-all" value="MegaStore VN">
+                            </div>
+                            
+                            <div>
+                                <label for="siteDescription" class="block text-sm font-semibold text-slate-700 dark:text-neutral-300 mb-2">
+                                    Mô tả website
+                                </label>
+                                <textarea id="siteDescription" rows="3" class="w-full px-4 py-3 border border-slate-300 dark:border-neutral-700 rounded-xl bg-slate-50 dark:bg-neutral-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-orange-500 dark:focus:ring-yellow-500 focus:border-transparent transition-all resize-none">Cửa hàng điện tử trực tuyến hàng đầu Việt Nam</textarea>
+                            </div>
+                            
+                            <div>
+                                <label for="siteEmail" class="block text-sm font-semibold text-slate-700 dark:text-neutral-300 mb-2">
+                                    Email liên hệ
+                                </label>
+                                <input type="email" id="siteEmail" class="w-full px-4 py-3 border border-slate-300 dark:border-neutral-700 rounded-xl bg-slate-50 dark:bg-neutral-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-orange-500 dark:focus:ring-yellow-500 focus:border-transparent transition-all" value="contact@megastore.vn">
+                            </div>
+                            
+                            <div>
+                                <label for="sitePhone" class="block text-sm font-semibold text-slate-700 dark:text-neutral-300 mb-2">
+                                    Số điện thoại
+                                </label>
+                                <input type="tel" id="sitePhone" class="w-full px-4 py-3 border border-slate-300 dark:border-neutral-700 rounded-xl bg-slate-50 dark:bg-neutral-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-orange-500 dark:focus:ring-yellow-500 focus:border-transparent transition-all" value="1900-1234">
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Payment Settings -->
+                    <div class="bg-white dark:bg-neutral-900 rounded-2xl shadow-lg shadow-orange-500/5 dark:shadow-yellow-500/5 border border-slate-200 dark:border-neutral-800 p-6">
+                        <div class="flex items-center gap-3 mb-6">
+                            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center">
+                                <i class="fas fa-credit-card text-white"></i>
+                            </div>
+                            <h2 class="text-xl font-bold text-slate-900 dark:text-white">Cài đặt thanh toán</h2>
+                        </div>
+                        
+                        <form class="space-y-6">
+                            <div>
+                                <label class="block text-sm font-semibold text-slate-700 dark:text-neutral-300 mb-3">
+                                    Phương thức thanh toán
+                                </label>
+                                <div class="space-y-3">
+                                    <label class="flex items-center gap-3 cursor-pointer">
+                                        <input type="checkbox" checked class="w-5 h-5 text-orange-500 dark:text-yellow-500 bg-slate-100 dark:bg-neutral-800 border-slate-300 dark:border-neutral-700 rounded focus:ring-orange-500 dark:focus:ring-yellow-500 focus:ring-2">
+                                        <span class="text-slate-700 dark:text-neutral-300">Thanh toán khi nhận hàng (COD)</span>
+                                    </label>
+                                    <label class="flex items-center gap-3 cursor-pointer">
+                                        <input type="checkbox" checked class="w-5 h-5 text-orange-500 dark:text-yellow-500 bg-slate-100 dark:bg-neutral-800 border-slate-300 dark:border-neutral-700 rounded focus:ring-orange-500 dark:focus:ring-yellow-500 focus:ring-2">
+                                        <span class="text-slate-700 dark:text-neutral-300">Chuyển khoản ngân hàng</span>
+                                    </label>
+                                    <label class="flex items-center gap-3 cursor-pointer">
+                                        <input type="checkbox" checked class="w-5 h-5 text-orange-500 dark:text-yellow-500 bg-slate-100 dark:bg-neutral-800 border-slate-300 dark:border-neutral-700 rounded focus:ring-orange-500 dark:focus:ring-yellow-500 focus:ring-2">
+                                        <span class="text-slate-700 dark:text-neutral-300">Ví điện tử (Momo, ZaloPay)</span>
+                                    </label>
+                                    <label class="flex items-center gap-3 cursor-pointer">
+                                        <input type="checkbox" class="w-5 h-5 text-orange-500 dark:text-yellow-500 bg-slate-100 dark:bg-neutral-800 border-slate-300 dark:border-neutral-700 rounded focus:ring-orange-500 dark:focus:ring-yellow-500 focus:ring-2">
+                                        <span class="text-slate-700 dark:text-neutral-300">Thẻ tín dụng/ghi nợ</span>
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <label for="commission" class="block text-sm font-semibold text-slate-700 dark:text-neutral-300 mb-2">
+                                    Phí hoa hồng (%)
+                                </label>
+                                <input type="number" id="commission" min="0" max="100" class="w-full px-4 py-3 border border-slate-300 dark:border-neutral-700 rounded-xl bg-slate-50 dark:bg-neutral-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-orange-500 dark:focus:ring-yellow-500 focus:border-transparent transition-all" value="5">
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Shipping Settings -->
+                    <div class="bg-white dark:bg-neutral-900 rounded-2xl shadow-lg shadow-orange-500/5 dark:shadow-yellow-500/5 border border-slate-200 dark:border-neutral-800 p-6">
+                        <div class="flex items-center gap-3 mb-6">
+                            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center">
+                                <i class="fas fa-truck text-white"></i>
+                            </div>
+                            <h2 class="text-xl font-bold text-slate-900 dark:text-white">Cài đặt vận chuyển</h2>
+                        </div>
+                        
+                        <form class="space-y-6">
+                            <div>
+                                <label class="block text-sm font-semibold text-slate-700 dark:text-neutral-300 mb-3">
+                                    Đơn vị vận chuyển
+                                </label>
+                                <div class="space-y-3">
+                                    <label class="flex items-center gap-3 cursor-pointer">
+                                        <input type="checkbox" checked class="w-5 h-5 text-orange-500 dark:text-yellow-500 bg-slate-100 dark:bg-neutral-800 border-slate-300 dark:border-neutral-700 rounded focus:ring-orange-500 dark:focus:ring-yellow-500 focus:ring-2">
+                                        <span class="text-slate-700 dark:text-neutral-300">Giao hàng nhanh (GHN)</span>
+                                    </label>
+                                    <label class="flex items-center gap-3 cursor-pointer">
+                                        <input type="checkbox" checked class="w-5 h-5 text-orange-500 dark:text-yellow-500 bg-slate-100 dark:bg-neutral-800 border-slate-300 dark:border-neutral-700 rounded focus:ring-orange-500 dark:focus:ring-yellow-500 focus:ring-2">
+                                        <span class="text-slate-700 dark:text-neutral-300">Giao hàng tiết kiệm (GHTK)</span>
+                                    </label>
+                                    <label class="flex items-center gap-3 cursor-pointer">
+                                        <input type="checkbox" checked class="w-5 h-5 text-orange-500 dark:text-yellow-500 bg-slate-100 dark:bg-neutral-800 border-slate-300 dark:border-neutral-700 rounded focus:ring-orange-500 dark:focus:ring-yellow-500 focus:ring-2">
+                                        <span class="text-slate-700 dark:text-neutral-300">Viettel Post</span>
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <label for="shippingFee" class="block text-sm font-semibold text-slate-700 dark:text-neutral-300 mb-2">
+                                    Phí vận chuyển cơ bản (VNĐ)
+                                </label>
+                                <input type="number" id="shippingFee" class="w-full px-4 py-3 border border-slate-300 dark:border-neutral-700 rounded-xl bg-slate-50 dark:bg-neutral-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-orange-500 dark:focus:ring-yellow-500 focus:border-transparent transition-all" value="30000">
+                            </div>
+                            
+                            <div>
+                                <label for="freeShipping" class="block text-sm font-semibold text-slate-700 dark:text-neutral-300 mb-2">
+                                    Miễn phí vận chuyển từ (VNĐ)
+                                </label>
+                                <input type="number" id="freeShipping" class="w-full px-4 py-3 border border-slate-300 dark:border-neutral-700 rounded-xl bg-slate-50 dark:bg-neutral-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-orange-500 dark:focus:ring-yellow-500 focus:border-transparent transition-all" value="500000">
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Notification Settings -->
+                    <div class="bg-white dark:bg-neutral-900 rounded-2xl shadow-lg shadow-orange-500/5 dark:shadow-yellow-500/5 border border-slate-200 dark:border-neutral-800 p-6">
+                        <div class="flex items-center gap-3 mb-6">
+                            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
+                                <i class="fas fa-bell text-white"></i>
+                            </div>
+                            <h2 class="text-xl font-bold text-slate-900 dark:text-white">Cài đặt thông báo</h2>
+                        </div>
+                        
+                        <form class="space-y-6">
+                            <div>
+                                <label class="block text-sm font-semibold text-slate-700 dark:text-neutral-300 mb-3">
+                                    Thông báo qua email
+                                </label>
+                                <div class="space-y-3">
+                                    <label class="flex items-center gap-3 cursor-pointer">
+                                        <input type="checkbox" checked class="w-5 h-5 text-orange-500 dark:text-yellow-500 bg-slate-100 dark:bg-neutral-800 border-slate-300 dark:border-neutral-700 rounded focus:ring-orange-500 dark:focus:ring-yellow-500 focus:ring-2">
+                                        <span class="text-slate-700 dark:text-neutral-300">Đơn hàng mới</span>
+                                    </label>
+                                    <label class="flex items-center gap-3 cursor-pointer">
+                                        <input type="checkbox" checked class="w-5 h-5 text-orange-500 dark:text-yellow-500 bg-slate-100 dark:bg-neutral-800 border-slate-300 dark:border-neutral-700 rounded focus:ring-orange-500 dark:focus:ring-yellow-500 focus:ring-2">
+                                        <span class="text-slate-700 dark:text-neutral-300">Cập nhật trạng thái đơn hàng</span>
+                                    </label>
+                                    <label class="flex items-center gap-3 cursor-pointer">
+                                        <input type="checkbox" checked class="w-5 h-5 text-orange-500 dark:text-yellow-500 bg-slate-100 dark:bg-neutral-800 border-slate-300 dark:border-neutral-700 rounded focus:ring-orange-500 dark:focus:ring-yellow-500 focus:ring-2">
+                                        <span class="text-slate-700 dark:text-neutral-300">Đăng ký gian hàng mới</span>
+                                    </label>
+                                    <label class="flex items-center gap-3 cursor-pointer">
+                                        <input type="checkbox" checked class="w-5 h-5 text-orange-500 dark:text-yellow-500 bg-slate-100 dark:bg-neutral-800 border-slate-300 dark:border-neutral-700 rounded focus:ring-orange-500 dark:focus:ring-yellow-500 focus:ring-2">
+                                        <span class="text-slate-700 dark:text-neutral-300">Báo cáo vi phạm</span>
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-semibold text-slate-700 dark:text-neutral-300 mb-3">
+                                    Thông báo hệ thống
+                                </label>
+                                <div class="space-y-3">
+                                    <label class="flex items-center gap-3 cursor-pointer">
+                                        <input type="checkbox" checked class="w-5 h-5 text-orange-500 dark:text-yellow-500 bg-slate-100 dark:bg-neutral-800 border-slate-300 dark:border-neutral-700 rounded focus:ring-orange-500 dark:focus:ring-yellow-500 focus:ring-2">
+                                        <span class="text-slate-700 dark:text-neutral-300">Bảo trì hệ thống</span>
+                                    </label>
+                                    <label class="flex items-center gap-3 cursor-pointer">
+                                        <input type="checkbox" checked class="w-5 h-5 text-orange-500 dark:text-yellow-500 bg-slate-100 dark:bg-neutral-800 border-slate-300 dark:border-neutral-700 rounded focus:ring-orange-500 dark:focus:ring-yellow-500 focus:ring-2">
+                                        <span class="text-slate-700 dark:text-neutral-300">Cập nhật tính năng mới</span>
+                                    </label>
+                                    <label class="flex items-center gap-3 cursor-pointer">
+                                        <input type="checkbox" checked class="w-5 h-5 text-orange-500 dark:text-yellow-500 bg-slate-100 dark:bg-neutral-800 border-slate-300 dark:border-neutral-700 rounded focus:ring-orange-500 dark:focus:ring-yellow-500 focus:ring-2">
+                                        <span class="text-slate-700 dark:text-neutral-300">Khuyến mãi đặc biệt</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Security Settings -->
+                <div class="bg-white dark:bg-neutral-900 rounded-2xl shadow-lg shadow-orange-500/5 dark:shadow-yellow-500/5 border border-slate-200 dark:border-neutral-800 p-6">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-red-500 to-pink-500 flex items-center justify-center">
+                            <i class="fas fa-shield-alt text-white"></i>
+                        </div>
+                        <h2 class="text-xl font-bold text-slate-900 dark:text-white">Cài đặt bảo mật</h2>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-700 dark:text-neutral-300 mb-3">
+                                Xác thực đăng nhập
+                            </label>
+                            <div class="space-y-3">
+                                <label class="flex items-center gap-3 cursor-pointer">
+                                    <input type="checkbox" checked class="w-5 h-5 text-orange-500 dark:text-yellow-500 bg-slate-100 dark:bg-neutral-800 border-slate-300 dark:border-neutral-700 rounded focus:ring-orange-500 dark:focus:ring-yellow-500 focus:ring-2">
+                                    <span class="text-slate-700 dark:text-neutral-300">Xác thực 2 yếu tố (2FA)</span>
+                                </label>
+                                <label class="flex items-center gap-3 cursor-pointer">
+                                    <input type="checkbox" checked class="w-5 h-5 text-orange-500 dark:text-yellow-500 bg-slate-100 dark:bg-neutral-800 border-slate-300 dark:border-neutral-700 rounded focus:ring-orange-500 dark:focus:ring-yellow-500 focus:ring-2">
+                                    <span class="text-slate-700 dark:text-neutral-300">Giới hạn đăng nhập</span>
+                                </label>
+                                <label class="flex items-center gap-3 cursor-pointer">
+                                    <input type="checkbox" class="w-5 h-5 text-orange-500 dark:text-yellow-500 bg-slate-100 dark:bg-neutral-800 border-slate-300 dark:border-neutral-700 rounded focus:ring-orange-500 dark:focus:ring-yellow-500 focus:ring-2">
+                                    <span class="text-slate-700 dark:text-neutral-300">Đăng nhập bằng Google</span>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label for="sessionTimeout" class="block text-sm font-semibold text-slate-700 dark:text-neutral-300 mb-2">
+                                Thời gian hết hạn phiên (phút)
+                            </label>
+                            <input type="number" id="sessionTimeout" min="5" max="480" class="w-full px-4 py-3 border border-slate-300 dark:border-neutral-700 rounded-xl bg-slate-50 dark:bg-neutral-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-orange-500 dark:focus:ring-yellow-500 focus:border-transparent transition-all" value="30">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex items-center justify-end gap-4">
+                    <button class="px-6 py-3 border border-slate-300 dark:border-neutral-700 rounded-xl bg-white dark:bg-neutral-800 text-slate-700 dark:text-neutral-300 hover:bg-slate-50 dark:hover:bg-neutral-700 transition-colors font-medium">
+                        <i class="fas fa-undo mr-2"></i>
+                        Đặt lại
+                    </button>
+                    <button class="px-8 py-3 bg-gradient-to-r from-orange-500 to-yellow-500 dark:from-yellow-500 dark:to-yellow-400 text-white dark:text-black font-bold rounded-xl shadow-lg shadow-orange-500/25 dark:shadow-yellow-500/25 hover:shadow-xl hover:shadow-orange-500/40 dark:hover:shadow-yellow-500/40 hover:-translate-y-0.5 transition-all duration-200">
+                        <i class="fas fa-save mr-2"></i>
+                        Lưu thay đổi
+                    </button>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <script>
+        const token = localStorage.getItem('authToken');
+        if (!token) {
+            window.location.href = '/admin/login';
+        }
+
+        function logout() {
+            localStorage.removeItem('authToken');
+            localStorage.removeItem('userInfo');
+            localStorage.removeItem('hoTen');
+            window.location.href = '/';
+        }
+
+        // Update admin username
+        document.addEventListener('DOMContentLoaded', function() {
+            const userName = 'Admin';
+            try {
+                const userInfo = localStorage.getItem('userInfo');
+                if (userInfo) {
+                    const userObj = JSON.parse(userInfo);
+                    if (userObj.hoTen) userName = userObj.hoTen;
+                    else if (userObj.name) userName = userObj.name;
+                } else if (localStorage.getItem('hoTen')) {
+                    userName = localStorage.getItem('hoTen');
+                }
+            } catch(e) {}
+            const el = document.getElementById('admin-username');
+            if (el) el.textContent = userName;
+        });
+
+        // Save settings functionality
+        function saveSettings() {
+            // Collect all form data
+            const settings = {
+                general: {
+                    siteName: document.getElementById('siteName').value,
+                    siteDescription: document.getElementById('siteDescription').value,
+                    siteEmail: document.getElementById('siteEmail').value,
+                    sitePhone: document.getElementById('sitePhone').value
+                },
+                payment: {
+                    methods: Array.from(document.querySelectorAll('input[type="checkbox"]:checked')).map(cb => cb.nextElementSibling.textContent),
+                    commission: document.getElementById('commission').value
+                },
+                shipping: {
+                    carriers: Array.from(document.querySelectorAll('input[type="checkbox"]:checked')).map(cb => cb.nextElementSibling.textContent),
+                    shippingFee: document.getElementById('shippingFee').value,
+                    freeShipping: document.getElementById('freeShipping').value
+                },
+                security: {
+                    sessionTimeout: document.getElementById('sessionTimeout').value
+                }
+            };
+
+            // Here you would typically send the settings to your backend
+            console.log('Saving settings:', settings);
+            
+            // Show success message
+            alert('Cài đặt đã được lưu thành công!');
+        }
+
+        // Add event listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add save functionality to the save button
+            const saveButton = document.querySelector('button:has(.fa-save)');
+            if (saveButton) {
+                saveButton.addEventListener('click', saveSettings);
+            }
+
+            // Add reset functionality
+            const resetButton = document.querySelector('button:has(.fa-undo)');
+            if (resetButton) {
+                resetButton.addEventListener('click', function() {
+                    if (confirm('Bạn có chắc chắn muốn đặt lại tất cả cài đặt?')) {
+                        location.reload();
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

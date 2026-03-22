@@ -1,0 +1,471 @@
+/* General Styles */
+:root {
+    --primary-color: #4f46e5; /* Indigo-600 - màu chủ đạo */
+    --primary-dark: #4338ca; /* Indigo-700 - màu hover */
+    --secondary-color: #6366f1; /* Indigo-500 */
+    --success-color: #10b981; /* Green-500 */
+    --warning-color: #f59e0b; /* Amber-500 */
+    --danger-color: #ef4444; /* Red-500 */
+    --light-gray: #f3f4f6; /* Gray-100 */
+    --dark-gray: #4b5563; /* Gray-600 */
+    --border-color: #e5e7eb; /* Gray-200 */
+    --text-muted: #6b7280; /* Gray-500 */
+    --white: #ffffff;
+    --background: #f5f7fa;
+    --logo-color: #007bff; /* Logo blue color */
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: var(--background);
+    color: #2d3436;
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+/* Header Styles */
+.registration-header {
+    background: var(--white);
+    padding: 1rem 0;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 1000;
+}
+
+.registration-header .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    text-decoration: none;
+    border: none;
+}
+
+.logo img {
+    height: 40px;
+}
+
+.logo .divider {
+    color: var(--border-color);
+    font-size: 1.5rem;
+    text-decoration: none;
+}
+
+.logo h1 {
+    font-size: 1.5rem;
+    color: var(--dark-gray);
+    font-weight: 500;
+    text-decoration: none;
+    border: none;
+}
+
+.logo-text {
+    font-size: 24px;
+    font-weight: bold;
+    color: var(--logo-color);
+    text-decoration: none;
+    letter-spacing: -1px;
+    text-transform: none;
+    border: none;
+}
+
+.logo-text:hover {
+    color: var(--logo-color);
+    text-decoration: none;
+}
+
+.help-link {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--dark-gray);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.help-link:hover {
+    color: var(--primary-color);
+}
+
+/* Main Content Styles */
+.registration-content {
+    margin-top: 80px;
+    padding: 2rem 0;
+}
+
+/* Progress Bar Styles */
+.registration-progress {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    max-width: 800px;
+    margin: 0 auto 3rem;
+    padding: 0 1rem;
+}
+
+.progress-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    position: relative;
+    z-index: 1;
+}
+
+.progress-step .step-number {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--white);
+    border: 2px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 500;
+    color: var(--dark-gray);
+}
+
+.progress-step span {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    white-space: nowrap;
+}
+
+.progress-step.active .step-number {
+    background: var(--primary-color);
+    border-color: var(--primary-color);
+    color: var(--white);
+}
+
+.progress-step.active span {
+    color: var(--primary-color);
+    font-weight: 500;
+}
+
+.progress-line {
+    flex: 1;
+    height: 2px;
+    background: var(--border-color);
+    margin: 0 0.5rem;
+    position: relative;
+    top: -15px;
+}
+
+/* Form Styles */
+.registration-form {
+    max-width: 800px;
+    margin: 0 auto;
+    background: var(--white);
+    border-radius: 8px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    padding: 2rem;
+}
+
+.form-section {
+    display: none;
+}
+
+.form-section.active {
+    display: block;
+}
+
+.form-section h2 {
+    font-size: 1.5rem;
+    color: var(--dark-gray);
+    margin-bottom: 0.5rem;
+}
+
+.section-desc {
+    color: var(--text-muted);
+    margin-bottom: 2rem;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    font-weight: 500;
+    color: var(--dark-gray);
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+.required {
+    color: var(--danger-color);
+    margin-left: 4px;
+}
+
+.input-hint {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    margin-top: 0.25rem;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="address"],
+input[type="province"],
+input[type="tel"],
+select,
+textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background: var(--white);
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+}
+
+.phone-input {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.country-code {
+    width: 100px;
+}
+
+.btn-add-address {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem;
+    border: 1px dashed var(--border-color);
+    background: white;
+    color: var(--primary-color);
+    border-radius: 4px;
+    cursor: pointer;
+    width: 100%;
+    justify-content: center;
+    transition: all 0.3s;
+}
+
+.btn-add-address:hover {
+    background: var(--light-gray);
+}
+
+/* Shipping Options */
+.shipping-options {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.shipping-option {
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.shipping-option:hover {
+    border-color: var(--primary-color);
+    background: rgba(79, 70, 229, 0.05);
+}
+
+.shipping-option input[type="checkbox"] {
+    display: none;
+}
+
+.shipping-option label {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    cursor: pointer;
+}
+
+.option-info h4 {
+    margin-bottom: 0.25rem;
+    color: var(--dark-gray);
+}
+
+.option-info p {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+}
+
+/* ID Upload */
+.id-upload {
+    border: 2px dashed var(--border-color);
+    border-radius: 6px;
+    padding: 2rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: var(--light-gray);
+}
+
+.id-upload:hover {
+    border-color: var(--primary-color);
+    background: rgba(79, 70, 229, 0.05);
+}
+
+.id-upload i {
+    font-size: 2rem;
+    color: var(--text-muted);
+    margin-bottom: 1rem;
+}
+
+.id-upload p {
+    color: var(--text-muted);
+    font-size: 0.875rem;
+}
+
+.id-upload input[type="file"] {
+    display: none;
+}
+
+/* Form Actions */
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.btn-primary,
+.btn-secondary {
+    padding: 0.75rem 1.5rem;
+    border-radius: 6px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-primary {
+    background: var(--primary-color);
+    color: var(--white);
+    border: none;
+    font-weight: 500;
+    padding: 0.75rem 1.5rem;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    background: var(--primary-dark);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.btn-secondary {
+    background: var(--white);
+    color: var(--dark-gray);
+    border: 1px solid var(--border-color);
+    font-weight: 500;
+    padding: 0.75rem 1.5rem;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+
+.btn-secondary:hover {
+    background: var(--light-gray);
+    transform: translateY(-1px);
+}
+
+/* Completion Step */
+.completion-content {
+    text-align: center;
+    padding: 3rem 0;
+}
+
+.success-icon {
+    font-size: 4rem;
+    color: var(--success-color);
+    margin-bottom: 1.5rem;
+}
+
+.completion-content h2 {
+    color: var(--success-color);
+    margin-bottom: 1rem;
+}
+
+.completion-content p {
+    color: var(--text-muted);
+    margin-bottom: 0.5rem;
+}
+
+.completion-content .btn-primary {
+    margin-top: 2rem;
+}
+
+/* Footer */
+.registration-footer {
+    text-align: center;
+    padding: 2rem 0;
+    color: var(--text-muted);
+    font-size: 0.875rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .registration-progress {
+        overflow-x: auto;
+        padding-bottom: 1rem;
+    }
+
+    .progress-step span {
+        font-size: 0.75rem;
+    }
+
+    .registration-form {
+        margin: 0 1rem;
+        padding: 1.5rem;
+    }
+
+    .form-row {
+        flex-direction: column;
+    }
+
+    .form-actions {
+        flex-direction: column-reverse;
+        gap: 1rem;
+    }
+
+    .btn-primary,
+    .btn-secondary {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .logo h1 {
+        font-size: 1.2rem;
+    }
+
+    .help-link span {
+        display: none;
+    }
+} 

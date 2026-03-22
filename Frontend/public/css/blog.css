@@ -1,0 +1,104 @@
+/* Blog styles */
+.hover-scale {
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.hover-scale:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+
+.posts-scroll {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    scroll-behavior: smooth;
+}
+
+.posts-scroll::-webkit-scrollbar {
+    display: none;
+}
+
+.bg-gradient {
+    background: linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%);
+}
+
+/* Hero section decorative elements */
+.hero-shape {
+    position: absolute;
+    z-index: 0;
+    pointer-events: none;
+}
+
+/* Card improvements */
+.card {
+    border: none;
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+/* Badge styles */
+.badge {
+    padding: 0.5em 1em;
+    font-weight: 500;
+}
+
+/* Author avatar */
+.author-avatar {
+    width: 30px;
+    height: 30px;
+    object-fit: cover;
+    border: 2px solid #fff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Newsletter section */
+.newsletter-section {
+    background: linear-gradient(45deg, #007bff, #0056b3);
+    border-radius: 1rem;
+    overflow: hidden;
+    position: relative;
+}
+
+.newsletter-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('/images/pattern.png');
+    opacity: 0.1;
+}
+
+/* Responsive improvements */
+@media (max-width: 768px) {
+    .hero-content {
+        text-align: center;
+        padding: 2rem 0;
+    }
+    
+    .hero-image {
+        margin-top: 2rem;
+    }
+    
+    .category-card {
+        margin-bottom: 1rem;
+    }
+}
+
+/* Animation for scroll buttons */
+.btn-scroll {
+    transition: all 0.2s ease;
+}
+
+.btn-scroll:hover {
+    transform: scale(1.1);
+}
+
+.btn-scroll:active {
+    transform: scale(0.9);
+} 

@@ -1,0 +1,28 @@
+<!-- Main Content -->
+<div class="seller-layout">
+    <!-- Sidebar -->
+    <nav class="sidebar">
+        <ul>
+            <li class="<%= activeTab === 'dashboard' ? 'active' : '' %>">
+                <a href="/seller"><i class="fas fa-home"></i>Tổng quan</a>
+            </li>
+            <li class="<%= activeTab === 'order' ? 'active' : '' %>">
+                <a href="/seller/order"><i class="fas fa-box"></i>Quản lý đơn hàng</a>
+            </li>
+            <li class="<%= activeTab === 'product' ? 'active' : '' %>">
+                <a href="/seller/product"><i class="fas fa-cube"></i>Quản lý sản phẩm</a>
+            </li>
+            <li class="<%= activeTab === 'analytic' ? 'active' : '' %>">
+                <a href="/seller/analytic"><i class="fas fa-chart-line"></i>Phân tích bán hàng</a>
+            </li>
+            <li class="<%= activeTab === 'finance' ? 'active' : '' %>">
+                <a href="/seller/finance"><i class="fas fa-money-bill-wave"></i>Tài chính</a>
+            </li>
+            <li class="<%= activeTab === 'sale' ? 'active' : '' %>">
+                <a href="/seller/sale"><i class="fa-regular fa-money-bill-1"></i></i>Mã giảm giá</a>
+            </li>
+            <li class="<%= activeTab === 'setting' ? 'active' : '' %>">
+                <a href="/seller/setting"><i class="fas fa-cog"></i>Thiết lập shop</a>
+            </li>
+        </ul>
+    </nav>

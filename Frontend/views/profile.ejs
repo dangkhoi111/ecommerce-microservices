@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Trang cá nhân</title>
+  <link rel="stylesheet" href="/css/profile.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-neutral-50 text-slate-800 dark:bg-slate-900 dark:text-slate-100">
+
+<div class="profile-container">
+  <div class="container py-5">
+    <div class="row">
+      <!-- Sidebar -->
+      <div class="col-lg-3">
+        <div class="profile-sidebar card shadow-sm">
+          <div class="profile-header text-center p-4">
+            <div class="profile-image-container mb-3">
+              <img id="profile-avatar" src="/images/default-avatar.png" alt="Profile Image" class="rounded-circle profile-image" onerror="this.src='https://via.placeholder.com/120x120?text=User'; this.onerror=null;">
+              <div class="image-upload-overlay">
+                <label for="profile-image-upload">
+                  <i class="fas fa-camera"></i>
+                </label>
+                <input type="file" id="profile-image-upload" accept="image/*" class="d-none">
+              </div>
+            </div>
+            <h5 class="mb-2" id="profile-name">Đang tải...</h5>
+            <p class="text-muted mb-0" id="profile-email">Đang tải...</p>
+          </div>
+          <div class="profile-menu">
+            <ul class="list-unstyled mb-0">
+              <li class="active">
+                <a href="#profile-info" class="d-flex align-items-center p-3">
+                  <i class="fas fa-user me-3"></i> Thông tin cá nhân
+                </a>
+              </li>
+             
+              <li>
+                <a href="#notifications" class="d-flex align-items-center p-3">
+                  <i class="fas fa-bell me-3"></i> Thông báo
+                </a>
+              </li>
+              <li>
+                <a href="#address" class="d-flex align-items-center p-3">
+                  <i class="fas fa-map-marker-alt me-3"></i> Địa chỉ
+                </a>
+              </li>
+              <li>
+                <a href="#payment" class="d-flex align-items-center p-3">
+                  <i class="fas fa-credit-card me-3"></i> Ngân hàng
+                </a>
+              </li>
+              <li>
+                <a href="#security" class="d-flex align-items-center p-3">
+                  <i class="fas fa-shield-alt me-3"></i> Bảo mật
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Content -->
+      <div class="col-lg-9">
+        <!-- Thông tin cá nhân -->
+        <div id="profile-info" class="card shadow-sm">
+          <div class="card-header bg-white">
+            <h5 class="mb-0">Thông tin cá nhân</h5>
+          </div>
+          <div class="card-body">
+            <form id="profile-form">
+              <div class="row mb-4">
+                <div class="col-md-6">
+                  <label class="form-label">Tên đăng nhập</label>
+                  <input type="text" class="form-control" id="username" value="Đang tải..." readonly>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Họ và tên</label>
+                  <input type="text" class="form-control" id="hoTen" value="Đang tải..." required>
+                </div>
+              </div>
+
+              <div class="row mb-4">
+                <div class="col-md-6">
+                  <label class="form-label">Email</label>
+                  <div class="input-group">
+                    <input type="email" class="form-control" id="email" value="Đang tải..." readonly>
+                    <button class="btn btn-outline-secondary" type="button" disabled>Thay đổi</button>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Số điện thoại</label>
+                  <div class="input-group">
+                    <input type="tel" class="form-control" id="sdt" value="Đang tải..." required>
+                    <button class="btn btn-outline-secondary" type="button" disabled>Thay đổi</button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="text-end">
+                <button type="submit" class="btn-save">
+                  <i class="fas fa-check me-2"></i> Lưu thay đổi
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Địa chỉ -->
+        <div id="address" class="card shadow-sm mt-4">
+          <div class="card-header bg-white d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Địa chỉ giao hàng</h5>
+            <button class="btn btn-sm" onclick="showAddressForm()" style="background: linear-gradient(135deg, #f97316, #eab308); border: none; color: white; font-weight: 500;">+ Thêm địa chỉ</button>
+          </div>
+          <div class="card-body">
+            <div id="address-list">
+              <!-- Các địa chỉ sẽ được hiển thị ở đây -->
+            </div>
+
+            <!-- Form thêm/sửa địa chỉ -->
+            <div id="address-form" class="border rounded p-3 d-none mt-3">
+              <div class="row mb-3">
+                <div class="col-md-6">
+                  <label for="address-name" class="form-label">Họ và tên người nhận</label>
+                  <input type="text" class="form-control" id="address-name" placeholder="Nhập họ tên người nhận">
+                </div>
+                <div class="col-md-6">
+                  <label for="address-phone" class="form-label">Số điện thoại</label>
+                  <input type="text" class="form-control" id="address-phone" placeholder="Nhập số điện thoại">
+                </div>
+              </div>
+
+              <div class="mb-3">
+                <label for="address-detail" class="form-label">Địa chỉ chi tiết</label>
+                <input type="text" class="form-control" id="address-detail" placeholder="Ví dụ: 123 đường ABC, phường XYZ">
+              </div>
+
+              <div class="mb-3">
+                <label for="address-province" class="form-label">Tỉnh/Thành phố</label>
+                <input type="text" class="form-control" id="address-province" placeholder="Ví dụ: TP.Hồ Chí Minh">
+              </div>
+
+              <div class="form-check mb-3">
+                <input class="form-check-input" type="checkbox" id="address-default">
+                <label class="form-check-label" for="address-default">
+                  Đặt làm địa chỉ mặc định
+                </label>
+              </div>
+
+              <div class="text-end">
+                <button class="btn btn-secondary me-2" onclick="cancelAddress()">Hủy</button>
+                <button class="btn btn-success" onclick="saveAddress()">Lưu</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- JS xử lý đơn giản -->
+<script>
+    // Kiểm tra nếu userInfo chưa được khai báo (có thể đã được khai báo trong header)
+    if (typeof userInfo === 'undefined') {
+        var userInfo = JSON.parse(localStorage.getItem("userInfo"));
+    }
+    const maKH = userInfo?.id;
+    
+    // Load thông tin user khi trang được tải
+    async function loadUserProfile() {
+        if (!maKH) {
+            alert('Vui lòng đăng nhập để xem thông tin cá nhân');
+            window.location.href = '/login';
+            return;
+        }
+        
+        try {
+            const response = await fetch(`http://localhost:3002/api/auth/${maKH}`);
+            if (!response.ok) {
+                throw new Error('Không thể tải thông tin người dùng');
+            }
+            
+            const result = await response.json();
+            
+            // API trả về {success: true, data: {...}}
+            if (!result.success || !result.data) {
+                throw new Error('Dữ liệu không hợp lệ');
+            }
+            
+            const userData = result.data;
+            
+            // Cập nhật localStorage với thông tin mới nhất từ API (bao gồm avatar)
+            if (localStorage.getItem('userInfo')) {
+                const currentUserInfo = JSON.parse(localStorage.getItem('userInfo'));
+                currentUserInfo.hoTen = userData.hoTen || currentUserInfo.hoTen;
+                currentUserInfo.email = userData.email || currentUserInfo.email;
+                currentUserInfo.sdt = userData.sdt || currentUserInfo.sdt;
+                currentUserInfo.avatar = userData.avatar || currentUserInfo.avatar; // Cập nhật avatar
+                localStorage.setItem('userInfo', JSON.stringify(currentUserInfo));
+            }
+            
+            // Cập nhật sidebar
+            document.getElementById('profile-name').textContent = userData.hoTen || 'Chưa có tên';
+            document.getElementById('profile-email').textContent = userData.email || 'Chưa có email';
+            
+            // Cập nhật avatar
+            const avatarImg = document.getElementById('profile-avatar');
+            if (userData.avatar) {
+                avatarImg.src = userData.avatar;
+            } else {
+                avatarImg.src = '/images/default-avatar.png';
+            }
+            
+            // Cập nhật form
+            document.getElementById('username').value = userData.email || 'Chưa có';
+            document.getElementById('hoTen').value = userData.hoTen || '';
+            document.getElementById('email').value = userData.email || '';
+            document.getElementById('sdt').value = userData.sdt || '';
+            
+        } catch (error) {
+            console.error('Lỗi khi tải thông tin người dùng:', error);
+            alert('Không thể tải thông tin người dùng. Vui lòng thử lại sau.');
+        }
+    }
+    
+    // Xử lý form submit để cập nhật thông tin
+    document.getElementById('profile-form')?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        if (!maKH) {
+            alert('Vui lòng đăng nhập');
+            return;
+        }
+        
+        const hoTen = document.getElementById('hoTen').value.trim();
+        const sdt = document.getElementById('sdt').value.trim();
+        
+        if (!hoTen) {
+            alert('Vui lòng nhập họ và tên');
+            return;
+        }
+        
+        try {
+            const response = await fetch(`http://localhost:3002/api/auth/user/${maKH}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    hoTen: hoTen,
+                    sdt: sdt
+                }),
+            });
+            
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || 'Không thể cập nhật thông tin');
+            }
+            
+            const result = await response.json();
+            
+            if (!result.success || !result.data) {
+                throw new Error('Cập nhật không thành công');
+            }
+            
+            const updatedData = result.data;
+            
+            // Cập nhật lại localStorage nếu có
+            if (localStorage.getItem('userInfo')) {
+                const currentUserInfo = JSON.parse(localStorage.getItem('userInfo'));
+                currentUserInfo.hoTen = updatedData.hoTen;
+                if (updatedData.sdt) {
+                    currentUserInfo.sdt = updatedData.sdt;
+                }
+                if (updatedData.avatar) {
+                    currentUserInfo.avatar = updatedData.avatar; // Cập nhật avatar trong localStorage
+                }
+                localStorage.setItem('userInfo', JSON.stringify(currentUserInfo));
+            }
+            
+            // Cập nhật sidebar
+            document.getElementById('profile-name').textContent = updatedData.hoTen || 'Chưa có tên';
+            document.getElementById('profile-email').textContent = updatedData.email || 'Chưa có email';
+            
+            // Cập nhật avatar nếu có
+            if (updatedData.avatar) {
+                document.getElementById('profile-avatar').src = updatedData.avatar;
+            }
+            
+            // Cập nhật form
+            document.getElementById('hoTen').value = updatedData.hoTen || '';
+            document.getElementById('email').value = updatedData.email || '';
+            document.getElementById('sdt').value = updatedData.sdt || '';
+            
+            alert('Cập nhật thông tin thành công!');
+            
+        } catch (error) {
+            console.error('Lỗi khi cập nhật thông tin:', error);
+            alert('Không thể cập nhật thông tin: ' + error.message);
+        }
+    });
+    
+    // Xử lý upload avatar
+    const profileImageUpload = document.getElementById('profile-image-upload');
+    if (profileImageUpload) {
+        profileImageUpload.addEventListener('change', async function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            // Kiểm tra kích thước file (tối đa 5MB)
+            if (file.size > 5 * 1024 * 1024) {
+                alert('Kích thước ảnh không được vượt quá 5MB');
+                e.target.value = '';
+                return;
+            }
+
+            // Kiểm tra định dạng file
+            if (!file.type.match('image.*')) {
+                alert('Vui lòng chọn file ảnh');
+                e.target.value = '';
+                return;
+            }
+
+            // Hiển thị preview
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('profile-avatar').src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+
+            // Upload ảnh lên server
+            try {
+                const formData = new FormData();
+                formData.append('avatar', file);
+                formData.append('hoTen', document.getElementById('hoTen').value);
+                formData.append('sdt', document.getElementById('sdt').value);
+
+                const response = await fetch(`http://localhost:3002/api/auth/user/${maKH}`, {
+                    method: 'PUT',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || 'Không thể upload ảnh');
+                }
+
+                const result = await response.json();
+                
+                if (result.success && result.data) {
+                    // Cập nhật avatar trong UI
+                    if (result.data.avatar) {
+                        document.getElementById('profile-avatar').src = result.data.avatar;
+                    }
+                    
+                    // Cập nhật localStorage
+                    if (localStorage.getItem('userInfo')) {
+                        const currentUserInfo = JSON.parse(localStorage.getItem('userInfo'));
+                        currentUserInfo.avatar = result.data.avatar;
+                        localStorage.setItem('userInfo', JSON.stringify(currentUserInfo));
+                    }
+                    
+                    // Cập nhật avatar trong header nếu có
+                    const userAvatarHeader = document.getElementById('user-avatar-header');
+                    if (userAvatarHeader && result.data.avatar) {
+                        userAvatarHeader.src = result.data.avatar;
+                        userAvatarHeader.classList.remove('hidden');
+                        const userIcon = userAvatarHeader.nextElementSibling;
+                        if (userIcon) userIcon.style.display = 'none';
+                    }
+                    
+                    alert('Cập nhật ảnh đại diện thành công!');
+                } else {
+                    throw new Error('Cập nhật không thành công');
+                }
+            } catch (error) {
+                console.error('Lỗi khi upload avatar:', error);
+                alert('Không thể upload ảnh: ' + error.message);
+                // Khôi phục ảnh cũ
+                loadUserProfile();
+            }
+        });
+    }
+
+    // Load thông tin khi trang được tải
+    loadUserProfile();
+
+    function showAddressForm() {
+        document.getElementById('address-form').classList.remove('d-none');
+    }
+
+    function cancelAddress() {
+        document.getElementById('address-form').classList.add('d-none');
+        document.getElementById('address-form').dataset.editId = '';
+        document.getElementById('address-form').reset();
+    }
+
+    function saveAddress() {
+        const id = document.getElementById('address-form').dataset.editId;
+
+        const data = {
+            maKH: maKH,
+            hoTenNguoiNhan: document.getElementById('address-name').value,
+            sdtNguoiNhan: document.getElementById('address-phone').value,
+            diaChiChiTiet: document.getElementById('address-detail').value,
+            tinhThanh: document.getElementById('address-province').value,
+            macDinh: document.getElementById('address-default').checked,
+        };
+
+        const method = id ? 'PUT' : 'POST';
+        const url = id
+            ? `http://localhost:3007/api/diachi/${id}`
+            : 'http://localhost:3007/api/diachi/';
+
+        fetch(url, {
+            method,
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        })
+            .then((res) => res.json())
+            .then((result) => {
+                if (result.success) {
+                    alert(id ? 'Đã cập nhật địa chỉ' : 'Đã thêm địa chỉ');
+                    location.reload();
+                    cancelAddress();
+                    document.getElementById('address-form').dataset.editId = '';
+                    loadAddresses();  // Cập nhật lại danh sách địa chỉ mà không làm mới trang
+                } else {
+                    alert('Lỗi khi lưu địa chỉ');
+                }
+            })
+            
+    }
+
+    function loadAddresses() {
+        fetch(`http://localhost:3007/api/diachi/khachhang/${maKH}`)
+            .then(response => response.json())
+            .then(addresses => {
+                const addressList = document.getElementById('address-list');
+                addressList.innerHTML = ''; // Xóa danh sách địa chỉ cũ
+                addresses.forEach(address => {
+                    const addressItem = document.createElement('div');
+                    addressItem.className = 'address-item border p-3 rounded mb-3';
+                    addressItem.innerHTML = `
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <strong>${address.hoTenNguoiNhan}</strong><br>
+                                ${address.diaChiChiTiet}, ${address.tinhThanh}<br>
+                                SĐT: ${address.sdtNguoiNhan}
+                            </div>
+                            <div>
+                                <button class="btn btn-sm btn-outline-secondary me-2" onclick="editAddress(this, '${address._id}')">Sửa</button>
+                                <button class="btn btn-sm btn-outline-danger" onclick="deleteAddress(this, '${address._id}')">Xóa</button>
+                            </div>
+                        </div>
+                    `;
+                    addressList.appendChild(addressItem);
+                });
+            })
+            .catch(error => {
+                console.error('Lỗi:', error);
+                alert('Có lỗi xảy ra khi tải danh sách địa chỉ');
+            });
+    }
+
+    function editAddress(btn, id) {
+        fetch(`http://localhost:3007/api/diachi/${id}`)
+            .then(res => res.json())
+            .then(address => {
+                document.getElementById('address-name').value = address.hoTenNguoiNhan;
+                document.getElementById('address-phone').value = address.sdtNguoiNhan;
+                document.getElementById('address-detail').value = address.diaChiChiTiet;
+                document.getElementById('address-province').value = address.tinhThanh;
+                document.getElementById('address-default').checked = address.macDinh;
+
+                document.getElementById('address-form').dataset.editId = id;
+                showAddressForm();
+            })
+            
+    }
+
+    function deleteAddress(btn, id) {
+        if (confirm('Bạn có chắc chắn muốn xóa địa chỉ này?')) {
+            fetch(`http://localhost:3007/api/diachi/${id}`, {
+                method: 'DELETE',
+            })
+                .then(response => response.json())
+                .then(result => {
+                    if (result.success) {
+                        btn.closest('.address-item').remove(); // Xóa địa chỉ khỏi giao diện
+                    } else {
+                        alert('Lỗi khi xóa địa chỉ');
+                    }
+                })
+                
+        }
+    }
+
+    // Load địa chỉ khi trang được tải
+    loadAddresses();
+</script>
+
+
+<style>
+  #address-form {
+    background-color: #f9f9f9;
+  }
+
+  .address-item {
+    background-color: #fefefe;
+  }
+
+  .btn-save {
+    background-color: #198754;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+  }
+</style>
+
+</body>
+</html>

@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý người dùng - MegaStore VN</title>
+    <meta name="description" content="Quản lý người dùng và phân quyền trong hệ thống MegaStore VN - Admin Panel">
+    
+    <!-- Tailwind CSS (CDN) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        if (window.tailwind) { 
+            tailwind.config = { 
+                darkMode: 'class',
+                theme: {
+                    extend: {
+                        animation: {
+                            'fade-in': 'fadeIn 0.5s ease-in',
+                            'slide-up': 'slideUp 0.6s ease-out',
+                            'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        },
+                        keyframes: {
+                            fadeIn: {
+                                '0%': { opacity: '0' },
+                                '100%': { opacity: '1' }
+                            },
+                            slideUp: {
+                                '0%': { transform: 'translateY(20px)', opacity: '0' },
+                                '100%': { transform: 'translateY(0)', opacity: '1' }
+                            }
+                        }
+                    }
+                }
+            } 
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        /* Custom styles to override any conflicting CSS */
+        .admin-layout {
+            display: flex;
+            min-height: 100vh;
+        }
+        .main-content {
+            flex: 1;
+            margin-left: 16rem; /* 64 * 0.25rem = 16rem */
+            margin-top: 0;
+            padding-top: 0;
+        }
+        
+        /* Override header styles for admin pages */
+        .seller-header {
+            position: relative !important;
+            z-index: 10 !important;
+            margin-bottom: 0 !important;
+        }
+        
+        /* Ensure sidebar is positioned correctly */
+        nav.sidebar {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            height: 100vh !important;
+            z-index: 30 !important;
+        }
+        
+        @media (max-width: 768px) {
+            .main-content {
+                margin-left: 0;
+                padding-top: 1rem;
+            }
+            nav.sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+            nav.sidebar.active {
+                transform: translateX(0);
+            }
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-slate-50 via-white to-slate-50 dark:from-neutral-900 dark:via-black dark:to-neutral-900 min-h-screen transition-colors duration-300" style="font-family: 'Inter', sans-serif;">
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <%- include('./../elements/navbaradmin') %>
+        
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Admin Header -->
+            <div class="bg-white dark:bg-neutral-900 border-b border-slate-200 dark:border-neutral-800 px-6 py-4">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h1 class="text-2xl font-bold text-slate-900 dark:text-white">Quản lý người dùng</h1>
+                        <p class="text-slate-600 dark:text-neutral-400">Quản lý tài khoản người dùng và phân quyền trong hệ thống</p>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <div class="relative">
+                            <button class="p-2 text-slate-600 dark:text-neutral-400 hover:text-orange-500 dark:hover:text-yellow-400 transition-colors">
+                                <i class="fas fa-bell text-lg"></i>
+                                <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">3</span>
+                            </button>
+                        </div>
+                        <div class="relative group">
+                            <button class="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-orange-500 to-yellow-500 dark:from-yellow-500 dark:to-yellow-400 text-white dark:text-black rounded-xl font-medium hover:shadow-lg transition-all">
+                                <i class="fas fa-user-circle"></i>
+                                <span id="admin-username">Admin</span>
+                                <i class="fas fa-chevron-down text-sm"></i>
+                            </button>
+                            <div class="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-neutral-800 rounded-xl shadow-lg border border-slate-200 dark:border-neutral-700 py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                                <a href="/" class="flex items-center gap-3 px-4 py-2 text-slate-700 dark:text-neutral-300 hover:bg-slate-50 dark:hover:bg-neutral-700 transition-colors">
+                                    <i class="fas fa-home"></i>
+                                    <span>Quay lại trang chính</span>
+                                </a>
+                                <a href="#" onclick="logout()" class="flex items-center gap-3 px-4 py-2 text-slate-700 dark:text-neutral-300 hover:bg-slate-50 dark:hover:bg-neutral-700 transition-colors">
+                                    <i class="fas fa-sign-out-alt"></i>
+                                    <span>Đăng xuất</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Dashboard Content -->
+            <div class="p-6 space-y-8">
+                <!-- Action Bar -->
+                <div class="flex items-center justify-between">
+                    <div class="space-y-2">
+                        <h2 class="text-4xl font-black text-slate-900 dark:text-white">Quản lý người dùng</h2>
+                        <p class="text-slate-600 dark:text-neutral-400 text-lg">Quản lý tài khoản người dùng và phân quyền trong hệ thống</p>
+                    </div>
+                    <button class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-orange-500 to-yellow-500 dark:from-yellow-500 dark:to-yellow-400 text-white dark:text-black font-bold rounded-xl shadow-lg shadow-orange-500/25 dark:shadow-yellow-500/25 hover:shadow-xl hover:shadow-orange-500/40 dark:hover:shadow-yellow-500/40 hover:-translate-y-0.5 transition-all duration-200" id="addUserBtn">
+                        <i class="fas fa-plus"></i>
+                        <span>Thêm người dùng mới</span>
+                    </button>
+                </div>
+
+                <!-- Stats Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-white dark:bg-neutral-900 rounded-2xl shadow-lg shadow-orange-500/5 dark:shadow-yellow-500/5 border border-slate-200 dark:border-neutral-800 p-6">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-orange-500 to-yellow-500 dark:from-yellow-500 dark:to-yellow-400 flex items-center justify-center">
+                                <i class="fas fa-users text-white dark:text-black text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-2xl font-black text-slate-900 dark:text-white" id="totalUsers">0</h3>
+                                <p class="text-slate-600 dark:text-neutral-400 font-medium">Tổng người dùng</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white dark:bg-neutral-900 rounded-2xl shadow-lg shadow-orange-500/5 dark:shadow-yellow-500/5 border border-slate-200 dark:border-neutral-800 p-6">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center">
+                                <i class="fas fa-store text-white text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-2xl font-black text-slate-900 dark:text-white" id="totalSellers">0</h3>
+                                <p class="text-slate-600 dark:text-neutral-400 font-medium">Người bán</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white dark:bg-neutral-900 rounded-2xl shadow-lg shadow-orange-500/5 dark:shadow-yellow-500/5 border border-slate-200 dark:border-neutral-800 p-6">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center">
+                                <i class="fas fa-user text-white text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-2xl font-black text-slate-900 dark:text-white" id="totalCustomers">0</h3>
+                                <p class="text-slate-600 dark:text-neutral-400 font-medium">Khách hàng</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- User Management Tabs -->
+                <div class="bg-white dark:bg-neutral-900 rounded-2xl shadow-lg shadow-orange-500/5 dark:shadow-yellow-500/5 border border-slate-200 dark:border-neutral-800">
+                    <!-- Tab Navigation -->
+                    <div class="border-b border-slate-200 dark:border-neutral-800">
+                        <nav class="flex space-x-8 px-6">
+                            <button class="py-4 px-1 border-b-2 border-orange-500 dark:border-yellow-500 text-orange-600 dark:text-yellow-400 font-semibold text-sm" onclick="switchTab('sellers')">
+                                <i class="fas fa-store mr-2"></i>
+                                Người bán
+                            </button>
+                            <button class="py-4 px-1 border-b-2 border-transparent text-slate-500 dark:text-neutral-400 hover:text-slate-700 dark:hover:text-neutral-300 font-semibold text-sm" onclick="switchTab('customers')">
+                                <i class="fas fa-user mr-2"></i>
+                                Khách hàng
+                            </button>
+                        </nav>
+                    </div>
+
+                    <!-- Tab Content -->
+                    <div class="p-6">
+                        <!-- Sellers Tab -->
+                        <div id="sellers-tab" class="tab-content">
+                            <div class="flex items-center justify-between mb-6">
+                                <h3 class="text-xl font-bold text-slate-900 dark:text-white">Danh sách người bán</h3>
+                                <div class="flex items-center gap-4">
+                                    <div class="relative">
+                                        <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 dark:text-neutral-500"></i>
+                                        <input type="text" placeholder="Tìm kiếm người bán..." class="pl-10 pr-4 py-2 border border-slate-300 dark:border-neutral-700 rounded-xl bg-slate-50 dark:bg-neutral-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-orange-500 dark:focus:ring-yellow-500 focus:border-transparent" id="sellerSearch">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="overflow-x-auto">
+                                <table class="w-full">
+                                    <thead class="bg-slate-50 dark:bg-neutral-800">
+                                        <tr>
+                                            <th class="text-left py-4 px-6 font-semibold text-slate-600 dark:text-neutral-400">ID</th>
+                                            <th class="text-left py-4 px-6 font-semibold text-slate-600 dark:text-neutral-400">Tên người dùng</th>
+                                            <th class="text-left py-4 px-6 font-semibold text-slate-600 dark:text-neutral-400">Email</th>
+                                            <th class="text-left py-4 px-6 font-semibold text-slate-600 dark:text-neutral-400">Số điện thoại</th>
+                                            <th class="text-left py-4 px-6 font-semibold text-slate-600 dark:text-neutral-400">Ngày tạo</th>
+                                            <th class="text-left py-4 px-6 font-semibold text-slate-600 dark:text-neutral-400">Thao tác</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="sellerTableBody" class="divide-y divide-slate-200 dark:divide-neutral-800">
+                                        <!-- Dữ liệu người bán sẽ render bằng JS -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Customers Tab -->
+                        <div id="customers-tab" class="tab-content hidden">
+                            <div class="flex items-center justify-between mb-6">
+                                <h3 class="text-xl font-bold text-slate-900 dark:text-white">Danh sách khách hàng</h3>
+                                <div class="flex items-center gap-4">
+                                    <div class="relative">
+                                        <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 dark:text-neutral-500"></i>
+                                        <input type="text" placeholder="Tìm kiếm khách hàng..." class="pl-10 pr-4 py-2 border border-slate-300 dark:border-neutral-700 rounded-xl bg-slate-50 dark:bg-neutral-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-orange-500 dark:focus:ring-yellow-500 focus:border-transparent" id="customerSearch">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="overflow-x-auto">
+                                <table class="w-full">
+                                    <thead class="bg-slate-50 dark:bg-neutral-800">
+                                        <tr>
+                                            <th class="text-left py-4 px-6 font-semibold text-slate-600 dark:text-neutral-400">ID</th>
+                                            <th class="text-left py-4 px-6 font-semibold text-slate-600 dark:text-neutral-400">Tên người dùng</th>
+                                            <th class="text-left py-4 px-6 font-semibold text-slate-600 dark:text-neutral-400">Email</th>
+                                            <th class="text-left py-4 px-6 font-semibold text-slate-600 dark:text-neutral-400">Số điện thoại</th>
+                                            <th class="text-left py-4 px-6 font-semibold text-slate-600 dark:text-neutral-400">Ngày tạo</th>
+                                            <th class="text-left py-4 px-6 font-semibold text-slate-600 dark:text-neutral-400">Thao tác</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="customerTableBody" class="divide-y divide-slate-200 dark:divide-neutral-800">
+                                        <!-- Dữ liệu khách hàng sẽ render bằng JS -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- User Detail Modal -->
+    <div id="userDetailModal" class="hidden fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="w-full max-w-2xl rounded-3xl bg-white dark:bg-neutral-900 shadow-2xl shadow-orange-500/10 dark:shadow-yellow-500/10 border border-slate-200 dark:border-neutral-800 animate-slide-up">
+            <div class="flex items-center justify-between px-6 py-5 border-b border-slate-200 dark:border-neutral-800">
+                <h3 class="text-2xl font-bold text-slate-900 dark:text-white">Chi tiết người dùng</h3>
+                <button id="userDetailClose" class="p-2 text-slate-400 hover:text-slate-600 dark:hover:text-neutral-300 hover:bg-slate-100 dark:hover:bg-neutral-800 rounded-lg transition-colors" title="Đóng">
+                    <i class="fas fa-xmark text-lg"></i>
+                </button>
+            </div>
+            <div class="px-6 py-6">
+                <div class="flex items-center gap-4 mb-6">
+                    <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-orange-500 to-yellow-500 dark:from-yellow-500 dark:to-yellow-400 flex items-center justify-center">
+                        <span class="text-white dark:text-black text-2xl font-bold" data-field="avatar">U</span>
+                    </div>
+                    <div>
+                        <h4 class="text-xl font-bold text-slate-900 dark:text-white" data-field="name">Tên người dùng</h4>
+                        <p class="text-slate-600 dark:text-neutral-400" data-field="email">email@example.com</p>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="space-y-4">
+                        <div>
+                            <label class="text-sm font-semibold text-slate-500 dark:text-neutral-400 uppercase tracking-wide">ID</label>
+                            <p class="mt-1 text-slate-900 dark:text-white font-mono" data-field="id">—</p>
+                        </div>
+                        <div>
+                            <label class="text-sm font-semibold text-slate-500 dark:text-neutral-400 uppercase tracking-wide">Vai trò</label>
+                            <p class="mt-1">
+                                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold bg-orange-100 dark:bg-yellow-900/30 text-orange-800 dark:text-yellow-400" data-field="role">—</span>
+                            </p>
+                        </div>
+                        <div>
+                            <label class="text-sm font-semibold text-slate-500 dark:text-neutral-400 uppercase tracking-wide">Số điện thoại</label>
+                            <p class="mt-1 text-slate-900 dark:text-white" data-field="phone">—</p>
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <label class="text-sm font-semibold text-slate-500 dark:text-neutral-400 uppercase tracking-wide">Ngày tạo</label>
+                            <p class="mt-1 text-slate-900 dark:text-white" data-field="created">—</p>
+                        </div>
+                        <div>
+                            <label class="text-sm font-semibold text-slate-500 dark:text-neutral-400 uppercase tracking-wide">Trạng thái</label>
+                            <p class="mt-1">
+                                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-400">
+                                    <i class="fas fa-circle text-xs mr-2"></i>
+                                    Hoạt động
+                                </span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-6">
+                    <label class="text-sm font-semibold text-slate-500 dark:text-neutral-400 uppercase tracking-wide">Địa chỉ</label>
+                    <p class="mt-1 text-slate-900 dark:text-white" data-field="address">—</p>
+                </div>
+            </div>
+            <div class="px-6 py-4 border-t border-slate-200 dark:border-neutral-800 flex justify-end gap-3">
+                <button class="px-4 py-2 text-slate-600 dark:text-neutral-400 hover:text-slate-800 dark:hover:text-neutral-200 font-medium transition-colors" onclick="document.getElementById('userDetailModal').classList.add('hidden')">
+                    Hủy
+                </button>
+                <button class="px-6 py-2 bg-gradient-to-r from-orange-500 to-yellow-500 dark:from-yellow-500 dark:to-yellow-400 text-white dark:text-black font-bold rounded-xl shadow-lg hover:shadow-xl transition-all" onclick="document.getElementById('userDetailModal').classList.add('hidden')">
+                    Đóng
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const token = localStorage.getItem('authToken');
+        
+        if (!token) {
+            window.location.href = '/admin/login';
+        }
+
+        function logout() {
+            localStorage.removeItem('authToken');
+            localStorage.removeItem('userInfo');
+            localStorage.removeItem('hoTen');
+            window.location.href = '/';
+        }
+
+        // Update admin username
+        document.addEventListener('DOMContentLoaded', function() {
+            const userName = 'Admin';
+            try {
+                const userInfo = localStorage.getItem('userInfo');
+                if (userInfo) {
+                    const userObj = JSON.parse(userInfo);
+                    if (userObj.hoTen) userName = userObj.hoTen;
+                    else if (userObj.name) userName = userObj.name;
+                } else if (localStorage.getItem('hoTen')) {
+                    userName = localStorage.getItem('hoTen');
+                }
+            } catch(e) {}
+            const el = document.getElementById('admin-username');
+            if (el) el.textContent = userName;
+        });
+
+        // Tab switching function
+        function switchTab(tabName) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.add('hidden');
+            });
+            
+            // Remove active class from all tab buttons
+            document.querySelectorAll('nav button').forEach(btn => {
+                btn.classList.remove('border-orange-500', 'dark:border-yellow-500', 'text-orange-600', 'dark:text-yellow-400');
+                btn.classList.add('border-transparent', 'text-slate-500', 'dark:text-neutral-400');
+            });
+            
+            // Show selected tab
+            document.getElementById(tabName + '-tab').classList.remove('hidden');
+            
+            // Add active class to selected button
+            const activeBtn = event.target.closest('button');
+            activeBtn.classList.remove('border-transparent', 'text-slate-500', 'dark:text-neutral-400');
+            activeBtn.classList.add('border-orange-500', 'dark:border-yellow-500', 'text-orange-600', 'dark:text-yellow-400');
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            fetch("http://localhost:3002/api/auth/", {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(res => res.json())
+            .then(json => {
+                if (json.success && Array.isArray(json.data)) {
+                    const sellerBody = document.getElementById("sellerTableBody");
+                    const customerBody = document.getElementById("customerTableBody");
+                    sellerBody.innerHTML = "";
+                    customerBody.innerHTML = "";
+
+                    let sellerCount = 0;
+                    let customerCount = 0;
+
+                    json.data.forEach(user => {
+                        const date = new Date(user.createdAt);
+                        const createdAt = date.toLocaleDateString("vi-VN");
+
+                        const row = `
+                            <tr class="hover:bg-slate-50 dark:hover:bg-neutral-800 transition-colors">
+                                <td class="py-4 px-6 font-mono text-sm text-slate-600 dark:text-neutral-400">${user.id}</td>
+                                <td class="py-4 px-6">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-orange-500 to-yellow-500 dark:from-yellow-500 dark:to-yellow-400 flex items-center justify-center">
+                                            <span class="text-white dark:text-black text-sm font-bold">${(user.hoTen || 'U').charAt(0).toUpperCase()}</span>
+                                        </div>
+                                        <div>
+                                            <div class="font-semibold text-slate-900 dark:text-white">${user.hoTen || 'Chưa có tên'}</div>
+                                            <div class="text-sm text-slate-500 dark:text-neutral-400">ID: ${user.id}</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="py-4 px-6 text-slate-600 dark:text-neutral-400">${user.email || ''}</td>
+                                <td class="py-4 px-6 text-slate-600 dark:text-neutral-400">${user.sdt || user.phone || '—'}</td>
+                                <td class="py-4 px-6 text-slate-600 dark:text-neutral-400">${createdAt}</td>
+                                <td class="py-4 px-6">
+                                    <div class="flex items-center gap-2">
+                                        <button class="p-2 text-slate-400 hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-colors view-btn" data-id="${user.id}" title="Xem chi tiết">
+                                            <i class="fas fa-eye text-sm"></i>
+                                        </button>
+                                        <button class="p-2 text-slate-400 hover:text-orange-500 hover:bg-orange-50 dark:hover:bg-orange-900/20 rounded-lg transition-colors" title="Chỉnh sửa">
+                                            <i class="fas fa-edit text-sm"></i>
+                                        </button>
+                                        <button class="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors delete-btn" data-id="${user.id}" title="Xóa">
+                                            <i class="fas fa-trash text-sm"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        `;
+
+                        if (user.role === "seller") {
+                            sellerBody.insertAdjacentHTML("beforeend", row);
+                            sellerCount++;
+                        } else if (user.role === "customer") {
+                            customerBody.insertAdjacentHTML("beforeend", row);
+                            customerCount++;
+                        }
+                    });
+
+                    // Update stats
+                    document.getElementById('totalUsers').textContent = json.data.length;
+                    document.getElementById('totalSellers').textContent = sellerCount;
+                    document.getElementById('totalCustomers').textContent = customerCount;
+
+                    // Lưu map người dùng để mở modal chi tiết nhanh
+                    window.__usersById = Object.fromEntries(json.data.map(u => [u.id, u]));
+                } else {
+                    alert("Không lấy được danh sách người dùng.");
+                }
+            })
+            .catch(err => {
+                console.error("Lỗi khi gọi API:", err);
+                alert("Lỗi khi tải dữ liệu người dùng.");
+            });
+        });
+
+        document.addEventListener("click", function (e) {
+            // View detail
+            if (e.target.closest('.view-btn')) {
+                const id = e.target.closest('.view-btn').dataset.id;
+                const user = (window.__usersById && window.__usersById[id]) || null;
+                if (user) {
+                    const modal = document.getElementById('userDetailModal');
+                    modal.querySelector('[data-field="id"]').textContent = user.id || '—';
+                    modal.querySelector('[data-field="name"]').textContent = user.hoTen || 'Chưa có tên';
+                    modal.querySelector('[data-field="email"]').textContent = user.email || '—';
+                    modal.querySelector('[data-field="role"]').textContent = user.role === "admin" ? "Admin" : user.role === "seller" ? "Người bán" : "Khách hàng";
+                    modal.querySelector('[data-field="created"]').textContent = new Date(user.createdAt).toLocaleString('vi-VN');
+                    modal.querySelector('[data-field="phone"]').textContent = user.sdt || user.phone || '—';
+                    modal.querySelector('[data-field="address"]').textContent = user.diaChi || user.address || '—';
+                    modal.querySelector('[data-field="avatar"]').textContent = (user.hoTen || 'U').charAt(0).toUpperCase();
+                    modal.classList.remove('hidden');
+                }
+            }
+            if (e.target.closest(".delete-btn")) {
+                const button = e.target.closest(".delete-btn");
+                const userId = button.getAttribute("data-id");
+
+                if (confirm("Bạn có chắc chắn muốn xóa người dùng này?")) {
+                    fetch(`http://localhost:3002/api/auth/user/${userId}`, {
+                        method: "DELETE"
+                    })
+                    .then(res => res.json())
+                    .then(json => {
+                        if (json.success) {
+                            alert("Đã xóa người dùng thành công.");
+                            location.reload(); // Tải lại danh sách
+                        } else {
+                            alert("Xóa người dùng thất bại.");
+                        }
+                    })
+                    .catch(err => {
+                        console.error("Lỗi khi gọi API xóa:", err);
+                        alert("Đã xảy ra lỗi khi xóa.");
+                    });
+                }
+            }
+        });
+
+        // Close modal
+        document.addEventListener('click', function(e){
+            if (e.target.matches('#userDetailModal') || e.target.closest('#userDetailClose')) {
+                document.getElementById('userDetailModal').classList.add('hidden');
+            }
+        });
+    </script>
+</body>
+</html>

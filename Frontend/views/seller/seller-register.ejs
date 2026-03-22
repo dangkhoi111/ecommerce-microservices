@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng ký kênh người bán - MegaStore VN</title>
+    <meta name="description" content="Đăng ký trở thành người bán trên MegaStore VN - Nền tảng thương mại điện tử hàng đầu">
+    
+    <!-- Tailwind CSS (CDN) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        if (window.tailwind) { 
+            tailwind.config = { 
+                darkMode: 'class',
+                theme: {
+                    extend: {
+                        animation: {
+                            'fade-in': 'fadeIn 0.5s ease-in',
+                            'slide-up': 'slideUp 0.6s ease-out',
+                            'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        },
+                        keyframes: {
+                            fadeIn: {
+                                '0%': { opacity: '0' },
+                                '100%': { opacity: '1' }
+                            },
+                            slideUp: {
+                                '0%': { transform: 'translateY(20px)', opacity: '0' },
+                                '100%': { transform: 'translateY(0)', opacity: '1' }
+                            }
+                        }
+                    }
+                }
+            } 
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+</head>
+<body class="bg-gradient-to-br from-emerald-50 via-green-50 to-teal-50 dark:from-slate-900 dark:via-emerald-900 dark:to-green-900 min-h-screen transition-colors duration-300" style="font-family: 'Inter', sans-serif;">
+    <!-- Header -->
+    <header class="bg-white dark:bg-slate-800 shadow-lg shadow-emerald-500/5 border-b border-emerald-200 dark:border-emerald-700">
+        <div class="max-w-7xl mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-4">
+                    <a href="/" class="text-2xl font-black text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300 transition-colors">
+                        MegaStore VN
+                    </a>
+                    <div class="hidden md:block w-px h-8 bg-slate-300 dark:bg-slate-600"></div>
+                    <h1 class="hidden md:block text-xl font-bold text-slate-900 dark:text-white">Đăng ký kênh người bán</h1>
+                </div>
+                <div class="flex items-center gap-4">
+                    <a href="#" class="flex items-center gap-2 px-4 py-2 text-slate-600 dark:text-neutral-400 hover:text-emerald-500 dark:hover:text-emerald-400 transition-colors">
+                        <i class="fas fa-question-circle"></i>
+                        <span class="hidden sm:inline">Trợ giúp</span>
+                    </a>
+                    <a href="/" class="flex items-center gap-2 px-4 py-2 bg-emerald-500 text-white rounded-xl font-medium hover:bg-emerald-600 transition-colors">
+                        <i class="fas fa-home"></i>
+                        <span class="hidden sm:inline">Trang chủ</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-6xl mx-auto px-6 py-8">
+        <!-- Progress Steps -->
+        <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-lg shadow-emerald-500/5 border border-emerald-200 dark:border-emerald-700 p-6 mb-8">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-full bg-emerald-500 text-white flex items-center justify-center font-bold text-sm step-number active" data-step="1">1</div>
+                    <span class="text-sm font-medium text-slate-700 dark:text-neutral-300">Thông tin Shop</span>
+                </div>
+                <div class="flex-1 h-px bg-slate-200 dark:bg-slate-700 mx-4"></div>
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-700 text-slate-500 dark:text-neutral-400 flex items-center justify-center font-bold text-sm step-number" data-step="2">2</div>
+                    <span class="text-sm font-medium text-slate-500 dark:text-neutral-400">Vận chuyển</span>
+                </div>
+                <div class="flex-1 h-px bg-slate-200 dark:bg-slate-700 mx-4"></div>
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-700 text-slate-500 dark:text-neutral-400 flex items-center justify-center font-bold text-sm step-number" data-step="3">3</div>
+                    <span class="text-sm font-medium text-slate-500 dark:text-neutral-400">Thông tin thuế</span>
+                </div>
+                <div class="flex-1 h-px bg-slate-200 dark:bg-slate-700 mx-4"></div>
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-700 text-slate-500 dark:text-neutral-400 flex items-center justify-center font-bold text-sm step-number" data-step="4">4</div>
+                    <span class="text-sm font-medium text-slate-500 dark:text-neutral-400">Định danh</span>
+                </div>
+                <div class="flex-1 h-px bg-slate-200 dark:bg-slate-700 mx-4"></div>
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-700 text-slate-500 dark:text-neutral-400 flex items-center justify-center font-bold text-sm step-number" data-step="5">5</div>
+                    <span class="text-sm font-medium text-slate-500 dark:text-neutral-400">Hoàn tất</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Form Sections -->
+        <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-lg shadow-emerald-500/5 border border-emerald-200 dark:border-emerald-700 overflow-hidden">
+            <!-- Step 1: Shop Information -->
+            <section class="form-section active p-8" id="shop-info">
+                <div class="text-center mb-8">
+                    <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-emerald-500 to-green-500 flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-store text-white text-2xl"></i>
+                    </div>
+                    <h2 class="text-3xl font-bold text-slate-900 dark:text-white mb-2">Thông tin Shop</h2>
+                    <p class="text-slate-600 dark:text-neutral-400">Vui lòng cung cấp thông tin cơ bản về shop của bạn</p>
+                </div>
+
+                <form class="max-w-2xl mx-auto space-y-6">
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 dark:text-neutral-300 mb-2">
+                            Tên Shop <span class="text-red-500">*</span>
+                        </label>
+                        <input type="text" id="shopName" name="shopName" placeholder="Nhập tên shop của bạn" maxlength="30" required class="w-full px-4 py-3 border border-emerald-300 dark:border-emerald-600 rounded-xl bg-emerald-50 dark:bg-slate-700 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all">
+                        <p class="text-xs text-slate-500 dark:text-neutral-400 mt-1">Tối đa 30 ký tự</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-700 dark:text-neutral-300 mb-2">
+                                Địa chỉ chi tiết <span class="text-red-500">*</span>
+                            </label>
+                            <input type="text" id="detailAddress" name="diaChiChiTiet" placeholder="Nhập địa chỉ chi tiết" required class="w-full px-4 py-3 border border-emerald-300 dark:border-emerald-600 rounded-xl bg-emerald-50 dark:bg-slate-700 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-700 dark:text-neutral-300 mb-2">
+                                Tỉnh thành <span class="text-red-500">*</span>
+                            </label>
+                            <input type="text" id="province" name="tinhThanh" placeholder="Nhập tỉnh thành" required class="w-full px-4 py-3 border border-emerald-300 dark:border-emerald-600 rounded-xl bg-emerald-50 dark:bg-slate-700 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-700 dark:text-neutral-300 mb-2">
+                                Email <span class="text-red-500">*</span>
+                            </label>
+                            <input type="email" id="email" name="email" placeholder="Nhập email của bạn" required class="w-full px-4 py-3 border border-emerald-300 dark:border-emerald-600 rounded-xl bg-emerald-50 dark:bg-slate-700 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-700 dark:text-neutral-300 mb-2">
+                                Số điện thoại <span class="text-red-500">*</span>
+                            </label>
+                            <div class="flex">
+                                <select class="px-4 py-3 border border-emerald-300 dark:border-emerald-600 rounded-l-xl bg-emerald-50 dark:bg-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all">
+                                    <option value="+84">+84</option>
+                                </select>
+                                <input type="tel" id="phone" name="phone" placeholder="Nhập số điện thoại" required class="flex-1 px-4 py-3 border border-l-0 border-emerald-300 dark:border-emerald-600 rounded-r-xl bg-emerald-50 dark:bg-slate-700 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 dark:text-neutral-300 mb-2">
+                            Ảnh đại diện shop
+                        </label>
+                        <div class="border-2 border-dashed border-emerald-300 dark:border-emerald-600 rounded-xl p-8 text-center hover:border-emerald-400 dark:hover:border-emerald-500 transition-colors">
+                            <label for="shopAvatar" class="cursor-pointer">
+                                <i class="fas fa-cloud-upload-alt text-4xl text-emerald-500 mb-4"></i>
+                                <p class="text-slate-600 dark:text-neutral-400 mb-2">Tải lên ảnh đại diện shop</p>
+                                <p class="text-sm text-slate-500 dark:text-neutral-500">PNG, JPG, GIF tối đa 10MB</p>
+                            </label>
+                            <input type="file" id="shopAvatar" accept="image/*" class="hidden">
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between pt-6">
+                        <button type="button" class="px-6 py-3 border border-slate-300 dark:border-neutral-700 rounded-xl bg-white dark:bg-slate-800 text-slate-700 dark:text-neutral-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors" id="backBtn1" style="display: none;">
+                            <i class="fas fa-arrow-left mr-2"></i>
+                            Quay lại
+                        </button>
+                        <button type="button" class="px-8 py-3 bg-gradient-to-r from-emerald-500 to-green-500 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all ml-auto" id="nextBtn1">
+                            Tiếp theo
+                            <i class="fas fa-arrow-right ml-2"></i>
+                        </button>
+                    </div>
+                </form>
+            </section>
+
+            <!-- Step 2: Shipping Setup -->
+            <section class="form-section p-8" id="shipping-setup" style="display: none;">
+                <div class="text-center mb-8">
+                    <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-truck text-white text-2xl"></i>
+                    </div>
+                    <h2 class="text-3xl font-bold text-slate-900 dark:text-white mb-2">Cài đặt vận chuyển</h2>
+                    <p class="text-slate-600 dark:text-neutral-400">Thiết lập phương thức vận chuyển cho shop của bạn</p>
+                </div>
+
+                <div class="max-w-2xl mx-auto space-y-6">
+                    <div class="space-y-4">
+                        <div class="flex items-center p-4 bg-emerald-50 dark:bg-emerald-900/20 rounded-xl border border-emerald-200 dark:border-emerald-700">
+                            <input type="checkbox" id="express" checked class="w-5 h-5 text-emerald-600 bg-emerald-100 border-emerald-300 rounded focus:ring-emerald-500 focus:ring-2">
+                            <label for="express" class="ml-4 flex-1">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <h4 class="font-semibold text-slate-900 dark:text-white">Giao hàng nhanh</h4>
+                                        <p class="text-sm text-slate-600 dark:text-neutral-400">Giao hàng trong 24h đối với nội thành</p>
+                                    </div>
+                                    <div class="text-emerald-600 dark:text-emerald-400">
+                                        <i class="fas fa-check-circle text-xl"></i>
+                                    </div>
+                                </div>
+                            </label>
+                        </div>
+
+                        <div class="flex items-center p-4 bg-blue-50 dark:bg-blue-900/20 rounded-xl border border-blue-200 dark:border-blue-700">
+                            <input type="checkbox" id="standard" checked class="w-5 h-5 text-blue-600 bg-blue-100 border-blue-300 rounded focus:ring-blue-500 focus:ring-2">
+                            <label for="standard" class="ml-4 flex-1">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <h4 class="font-semibold text-slate-900 dark:text-white">Giao hàng tiết kiệm</h4>
+                                        <p class="text-sm text-slate-600 dark:text-neutral-400">Giao hàng từ 2-3 ngày với chi phí thấp</p>
+                                    </div>
+                                    <div class="text-blue-600 dark:text-blue-400">
+                                        <i class="fas fa-check-circle text-xl"></i>
+                                    </div>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between pt-6">
+                        <button type="button" class="px-6 py-3 border border-slate-300 dark:border-neutral-700 rounded-xl bg-white dark:bg-slate-800 text-slate-700 dark:text-neutral-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors" id="backBtn2">
+                            <i class="fas fa-arrow-left mr-2"></i>
+                            Quay lại
+                        </button>
+                        <button type="button" class="px-8 py-3 bg-gradient-to-r from-emerald-500 to-green-500 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all" id="nextBtn2">
+                            Tiếp theo
+                            <i class="fas fa-arrow-right ml-2"></i>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Step 3: Tax Information -->
+            <section class="form-section p-8" id="tax-info" style="display: none;">
+                <div class="text-center mb-8">
+                    <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-receipt text-white text-2xl"></i>
+                    </div>
+                    <h2 class="text-3xl font-bold text-slate-900 dark:text-white mb-2">Thông tin thuế</h2>
+                    <p class="text-slate-600 dark:text-neutral-400">Cung cấp thông tin thuế của doanh nghiệp</p>
+                </div>
+
+                <form class="max-w-2xl mx-auto space-y-6">
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 dark:text-neutral-300 mb-2">
+                            Mã số thuế <span class="text-red-500">*</span>
+                        </label>
+                        <input type="text" name="taxCode" placeholder="Nhập mã số thuế" required class="w-full px-4 py-3 border border-emerald-300 dark:border-emerald-600 rounded-xl bg-emerald-50 dark:bg-slate-700 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 dark:text-neutral-300 mb-2">
+                            Tên công ty <span class="text-red-500">*</span>
+                        </label>
+                        <input type="text" name="companyName" placeholder="Nhập tên công ty" required class="w-full px-4 py-3 border border-emerald-300 dark:border-emerald-600 rounded-xl bg-emerald-50 dark:bg-slate-700 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 dark:text-neutral-300 mb-2">
+                            Địa chỉ đăng ký kinh doanh <span class="text-red-500">*</span>
+                        </label>
+                        <textarea name="businessAddress" rows="4" placeholder="Nhập địa chỉ đăng ký kinh doanh" required class="w-full px-4 py-3 border border-emerald-300 dark:border-emerald-600 rounded-xl bg-emerald-50 dark:bg-slate-700 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all resize-none"></textarea>
+                    </div>
+
+                    <div class="flex items-center justify-between pt-6">
+                        <button type="button" class="px-6 py-3 border border-slate-300 dark:border-neutral-700 rounded-xl bg-white dark:bg-slate-800 text-slate-700 dark:text-neutral-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors" id="backBtn3">
+                            <i class="fas fa-arrow-left mr-2"></i>
+                            Quay lại
+                        </button>
+                        <button type="button" class="px-8 py-3 bg-gradient-to-r from-emerald-500 to-green-500 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all" id="nextBtn3">
+                            Tiếp theo
+                            <i class="fas fa-arrow-right ml-2"></i>
+                        </button>
+                    </div>
+                </form>
+            </section>
+
+            <!-- Step 4: Identity Information -->
+            <section class="form-section p-8" id="identity-info" style="display: none;">
+                <div class="text-center mb-8">
+                    <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-yellow-500 to-orange-500 flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-id-card text-white text-2xl"></i>
+                    </div>
+                    <h2 class="text-3xl font-bold text-slate-900 dark:text-white mb-2">Thông tin định danh</h2>
+                    <p class="text-slate-600 dark:text-neutral-400">Xác thực danh tính của người đại diện shop</p>
+                </div>
+
+                <form class="max-w-2xl mx-auto space-y-6">
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 dark:text-neutral-300 mb-2">
+                            CMND/CCCD <span class="text-red-500">*</span>
+                        </label>
+                        <input type="text" name="idNumber" placeholder="Nhập số CMND/CCCD" required class="w-full px-4 py-3 border border-emerald-300 dark:border-emerald-600 rounded-xl bg-emerald-50 dark:bg-slate-700 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all">
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-700 dark:text-neutral-300 mb-2">
+                                Ảnh mặt trước CMND/CCCD <span class="text-red-500">*</span>
+                            </label>
+                            <div class="border-2 border-dashed border-emerald-300 dark:border-emerald-600 rounded-xl p-6 text-center hover:border-emerald-400 dark:hover:border-emerald-500 transition-colors">
+                                <label class="cursor-pointer">
+                                    <i class="fas fa-id-card text-3xl text-emerald-500 mb-2"></i>
+                                    <p class="text-slate-600 dark:text-neutral-400 text-sm">Tải lên ảnh mặt trước</p>
+                                </label>
+                                <input type="file" accept="image/*" class="hidden">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-700 dark:text-neutral-300 mb-2">
+                                Ảnh mặt sau CMND/CCCD <span class="text-red-500">*</span>
+                            </label>
+                            <div class="border-2 border-dashed border-emerald-300 dark:border-emerald-600 rounded-xl p-6 text-center hover:border-emerald-400 dark:hover:border-emerald-500 transition-colors">
+                                <label class="cursor-pointer">
+                                    <i class="fas fa-id-card text-3xl text-emerald-500 mb-2"></i>
+                                    <p class="text-slate-600 dark:text-neutral-400 text-sm">Tải lên ảnh mặt sau</p>
+                                </label>
+                                <input type="file" accept="image/*" class="hidden">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between pt-6">
+                        <button type="button" class="px-6 py-3 border border-slate-300 dark:border-neutral-700 rounded-xl bg-white dark:bg-slate-800 text-slate-700 dark:text-neutral-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors" id="backBtn4">
+                            <i class="fas fa-arrow-left mr-2"></i>
+                            Quay lại
+                        </button>
+                        <button type="button" class="px-8 py-3 bg-gradient-to-r from-emerald-500 to-green-500 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all" id="nextBtn4">
+                            Tiếp theo
+                            <i class="fas fa-arrow-right ml-2"></i>
+                        </button>
+                    </div>
+                </form>
+            </section>
+
+            <!-- Step 5: Completion -->
+            <section class="form-section p-8" id="completion" style="display: none;">
+                <div class="text-center max-w-2xl mx-auto">
+                    <div class="w-24 h-24 rounded-full bg-gradient-to-br from-emerald-500 to-green-500 flex items-center justify-center mx-auto mb-6">
+                        <i class="fas fa-check text-white text-4xl"></i>
+                    </div>
+                    <h2 class="text-4xl font-bold text-slate-900 dark:text-white mb-4">Đăng ký thành công!</h2>
+                    <p class="text-lg text-slate-600 dark:text-neutral-400 mb-8">Chúc mừng bạn đã hoàn tất quá trình đăng ký kênh người bán.</p>
+                    <a href="/seller" class="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-emerald-500 to-green-500 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all">
+                        <i class="fas fa-store"></i>
+                        Truy cập Kênh người bán
+                    </a>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white dark:bg-slate-800 border-t border-emerald-200 dark:border-emerald-700 mt-16">
+        <div class="max-w-7xl mx-auto px-6 py-6">
+            <p class="text-center text-slate-600 dark:text-neutral-400">&copy; 2024 MegaStore VN. Tất cả quyền được bảo lưu.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const steps = Array.from(document.querySelectorAll('.form-section'));
+            const stepNumbers = document.querySelectorAll('.step-number');
+            let currentStep = 0;
+
+            function showStep(index) {
+                steps.forEach((step, i) => {
+                    step.style.display = i === index ? 'block' : 'none';
+                });
+                
+                stepNumbers.forEach((step, i) => {
+                    if (i <= index) {
+                        step.classList.remove('bg-slate-200', 'dark:bg-slate-700', 'text-slate-500', 'dark:text-neutral-400');
+                        step.classList.add('bg-emerald-500', 'text-white');
+                    } else {
+                        step.classList.remove('bg-emerald-500', 'text-white');
+                        step.classList.add('bg-slate-200', 'dark:bg-slate-700', 'text-slate-500', 'dark:text-neutral-400');
+                    }
+                });
+            }
+
+            // Next buttons
+            document.getElementById('nextBtn1').addEventListener('click', () => {
+                currentStep = 1;
+                showStep(currentStep);
+            });
+
+            document.getElementById('nextBtn2').addEventListener('click', () => {
+                currentStep = 2;
+                showStep(currentStep);
+            });
+
+            document.getElementById('nextBtn3').addEventListener('click', () => {
+                currentStep = 3;
+                showStep(currentStep);
+            });
+
+            document.getElementById('nextBtn4').addEventListener('click', async () => {
+                await submitForm();
+            });
+
+            // Back buttons
+            document.getElementById('backBtn2').addEventListener('click', () => {
+                currentStep = 0;
+                showStep(currentStep);
+            });
+
+            document.getElementById('backBtn3').addEventListener('click', () => {
+                currentStep = 1;
+                showStep(currentStep);
+            });
+
+            document.getElementById('backBtn4').addEventListener('click', () => {
+                currentStep = 2;
+                showStep(currentStep);
+            });
+
+            async function submitForm() {
+                const shopName = document.getElementById('shopName').value.trim();
+                const email = document.getElementById('email').value.trim();
+                const phone = document.getElementById('phone').value.trim();
+                const address = document.getElementById('detailAddress').value.trim();
+                const province = document.getElementById('province').value.trim();
+                const avatarFile = document.getElementById('shopAvatar').files[0];
+
+                if (!shopName || !email || !phone || !address || !province) {
+                    alert('Vui lòng điền đầy đủ thông tin!');
+                    return;
+                }
+
+                try {
+                    const token = localStorage.getItem('authToken');
+                    const formData = new FormData();
+                    formData.append('tenShop', shopName);
+                    formData.append('email', email);
+                    formData.append('sdt', phone);
+                    formData.append('diaChiChiTiet', address);
+                    formData.append('tinhThanh', province);
+                    if (avatarFile) {
+                        formData.append('hinhAnh', avatarFile);
+                    }
+
+                    const response = await fetch('http://localhost:3002/api/user-ban/register', {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: formData
+                    });
+
+                    const data = await response.json();
+                    console.log(data);
+                    if (data.success) {
+                        currentStep = 4;
+                        showStep(currentStep);
+                    } else {
+                        alert(data.message || 'Đăng ký thất bại!');
+                    }
+                } catch (error) {
+                    console.error('Lỗi khi gửi đăng ký:', error);
+                    alert('Có lỗi xảy ra khi gửi dữ liệu lên máy chủ.');
+                }
+            }
+
+            showStep(currentStep);
+        });
+    </script>
+</body>
+</html>

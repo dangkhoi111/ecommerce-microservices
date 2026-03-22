@@ -1,0 +1,278 @@
+<!-- views/seller/product-versions.hbs -->
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Phiên Bản Sản Phẩm – MegaStore VN</title>
+  <link rel="stylesheet" href="/css/seller.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      background-color: #f0faf5;
+    }
+    .main-content {
+      background-color: #f0faf5;
+    }
+    .content-section {
+      background-color: #f0faf5;
+    }
+    .product-form {
+      background-color: white;
+      border-radius: 12px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+    .product-table {
+      background-color: white;
+      border-radius: 12px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #22c55e, #16a34a);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 20px;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
+    }
+    .btn-secondary {
+      background-color: #f3f4f6;
+      color: #374151;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      padding: 10px 20px;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+    .btn-secondary:hover {
+      background-color: #e5e7eb;
+    }
+    .form-group input, .form-group select, .form-group textarea {
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      padding: 10px 12px;
+      transition: border-color 0.2s;
+    }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+      border-color: #22c55e;
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.1);
+    }
+    .edit, .delete {
+      background-color: #f3f4f6;
+      border: none;
+      border-radius: 6px;
+      padding: 8px 12px;
+      margin: 0 2px;
+      transition: all 0.2s;
+    }
+    .edit:hover {
+      background-color: #dbeafe;
+      color: #2563eb;
+    }
+    .delete:hover {
+      background-color: #fee2e2;
+      color: #dc2626;
+    }
+   
+  </style>
+</head>
+<body>
+
+<%- include('./../elements/navbarseller') %>
+
+<main class="main-content">
+  <section class="content-section" id="productVersions">
+    <div class="bg-white dark:bg-slate-800 border-b border-emerald-200 dark:border-emerald-700 px-6 py-4">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h1 class="text-2xl font-bold text-slate-900 dark:text-white"><span id="productName">Tên sản phẩm</span></h1>
+                        <p class="text-slate-600 dark:text-neutral-400">Quản lý các phiên bản màu sắc và kích cỡ</p>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <div class="relative">
+                            <button class="p-2 text-slate-600 dark:text-neutral-400 hover:text-emerald-500 dark:hover:text-emerald-400 transition-colors">
+                                <i class="fas fa-bell text-lg"></i>
+                                <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">2</span>
+                            </button>
+                        </div>
+                        <div class="relative group">
+                            <button class="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-emerald-500 to-green-500 dark:from-green-500 dark:to-emerald-500 text-white rounded-xl font-medium hover:shadow-lg transition-all">
+                                <i class="fas fa-store"></i>
+                                <span id="seller-username">Seller</span>
+                                <i class="fas fa-chevron-down text-sm"></i>
+                            </button>
+                            <div class="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-slate-800 rounded-xl shadow-lg border border-emerald-200 dark:border-emerald-700 py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                                <a href="/" class="flex items-center gap-3 px-4 py-2 text-slate-700 dark:text-neutral-300 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 transition-colors">
+                                    <i class="fas fa-home"></i>
+                                    <span>Trang chủ</span>
+                                </a>
+                                <a href="#" onclick="logout()" class="flex items-center gap-3 px-4 py-2 text-slate-700 dark:text-neutral-300 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 transition-colors">
+                                    <i class="fas fa-sign-out-alt"></i>
+                                    <span>Đăng xuất</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+<button class="btn-primary" id="addVersionBtn"><i class="fas fa-plus"></i> Thêm Phiên Bản</button>
+    <!-- FORM THÊM/SỬA PHIÊN BẢN -->
+    <form id="versionForm" class="product-form" style="display:none">
+      <div class="form-grid">
+        <!-- hidden input giữ mã sản phẩm -->
+        <input type="hidden" name="maSanPham" id="maSanPham" />
+        <div class="form-group">
+          <label>Màu sắc</label>
+          <input type="text" name="mausac" id="mausac" required placeholder="VD: Đỏ, Xanh, Vàng">
+        </div>
+        <div class="form-group">
+          <label>Kích cỡ</label>
+          <input type="text" name="kichco" id="kichco"  placeholder="VD: S, M, L, XL">
+        </div>
+        <div class="form-group">
+          <label>Số lượng</label>
+          <input type="number" name="soluong" id="soluong" required placeholder="Số lượng">
+        </div>
+      </div>
+      <div class="form-actions">
+        <button type="button" class="btn-secondary" id="cancelVersionBtn"><i class="fas fa-times"></i> Hủy</button>
+        <button type="submit" class="btn-primary"><i class="fas fa-save"></i> Lưu Phiên Bản</button>
+      </div>
+    </form>
+
+    <!-- DANH SÁCH PHIÊN BẢN -->
+    <div class="product-management">
+      <table class="product-table">
+        <thead>
+          <tr><th>STT</th><th>Màu sắc</th><th>Kích cỡ</th><th>Số lượng</th><th>Hành động</th></tr>
+        </thead>
+        <tbody id="versionTableBody">
+          <!-- JS render -->
+        </tbody>
+      </table>
+    </div>
+  </section>
+</main>
+
+<script>
+  const token = localStorage.getItem('authToken');
+  const addBtn     = document.getElementById('addVersionBtn');
+  const cancelBtn  = document.getElementById('cancelVersionBtn');
+  const form       = document.getElementById('versionForm');
+  const tableBody  = document.getElementById('versionTableBody');
+  const productId  = new URLSearchParams(window.location.search).get('maSanpham');
+  const productName= document.getElementById('productName');
+  const formInputId= document.getElementById('maSanPham');
+  let editingId    = null;
+
+  async function loadProduct() {
+    
+    const res   = await fetch(`http://localhost:3001/api/sanphams/${productId}`, {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+    if (!res.ok) return console.error('Không load được sản phẩm:', await res.text());
+    const sp = await res.json();
+    productName.textContent = sp.tenSP;
+    formInputId.value     = productId;  // gán lại hidden-input sau mỗi reset
+  }
+
+  async function loadVersions() {
+    const res = await fetch(`http://localhost:3001/api/phienban?maSanPham=${productId}`);
+    const list = await res.json();
+    if (!Array.isArray(list)) return console.error('Phản hồi không phải array', list);
+    tableBody.innerHTML = list.map((p, i) =>
+      `<tr>
+         <td>${i+1}</td>
+         <td>${p.mausac}</td>
+         <td>${p.kichco}</td>
+         <td>${p.soluong}</td>
+         <td>
+           <button class="edit"   data-id="${p._id}"><i class="fas fa-edit"></i></button>
+           <button class="delete" data-id="${p._id}"><i class="fas fa-trash"></i></button>
+         </td>
+       </tr>`
+    ).join('');
+  }
+
+  addBtn.onclick = () => {
+    editingId = null;
+    form.reset();
+    formInputId.value = productId;        // giữ lại maSanPham
+    form.style.display = 'block';
+    form.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  cancelBtn.onclick = () => form.style.display = 'none';
+
+  form.onsubmit = async e => {
+    e.preventDefault();
+    const formData = new FormData(form);
+    const url    = editingId
+      ? `http://localhost:3001/api/phienban/${editingId}`
+      : 'http://localhost:3001/api/phienban';
+    const method = editingId ? 'PUT' : 'POST';
+
+    const res = await fetch(url, { method, body: formData ,
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+
+    if (!res.ok) {
+      alert('Lỗi khi lưu: ' + await res.text());
+    } else {
+      form.style.display = 'none';
+      loadVersions();
+    }
+  };
+
+  document.addEventListener('click', e => {
+    const delBtn  = e.target.closest('.delete');
+    const editBtn = e.target.closest('.edit');
+
+    if (delBtn) {
+      const id = delBtn.dataset.id;
+      if (confirm('Xóa phiên bản này?')) {
+        fetch(`http://localhost:3001/api/phienban/${id}`, { method: 'DELETE',
+      headers: { 'Authorization': `Bearer ${token}` }
+    } )
+          .then(r => r.ok && loadVersions());
+      }
+    }
+
+    if (editBtn) {
+      editingId = editBtn.dataset.id;
+      fetch(`http://localhost:3001/api/phienban/${editingId}`,{
+      headers: { 'Authorization': `Bearer ${token}` }
+    })
+        .then(r => r.json())
+        .then(p => {
+          form.style.display = 'block';
+          document.getElementById('mausac').value = p.mausac;
+          document.getElementById('kichco').value = p.kichco;
+          document.getElementById('soluong').value = p.soluong;
+          formInputId.value = productId; // giữ maSanPham khi sửa
+        });
+    }
+  });
+
+  window.addEventListener('DOMContentLoaded', () => {
+    loadProduct();
+    loadVersions();
+  });
+  function logout() {
+                localStorage.removeItem('authToken');
+                localStorage.removeItem('userInfo');
+                localStorage.removeItem('hoTen');
+                window.location.href = '/';
+            }
+</script>
+
+</body>
+</html>
+

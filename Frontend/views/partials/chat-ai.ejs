@@ -1,0 +1,222 @@
+<div class="fixed bottom-5 right-24 z-50">
+  <!-- Nút mở AI chat -->
+  <button
+    id="ai-chat-toggle"
+    class="bg-purple-600 hover:bg-purple-700 text-white w-14 h-14 rounded-full flex items-center justify-center shadow-lg cursor-pointer transition-all duration-200 relative"
+    title="Trợ lý AI"
+  >
+    <i class="fas fa-robot text-2xl"></i>
+  </button>
+
+  <!-- Hộp chat AI -->
+  <div
+    id="ai-chat-box"
+    class="hidden flex-col w-96 max-w-[95vw] h-[480px] bg-white dark:bg-slate-800 rounded-xl shadow-2xl overflow-hidden absolute bottom-16 right-0 transform transition-all duration-300"
+  >
+    <!-- Header -->
+    <div class="flex items-center justify-between px-4 py-3 bg-purple-600 text-white">
+      <div>
+        <h4 class="text-lg font-semibold">Trợ lý AI</h4>
+        <p class="text-xs opacity-80">Hỏi về sản phẩm, danh mục, gợi ý mua gì...</p>
+      </div>
+      <button
+        id="ai-chat-close"
+        class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-purple-700 transition-colors"
+      >
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+
+    <!-- Nội dung chat -->
+    <div
+      id="ai-chat-messages"
+      class="flex-1 overflow-y-auto p-3 bg-slate-50 dark:bg-slate-900 flex flex-col gap-2 text-sm"
+    >
+      <div class="self-start max-w-[80%] bg-slate-200 dark:bg-slate-700 rounded-2xl px-3 py-2">
+        <div class="font-semibold mb-1">🤖 Mega AI</div>
+        <div>
+          Xin chào! Tôi là trợ lý AI của MegaStore. Bạn có thể hỏi:
+          <ul class="list-disc list-inside mt-1">
+            <li>“Tôi muốn mua điện thoại”</li>
+            <li>“Gợi ý laptop chơi game”</li>
+            <li>“Tìm cho tôi tai nghe dưới 1 triệu”</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Kết quả gợi ý sản phẩm (nếu có) -->
+    <div
+      id="ai-chat-products"
+      class="hidden border-t border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 max-h-52 overflow-y-auto p-3 text-xs"
+    ></div>
+
+    <!-- Ô nhập -->
+    <div class="border-t border-slate-200 dark:border-slate-700 p-2 bg-white dark:bg-slate-800 flex items-end gap-2">
+      <textarea
+        id="ai-chat-input"
+        rows="2"
+        placeholder="Gõ câu hỏi về sản phẩm, ví dụ: 'Tôi muốn mua điện thoại'..."
+        class="flex-1 text-sm border border-slate-300 dark:border-slate-600 rounded-lg px-2 py-1.5 resize-none outline-none focus:ring-2 focus:ring-purple-500 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100"
+      ></textarea>
+      <button
+        id="ai-chat-send"
+        class="flex items-center justify-center w-10 h-10 rounded-full bg-purple-600 hover:bg-purple-700 text-white shadow-md disabled:opacity-60 disabled:cursor-not-allowed"
+        title="Gửi"
+      >
+        <i class="fas fa-paper-plane"></i>
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function () {
+    const API_URL = 'http://localhost:3011/api/recommendation/chatbot/message';
+
+    const toggleBtn = document.getElementById('ai-chat-toggle');
+    const closeBtn = document.getElementById('ai-chat-close');
+    const box = document.getElementById('ai-chat-box');
+    const messagesEl = document.getElementById('ai-chat-messages');
+    const productsEl = document.getElementById('ai-chat-products');
+    const inputEl = document.getElementById('ai-chat-input');
+    const sendBtn = document.getElementById('ai-chat-send');
+
+    if (!toggleBtn || !box) return;
+
+    function openBox() {
+      box.classList.remove('hidden');
+      box.classList.add('flex');
+      inputEl.focus();
+    }
+
+    function closeBox() {
+      box.classList.add('hidden');
+      box.classList.remove('flex');
+    }
+
+    toggleBtn.addEventListener('click', openBox);
+    if (closeBtn) closeBtn.addEventListener('click', closeBox);
+
+    function appendMessage({ text, from = 'user' }) {
+      const wrapper = document.createElement('div');
+      const isUser = from === 'user';
+
+      wrapper.className = [
+        'max-w-[80%]',
+        'px-3',
+        'py-2',
+        'rounded-2xl',
+        'text-sm',
+        'shadow-sm',
+        isUser
+          ? 'self-end bg-purple-600 text-white'
+          : 'self-start bg-slate-200 dark:bg-slate-700 text-slate-900 dark:text-slate-100'
+      ].join(' ');
+
+      wrapper.innerHTML = isUser
+        ? '<div>' + text + '</div>'
+        : '<div class="font-semibold mb-1">🤖 Mega AI</div><div>' + text.replace(/\n/g, '<br>') + '</div>';
+
+      messagesEl.appendChild(wrapper);
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+    }
+
+    function renderProducts(products) {
+      if (!products || !products.length) {
+        productsEl.classList.add('hidden');
+        productsEl.innerHTML = '';
+        return;
+      }
+
+      productsEl.classList.remove('hidden');
+      productsEl.innerHTML = '<div class="font-semibold mb-2">Gợi ý sản phẩm:</div>';
+
+      products.slice(0, 5).forEach((p) => {
+        const price = (p.giaGiam || p.giaGoc || 0).toLocaleString('vi-VN') + '₫';
+        const sold = p.soldCount ? ' • Đã bán: ' + p.soldCount : '';
+        const link = '/products/detail/' + p._id;
+
+        const item = document.createElement('div');
+        item.className =
+          'flex items-center gap-2 mb-2 p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer';
+        item.innerHTML =
+          '<img src="' +
+          (p.hinhAnh || '/images/default-product.jpg') +
+          '" class="w-10 h-10 rounded-md object-cover" />' +
+          '<div class="flex-1">' +
+          '<div class="font-medium line-clamp-2">' +
+          (p.tenSP || 'Sản phẩm') +
+          '</div>' +
+          '<div class="text-[11px] text-slate-500 dark:text-slate-400">' +
+          price +
+          sold +
+          '</div>' +
+          '</div>';
+        item.addEventListener('click', function () {
+          window.location.href = link;
+        });
+
+        productsEl.appendChild(item);
+      });
+    }
+
+    async function sendMessage() {
+      const text = (inputEl.value || '').trim();
+      if (!text) return;
+
+      appendMessage({ text: text, from: 'user' });
+      inputEl.value = '';
+      renderProducts([]);
+      sendBtn.disabled = true;
+
+      try {
+        const res = await fetch(API_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ message: text })
+        });
+
+        if (!res.ok) {
+          throw new Error('API error: ' + res.status);
+        }
+
+        const data = await res.json();
+        const reply =
+          data.response ||
+          'Xin lỗi, tôi chưa hiểu câu hỏi của bạn. Bạn có thể hỏi lại về sản phẩm hoặc danh mục cụ thể?';
+        appendMessage({ text: reply, from: 'bot' });
+
+        if (Array.isArray(data.products) && data.products.length > 0) {
+          renderProducts(data.products);
+        } else {
+          renderProducts([]);
+        }
+      } catch (err) {
+        console.error('AI chat error', err);
+        appendMessage({
+          text: 'Xin lỗi, AI đang gặp sự cố kết nối. Bạn vui lòng thử lại sau nhé.',
+          from: 'bot'
+        });
+      } finally {
+        sendBtn.disabled = false;
+        inputEl.focus();
+      }
+    }
+
+    sendBtn.addEventListener('click', sendMessage);
+    inputEl.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        sendMessage();
+      }
+    });
+  })();
+</script>
+
+
+
+
+

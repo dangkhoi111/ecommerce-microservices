@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cài đặt shop - Seller Dashboard</title>
+    <meta name="description" content="Cài đặt và quản lý thông tin shop - MegaStore VN">
+    
+    <!-- Tailwind CSS (CDN) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        if (window.tailwind) { 
+            tailwind.config = { 
+                darkMode: 'class',
+                theme: {
+                    extend: {
+                        animation: {
+                            'fade-in': 'fadeIn 0.5s ease-in',
+                            'slide-up': 'slideUp 0.6s ease-out',
+                            'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        },
+                        keyframes: {
+                            fadeIn: {
+                                '0%': { opacity: '0' },
+                                '100%': { opacity: '1' }
+                            },
+                            slideUp: {
+                                '0%': { transform: 'translateY(20px)', opacity: '0' },
+                                '100%': { transform: 'translateY(0)', opacity: '1' }
+                            }
+                        }
+                    }
+                }
+            } 
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        /* Custom styles for seller layout */
+        .seller-layout {
+            display: flex;
+            min-height: 100vh;
+        }
+        .main-content {
+            flex: 1;
+            margin-left: 16rem; /* 64 * 0.25rem = 16rem */
+            margin-top: 0;
+            padding-top: 0;
+        }
+        
+        /* Override header styles for seller pages */
+        .seller-header {
+            position: relative !important;
+            z-index: 10 !important;
+            margin-bottom: 0 !important;
+        }
+        
+        @media (max-width: 768px) {
+            .main-content {
+                margin-left: 0;
+                padding-top: 1rem;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-emerald-50 via-green-50 to-teal-50 dark:from-slate-900 dark:via-emerald-900 dark:to-green-900 min-h-screen transition-colors duration-300" style="font-family: 'Inter', sans-serif;">
+    <div class="seller-layout">
+        <!-- Sidebar -->
+        <%- include('./../elements/navbarseller') %>
+        
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Seller Header -->
+            <div class="bg-white dark:bg-slate-800 border-b border-emerald-200 dark:border-emerald-700 px-6 py-4">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h1 class="text-2xl font-bold text-slate-900 dark:text-white">Cài đặt shop</h1>
+                        <p class="text-slate-600 dark:text-neutral-400">Quản lý thông tin và cài đặt shop của bạn</p>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <div class="relative">
+                            <button class="p-2 text-slate-600 dark:text-neutral-400 hover:text-emerald-500 dark:hover:text-emerald-400 transition-colors">
+                                <i class="fas fa-bell text-lg"></i>
+                                <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">2</span>
+                            </button>
+                        </div>
+                        <div class="relative group">
+                            <button class="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-emerald-500 to-green-500 dark:from-green-500 dark:to-emerald-500 text-white rounded-xl font-medium hover:shadow-lg transition-all">
+                                <i class="fas fa-store"></i>
+                                <span id="seller-username">Seller</span>
+                                <i class="fas fa-chevron-down text-sm"></i>
+                            </button>
+                            <div class="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-slate-800 rounded-xl shadow-lg border border-emerald-200 dark:border-emerald-700 py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                                <a href="/" class="flex items-center gap-3 px-4 py-2 text-slate-700 dark:text-neutral-300 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 transition-colors">
+                                    <i class="fas fa-home"></i>
+                                    <span>Trang chủ</span>
+                                </a>
+                                <a href="#" onclick="logout()" class="flex items-center gap-3 px-4 py-2 text-slate-700 dark:text-neutral-300 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 transition-colors">
+                                    <i class="fas fa-sign-out-alt"></i>
+                                    <span>Đăng xuất</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Dashboard Content -->
+            <div class="p-6 space-y-8">
+                <!-- Settings Grid -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <!-- Shop Information -->
+                    <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-lg shadow-emerald-500/5 border border-emerald-200 dark:border-emerald-700 p-6">
+                        <div class="flex items-center gap-3 mb-6">
+                            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-green-500 flex items-center justify-center">
+                                <i class="fas fa-store text-white"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-slate-900 dark:text-white">Thông tin cửa hàng</h3>
+                        </div>
+                        
+                        <form class="space-y-4" id="shop-info-form">
+                            <div>
+                                <label class="block text-sm font-semibold text-slate-700 dark:text-neutral-300 mb-2">
+                                    Tên cửa hàng
+                                </label>
+                                <input type="text" id="tenShop" class="w-full px-4 py-3 border border-emerald-300 dark:border-emerald-600 rounded-xl bg-emerald-50 dark:bg-slate-700 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-semibold text-slate-700 dark:text-neutral-300 mb-2">
+                                    Logo cửa hàng
+                                </label>
+                                <div class="flex items-center gap-4">
+                                    <div class="w-20 h-20 rounded-xl overflow-hidden border-2 border-emerald-200 dark:border-emerald-700">
+                                        <img id="shop-logo" src="/images/store-logo.jpg" alt="Store Logo" class="w-full h-full object-cover">
+                                    </div>
+                                    <div>
+                                        <input type="file" id="shop-logo-input" accept="image/*" class="hidden">
+                                        <button type="button" class="px-4 py-2 bg-emerald-500 text-white rounded-xl hover:bg-emerald-600 transition-colors" onclick="document.getElementById('shop-logo-input').click()">
+                                            <i class="fas fa-upload mr-2"></i>
+                                            Thay đổi
+                                        </button>
+                                        <p class="text-xs text-slate-500 dark:text-neutral-400 mt-1">PNG, JPG tối đa 5MB</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-semibold text-slate-700 dark:text-neutral-300 mb-2">
+                                    Địa chỉ chi tiết
+                                </label>
+                                <input type="text" id="diaChiChiTiet" class="w-full px-4 py-3 border border-emerald-300 dark:border-emerald-600 rounded-xl bg-emerald-50 dark:bg-slate-700 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-semibold text-slate-700 dark:text-neutral-300 mb-2">
+                                    Tỉnh/Thành phố
+                                </label>
+                                <input type="text" id="tinhThanh" class="w-full px-4 py-3 border border-emerald-300 dark:border-emerald-600 rounded-xl bg-emerald-50 dark:bg-slate-700 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all">
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Shipping Settings -->
+                    <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-lg shadow-emerald-500/5 border border-emerald-200 dark:border-emerald-700 p-6">
+                        <div class="flex items-center gap-3 mb-6">
+                            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center">
+                                <i class="fas fa-truck text-white"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-slate-900 dark:text-white">Vận chuyển</h3>
+                        </div>
+                        
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between p-4 bg-emerald-50 dark:bg-emerald-900/20 rounded-xl">
+                                <div>
+                                    <h4 class="font-semibold text-slate-900 dark:text-white">Giao hàng nhanh</h4>
+                                    <p class="text-sm text-slate-600 dark:text-neutral-400">Giao hàng trong 24h đối với nội thành</p>
+                                </div>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" checked class="sr-only peer">
+                                    <div class="w-11 h-6 bg-slate-200 dark:bg-slate-700 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-emerald-300 dark:peer-focus:ring-emerald-800 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-500"></div>
+                                </label>
+                            </div>
+                            
+                            <div class="flex items-center justify-between p-4 bg-blue-50 dark:bg-blue-900/20 rounded-xl">
+                                <div>
+                                    <h4 class="font-semibold text-slate-900 dark:text-white">Giao hàng tiết kiệm</h4>
+                                    <p class="text-sm text-slate-600 dark:text-neutral-400">Giao hàng từ 2-3 ngày với chi phí thấp</p>
+                                </div>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" checked class="sr-only peer">
+                                    <div class="w-11 h-6 bg-slate-200 dark:bg-slate-700 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-emerald-300 dark:peer-focus:ring-emerald-800 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-500"></div>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Payment Settings -->
+                    <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-lg shadow-emerald-500/5 border border-emerald-200 dark:border-emerald-700 p-6">
+                        <div class="flex items-center gap-3 mb-6">
+                            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
+                                <i class="fas fa-money-bill text-white"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-slate-900 dark:text-white">Thanh toán</h3>
+                        </div>
+                        
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between p-4 bg-emerald-50 dark:bg-emerald-900/20 rounded-xl">
+                                <div>
+                                    <h4 class="font-semibold text-slate-900 dark:text-white">Thanh toán khi nhận hàng (COD)</h4>
+                                    <p class="text-sm text-slate-600 dark:text-neutral-400">Khách hàng thanh toán khi nhận được hàng</p>
+                                </div>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" checked class="sr-only peer">
+                                    <div class="w-11 h-6 bg-slate-200 dark:bg-slate-700 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-emerald-300 dark:peer-focus:ring-emerald-800 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-500"></div>
+                                </label>
+                            </div>
+                            
+                            <div class="flex items-center justify-between p-4 bg-blue-50 dark:bg-blue-900/20 rounded-xl">
+                                <div>
+                                    <h4 class="font-semibold text-slate-900 dark:text-white">Thanh toán online</h4>
+                                    <p class="text-sm text-slate-600 dark:text-neutral-400">Thanh toán qua thẻ, ví điện tử</p>
+                                </div>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" checked class="sr-only peer">
+                                    <div class="w-11 h-6 bg-slate-200 dark:bg-slate-700 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-emerald-300 dark:peer-focus:ring-emerald-800 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-500"></div>
+                                </label>
+                            </div>
+                            
+                            <button class="w-full px-4 py-3 border border-emerald-300 dark:border-emerald-600 rounded-xl bg-emerald-50 dark:bg-slate-700 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-100 dark:hover:bg-emerald-900/20 transition-colors">
+                                <i class="fas fa-plus mr-2"></i>
+                                Thêm phương thức thanh toán
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Notification Settings -->
+                    <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-lg shadow-emerald-500/5 border border-emerald-200 dark:border-emerald-700 p-6">
+                        <div class="flex items-center gap-3 mb-6">
+                            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-yellow-500 to-orange-500 flex items-center justify-center">
+                                <i class="fas fa-bell text-white"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-slate-900 dark:text-white">Thông báo</h3>
+                        </div>
+                        
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between p-4 bg-emerald-50 dark:bg-emerald-900/20 rounded-xl">
+                                <div>
+                                    <h4 class="font-semibold text-slate-900 dark:text-white">Thông báo đơn hàng mới</h4>
+                                    <p class="text-sm text-slate-600 dark:text-neutral-400">Nhận thông báo khi có đơn hàng mới</p>
+                                </div>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" checked class="sr-only peer">
+                                    <div class="w-11 h-6 bg-slate-200 dark:bg-slate-700 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-emerald-300 dark:peer-focus:ring-emerald-800 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-500"></div>
+                                </label>
+                            </div>
+                            
+                            <div class="flex items-center justify-between p-4 bg-blue-50 dark:bg-blue-900/20 rounded-xl">
+                                <div>
+                                    <h4 class="font-semibold text-slate-900 dark:text-white">Thông báo chat khách hàng</h4>
+                                    <p class="text-sm text-slate-600 dark:text-neutral-400">Nhận thông báo khi khách hàng nhắn tin</p>
+                                </div>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" checked class="sr-only peer">
+                                    <div class="w-11 h-6 bg-slate-200 dark:bg-slate-700 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-emerald-300 dark:peer-focus:ring-emerald-800 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-500"></div>
+                                </label>
+                            </div>
+                            
+                            <div class="flex items-center justify-between p-4 bg-purple-50 dark:bg-purple-900/20 rounded-xl">
+                                <div>
+                                    <h4 class="font-semibold text-slate-900 dark:text-white">Thông báo email</h4>
+                                    <p class="text-sm text-slate-600 dark:text-neutral-400">Nhận thông báo qua email</p>
+                                </div>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" checked class="sr-only peer">
+                                    <div class="w-11 h-6 bg-slate-200 dark:bg-slate-700 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-emerald-300 dark:peer-focus:ring-emerald-800 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-500"></div>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex items-center justify-end gap-4">
+                    <button class="px-6 py-3 border border-slate-300 dark:border-neutral-700 rounded-xl bg-white dark:bg-slate-800 text-slate-700 dark:text-neutral-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
+                        <i class="fas fa-times mr-2"></i>
+                        Hủy
+                    </button>
+                    <button class="px-8 py-3 bg-gradient-to-r from-emerald-500 to-green-500 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all" id="saveBtn">
+                        <i class="fas fa-save mr-2"></i>
+                        Lưu thay đổi
+                    </button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        function logout() {
+            localStorage.removeItem('authToken');
+            localStorage.removeItem('userInfo');
+            localStorage.removeItem('hoTen');
+            window.location.href = '/';
+        }
+
+        // Update seller username
+        document.addEventListener('DOMContentLoaded', function() {
+            const userName = 'Seller';
+            try {
+                const userInfo = localStorage.getItem('userInfo');
+                if (userInfo) {
+                    const userObj = JSON.parse(userInfo);
+                    if (userObj.hoTen) userName = userObj.hoTen;
+                    else if (userObj.name) userName = userObj.name;
+                } else if (localStorage.getItem('hoTen')) {
+                    userName = localStorage.getItem('hoTen');
+                }
+            } catch(e) {}
+            const el = document.getElementById('seller-username');
+            if (el) el.textContent = userName;
+        });
+
+        // Lấy thông tin user bán và token từ localStorage
+        const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+        const userBanId = userInfo?.userBanId;
+        const token = localStorage.getItem('authToken');
+
+        // Nếu có userBanId, fetch thông tin shop về điền form
+        if (userBanId) {
+            fetch(`http://localhost:3002/api/user-ban/check/${userBanId}`)
+                .then(res => res.json())
+                .then(data => {
+                    document.getElementById('tenShop').value = data.tenShop || '';
+                    document.getElementById('diaChiChiTiet').value = data.diaChiChiTiet || '';
+                    document.getElementById('tinhThanh').value = data.tinhThanh || '';
+                    document.getElementById('shop-logo').src = data.hinhAnh || '/images/store-logo.jpg';
+                    
+                    // Cập nhật localStorage với shop avatar và tên shop
+                    if (userInfo) {
+                        userInfo.shopAvatar = data.hinhAnh || userInfo.shopAvatar;
+                        userInfo.tenShop = data.tenShop || userInfo.tenShop;
+                        localStorage.setItem('userInfo', JSON.stringify(userInfo));
+                    }
+                })
+                .catch(err => console.error('Lỗi khi lấy thông tin shop:', err));
+        }
+
+        // Khi chọn ảnh mới, hiện preview ảnh đó
+        document.getElementById('shop-logo-input').addEventListener('change', function (e) {
+            const file = e.target.files[0];
+            if (file) {
+                const img = document.getElementById('shop-logo');
+                img.src = URL.createObjectURL(file);
+            }
+        });
+
+        // Xử lý nút "Lưu thay đổi" để gửi dữ liệu form và ảnh lên server
+        document.getElementById('saveBtn').addEventListener('click', async () => {
+            const tenShop = document.getElementById('tenShop').value;
+            const diaChiChiTiet = document.getElementById('diaChiChiTiet').value;
+            const tinhThanh = document.getElementById('tinhThanh').value;
+
+            const formData = new FormData();
+            formData.append('tenShop', tenShop);
+            formData.append('diaChiChiTiet', diaChiChiTiet);
+            formData.append('tinhThanh', tinhThanh);
+
+            const fileInput = document.getElementById('shop-logo-input');
+            if (fileInput && fileInput.files.length > 0) {
+                formData.append('hinhAnh', fileInput.files[0]);
+            }
+
+            try {
+                const res = await fetch(`http://localhost:3002/api/user-ban/${userBanId}`, {
+                    method: 'PUT',
+                    body: formData,
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                const result = await res.json();
+                if (result.success) {
+                    // Cập nhật localStorage với thông tin shop mới
+                    if (userInfo && result.userBan) {
+                        userInfo.shopAvatar = result.userBan.hinhAnh || userInfo.shopAvatar;
+                        userInfo.tenShop = result.userBan.tenShop || userInfo.tenShop;
+                        localStorage.setItem('userInfo', JSON.stringify(userInfo));
+                    }
+                    
+                    alert('Cập nhật shop thành công!');
+                    location.reload();
+                } else {
+                    alert('Cập nhật thất bại: ' + result.message);
+                }
+            } catch (err) {
+                console.error('Lỗi khi cập nhật shop:', err);
+                alert('Lỗi máy chủ');
+            }
+        });
+    </script>
+</body>
+</html>

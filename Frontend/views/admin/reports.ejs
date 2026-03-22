@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Báo cáo & Thống kê - MegaStore VN</title>
+    <meta name="description" content="Báo cáo và thống kê hệ thống MegaStore VN - Admin Panel">
+    
+    <!-- Tailwind CSS (CDN) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        if (window.tailwind) { 
+            tailwind.config = { 
+                darkMode: 'class',
+                theme: {
+                    extend: {
+                        animation: {
+                            'fade-in': 'fadeIn 0.5s ease-in',
+                            'slide-up': 'slideUp 0.6s ease-out',
+                            'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        },
+                        keyframes: {
+                            fadeIn: {
+                                '0%': { opacity: '0' },
+                                '100%': { opacity: '1' }
+                            },
+                            slideUp: {
+                                '0%': { transform: 'translateY(20px)', opacity: '0' },
+                                '100%': { transform: 'translateY(0)', opacity: '1' }
+                            }
+                        }
+                    }
+                }
+            } 
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+    <style>
+        /* Custom styles to override any conflicting CSS */
+        .admin-layout {
+            display: flex;
+            min-height: 100vh;
+        }
+        .main-content {
+            flex: 1;
+            margin-left: 16rem; /* 64 * 0.25rem = 16rem */
+            margin-top: 0;
+            padding-top: 0;
+        }
+        
+        /* Override header styles for admin pages */
+        .seller-header {
+            position: relative !important;
+            z-index: 10 !important;
+            margin-bottom: 0 !important;
+        }
+        
+        /* Ensure sidebar is positioned correctly */
+        nav.sidebar {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            height: 100vh !important;
+            z-index: 30 !important;
+        }
+        
+        @media (max-width: 768px) {
+            .main-content {
+                margin-left: 0;
+                padding-top: 1rem;
+            }
+            nav.sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+            nav.sidebar.active {
+                transform: translateX(0);
+            }
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-slate-50 via-white to-slate-50 dark:from-neutral-900 dark:via-black dark:to-neutral-900 min-h-screen transition-colors duration-300" style="font-family: 'Inter', sans-serif;">
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <%- include('./../elements/navbaradmin') %>
+        
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Admin Header -->
+            <div class="bg-white dark:bg-neutral-900 border-b border-slate-200 dark:border-neutral-800 px-6 py-4">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h1 class="text-2xl font-bold text-slate-900 dark:text-white">Báo cáo & Thống kê</h1>
+                        <p class="text-slate-600 dark:text-neutral-400">Phân tích dữ liệu và hiệu suất hệ thống</p>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <div class="relative">
+                            <button class="p-2 text-slate-600 dark:text-neutral-400 hover:text-orange-500 dark:hover:text-yellow-400 transition-colors">
+                                <i class="fas fa-bell text-lg"></i>
+                                <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">3</span>
+                            </button>
+                        </div>
+                        <div class="relative group">
+                            <button class="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-orange-500 to-yellow-500 dark:from-yellow-500 dark:to-yellow-400 text-white dark:text-black rounded-xl font-medium hover:shadow-lg transition-all">
+                                <i class="fas fa-user-circle"></i>
+                                <span id="admin-username">Admin</span>
+                                <i class="fas fa-chevron-down text-sm"></i>
+                            </button>
+                            <div class="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-neutral-800 rounded-xl shadow-lg border border-slate-200 dark:border-neutral-700 py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                                <a href="/" class="flex items-center gap-3 px-4 py-2 text-slate-700 dark:text-neutral-300 hover:bg-slate-50 dark:hover:bg-neutral-700 transition-colors">
+                                    <i class="fas fa-home"></i>
+                                    <span>Quay lại trang chính</span>
+                                </a>
+                                <a href="#" onclick="logout()" class="flex items-center gap-3 px-4 py-2 text-slate-700 dark:text-neutral-300 hover:bg-slate-50 dark:hover:bg-neutral-700 transition-colors">
+                                    <i class="fas fa-sign-out-alt"></i>
+                                    <span>Đăng xuất</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Dashboard Content -->
+            <div class="p-6 space-y-8">
+                <!-- Date Range Filter -->
+                <div class="bg-white dark:bg-neutral-900 rounded-2xl shadow-lg shadow-orange-500/5 dark:shadow-yellow-500/5 border border-slate-200 dark:border-neutral-800 p-6">
+                    <div class="flex items-center justify-between">
+                        <h2 class="text-xl font-bold text-slate-900 dark:text-white">Bộ lọc thời gian</h2>
+                        <div class="flex items-center gap-4">
+                            <div class="flex items-center gap-2">
+                                <label class="text-sm font-semibold text-slate-700 dark:text-neutral-300">Từ ngày:</label>
+                                <input type="date" id="startDate" class="px-4 py-2 border border-slate-300 dark:border-neutral-700 rounded-xl bg-slate-50 dark:bg-neutral-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-orange-500 dark:focus:ring-yellow-500 focus:border-transparent">
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <label class="text-sm font-semibold text-slate-700 dark:text-neutral-300">Đến ngày:</label>
+                                <input type="date" id="endDate" class="px-4 py-2 border border-slate-300 dark:border-neutral-700 rounded-xl bg-slate-50 dark:bg-neutral-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-orange-500 dark:focus:ring-yellow-500 focus:border-transparent">
+                            </div>
+                            <button id="btn-view-reports" class="px-6 py-2 bg-gradient-to-r from-orange-500 to-yellow-500 dark:from-yellow-500 dark:to-yellow-400 text-white dark:text-black font-bold rounded-xl shadow-lg hover:shadow-xl transition-all">
+                                <i class="fas fa-chart-line mr-2"></i>
+                                Xem báo cáo
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Revenue Overview -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div class="bg-white dark:bg-neutral-900 rounded-2xl shadow-lg shadow-orange-500/5 dark:shadow-yellow-500/5 border border-slate-200 dark:border-neutral-800 p-6">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center">
+                                <i class="fas fa-dollar-sign text-white text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-2xl font-black text-slate-900 dark:text-white">250M</h3>
+                                <p class="text-slate-600 dark:text-neutral-400 font-medium">Tổng doanh thu</p>
+                                <p class="text-sm text-green-600 dark:text-green-400 font-semibold">+15% so với tháng trước</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white dark:bg-neutral-900 rounded-2xl shadow-lg shadow-orange-500/5 dark:shadow-yellow-500/5 border border-slate-200 dark:border-neutral-800 p-6">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-orange-500 to-yellow-500 dark:from-yellow-500 dark:to-yellow-400 flex items-center justify-center">
+                                <i class="fas fa-shopping-cart text-white dark:text-black text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-2xl font-black text-slate-900 dark:text-white">1,250</h3>
+                                <p class="text-slate-600 dark:text-neutral-400 font-medium">Tổng đơn hàng</p>
+                                <p class="text-sm text-green-600 dark:text-green-400 font-semibold">+8% so với tháng trước</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white dark:bg-neutral-900 rounded-2xl shadow-lg shadow-orange-500/5 dark:shadow-yellow-500/5 border border-slate-200 dark:border-neutral-800 p-6">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center">
+                                <i class="fas fa-users text-white text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-2xl font-black text-slate-900 dark:text-white">150</h3>
+                                <p class="text-slate-600 dark:text-neutral-400 font-medium">Khách hàng mới</p>
+                                <p class="text-sm text-green-600 dark:text-green-400 font-semibold">+12% so với tháng trước</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white dark:bg-neutral-900 rounded-2xl shadow-lg shadow-orange-500/5 dark:shadow-yellow-500/5 border border-slate-200 dark:border-neutral-800 p-6">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
+                                <i class="fas fa-store text-white text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-2xl font-black text-slate-900 dark:text-white">25</h3>
+                                <p class="text-slate-600 dark:text-neutral-400 font-medium">Gian hàng mới</p>
+                                <p class="text-sm text-green-600 dark:text-green-400 font-semibold">+5% so với tháng trước</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts Section -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <!-- Revenue Chart -->
+                    <div class="bg-white dark:bg-neutral-900 rounded-2xl shadow-lg shadow-orange-500/5 dark:shadow-yellow-500/5 border border-slate-200 dark:border-neutral-800 p-6">
+                        <div class="flex items-center justify-between mb-6">
+                            <h2 class="text-xl font-bold text-slate-900 dark:text-white">Biểu đồ doanh thu</h2>
+                            <div class="flex items-center gap-2">
+                                <button class="px-3 py-1 text-xs font-semibold bg-orange-100 dark:bg-yellow-900/30 text-orange-800 dark:text-yellow-400 rounded-full">7 ngày</button>
+                                <button class="px-3 py-1 text-xs font-semibold text-slate-500 dark:text-neutral-400 hover:bg-slate-100 dark:hover:bg-neutral-800 rounded-full">30 ngày</button>
+                                <button class="px-3 py-1 text-xs font-semibold text-slate-500 dark:text-neutral-400 hover:bg-slate-100 dark:hover:bg-neutral-800 rounded-full">90 ngày</button>
+                            </div>
+                        </div>
+                        <div class="h-80">
+                            <canvas id="revenueChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Category Chart -->
+                    <div class="bg-white dark:bg-neutral-900 rounded-2xl shadow-lg shadow-orange-500/5 dark:shadow-yellow-500/5 border border-slate-200 dark:border-neutral-800 p-6">
+                        <div class="flex items-center justify-between mb-6">
+                            <h2 class="text-xl font-bold text-slate-900 dark:text-white">Doanh số theo danh mục</h2>
+                        </div>
+                        <div class="h-80">
+                            <canvas id="categoryChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Top Products -->
+                <div class="bg-white dark:bg-neutral-900 rounded-2xl shadow-lg shadow-orange-500/5 dark:shadow-yellow-500/5 border border-slate-200 dark:border-neutral-800 p-6">
+                    <div class="flex items-center justify-between mb-6">
+                        <h2 class="text-xl font-bold text-slate-900 dark:text-white">Sản phẩm bán chạy</h2>
+                        <button class="px-4 py-2 text-orange-500 dark:text-yellow-500 hover:text-orange-600 dark:hover:text-yellow-400 font-medium transition-colors">
+                            <i class="fas fa-download mr-2"></i>
+                            Xuất Excel
+                        </button>
+                    </div>
+                    
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead class="bg-slate-50 dark:bg-neutral-800">
+                                <tr>
+                                    <th class="text-left py-4 px-6 font-semibold text-slate-600 dark:text-neutral-400">Sản phẩm</th>
+                                    <th class="text-left py-4 px-6 font-semibold text-slate-600 dark:text-neutral-400">Danh mục</th>
+                                    <th class="text-left py-4 px-6 font-semibold text-slate-600 dark:text-neutral-400">Đã bán</th>
+                                    <th class="text-left py-4 px-6 font-semibold text-slate-600 dark:text-neutral-400">Doanh thu</th>
+                                    <th class="text-left py-4 px-6 font-semibold text-slate-600 dark:text-neutral-400">Tỷ lệ tăng trưởng</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-200 dark:divide-neutral-800">
+                                <tr class="hover:bg-slate-50 dark:hover:bg-neutral-800 transition-colors">
+                                    <td class="py-4 px-6">
+                                        <div class="flex items-center gap-3">
+                                            <img src="/images/products/iphone13.jpg" alt="iPhone 13" class="w-12 h-12 object-cover rounded-lg shadow-sm">
+                                            <div>
+                                                <div class="font-semibold text-slate-900 dark:text-white">iPhone 13 Pro Max</div>
+                                                <div class="text-sm text-slate-500 dark:text-neutral-400">ID: #SP001</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="py-4 px-6">
+                                        <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-400">
+                                            Điện thoại
+                                        </span>
+                                    </td>
+                                    <td class="py-4 px-6">
+                                        <span class="font-semibold text-slate-900 dark:text-white">150</span>
+                                    </td>
+                                    <td class="py-4 px-6">
+                                        <span class="font-semibold text-slate-900 dark:text-white">45,000,000đ</span>
+                                    </td>
+                                    <td class="py-4 px-6">
+                                        <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-400">
+                                            <i class="fas fa-arrow-up mr-1"></i>
+                                            +25%
+                                        </span>
+                                    </td>
+                                </tr>
+                                
+                                <tr class="hover:bg-slate-50 dark:hover:bg-neutral-800 transition-colors">
+                                    <td class="py-4 px-6">
+                                        <div class="flex items-center gap-3">
+                                            <img src="/images/products/samsung-s21.jpg" alt="Samsung S21" class="w-12 h-12 object-cover rounded-lg shadow-sm">
+                                            <div>
+                                                <div class="font-semibold text-slate-900 dark:text-white">Samsung Galaxy S21</div>
+                                                <div class="text-sm text-slate-500 dark:text-neutral-400">ID: #SP002</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="py-4 px-6">
+                                        <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-400">
+                                            Điện thoại
+                                        </span>
+                                    </td>
+                                    <td class="py-4 px-6">
+                                        <span class="font-semibold text-slate-900 dark:text-white">120</span>
+                                    </td>
+                                    <td class="py-4 px-6">
+                                        <span class="font-semibold text-slate-900 dark:text-white">36,000,000đ</span>
+                                    </td>
+                                    <td class="py-4 px-6">
+                                        <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-400">
+                                            <i class="fas fa-arrow-up mr-1"></i>
+                                            +18%
+                                        </span>
+                                    </td>
+                                </tr>
+                                
+                                <tr class="hover:bg-slate-50 dark:hover:bg-neutral-800 transition-colors">
+                                    <td class="py-4 px-6">
+                                        <div class="flex items-center gap-3">
+                                            <img src="/images/products/macbook.jpg" alt="MacBook Pro" class="w-12 h-12 object-cover rounded-lg shadow-sm">
+                                            <div>
+                                                <div class="font-semibold text-slate-900 dark:text-white">MacBook Pro M1</div>
+                                                <div class="text-sm text-slate-500 dark:text-neutral-400">ID: #SP003</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="py-4 px-6">
+                                        <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-400">
+                                            Laptop
+                                        </span>
+                                    </td>
+                                    <td class="py-4 px-6">
+                                        <span class="font-semibold text-slate-900 dark:text-white">80</span>
+                                    </td>
+                                    <td class="py-4 px-6">
+                                        <span class="font-semibold text-slate-900 dark:text-white">32,000,000đ</span>
+                                    </td>
+                                    <td class="py-4 px-6">
+                                        <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-400">
+                                            <i class="fas fa-arrow-up mr-1"></i>
+                                            +15%
+                                        </span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- AI Insights Section (PostHog-style) -->
+                <div class="bg-gradient-to-br from-orange-50 to-yellow-50 dark:from-neutral-800 dark:to-neutral-900 rounded-2xl shadow-lg border-2 border-orange-200 dark:border-yellow-800 p-6">
+                    <div class="flex items-center justify-between mb-6">
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-orange-500 to-yellow-500 dark:from-yellow-500 dark:to-yellow-400 flex items-center justify-center">
+                                <i class="fas fa-robot text-white dark:text-black text-xl"></i>
+                            </div>
+                            <div>
+                                <h2 class="text-2xl font-black text-slate-900 dark:text-white">AI Insights</h2>
+                                <p class="text-sm text-slate-600 dark:text-neutral-400">Phân tích thông minh và đề xuất tự động</p>
+                            </div>
+                        </div>
+                        <button id="refresh-insights" class="px-4 py-2 bg-white dark:bg-neutral-800 rounded-lg text-orange-600 dark:text-yellow-400 hover:bg-orange-100 dark:hover:bg-neutral-700 transition-colors">
+                            <i class="fas fa-sync-alt mr-2"></i>Làm mới
+                        </button>
+                    </div>
+                    <div id="ai-insights-container" class="space-y-4">
+                        <div class="text-center py-8 text-slate-500 dark:text-neutral-400">
+                            <i class="fas fa-spinner fa-spin text-2xl mb-2"></i>
+                            <p>Đang phân tích dữ liệu...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Additional Analytics -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <!-- Conversion Rate -->
+                    <div class="bg-white dark:bg-neutral-900 rounded-2xl shadow-lg shadow-orange-500/5 dark:shadow-yellow-500/5 border border-slate-200 dark:border-neutral-800 p-6">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center">
+                                <i class="fas fa-percentage text-white"></i>
+                            </div>
+                            <h3 class="text-lg font-bold text-slate-900 dark:text-white">Tỷ lệ chuyển đổi</h3>
+                        </div>
+                        <div class="text-3xl font-black text-slate-900 dark:text-white mb-2" id="conversion-rate">0%</div>
+                        <div class="text-sm text-green-600 dark:text-green-400 font-semibold" id="conversion-growth">Đang tải...</div>
+                        <div class="mt-4">
+                            <div class="w-full bg-slate-200 dark:bg-neutral-700 rounded-full h-2">
+                                <div class="bg-gradient-to-r from-green-500 to-emerald-500 h-2 rounded-full transition-all duration-500" id="conversion-bar" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Average Order Value -->
+                    <div class="bg-white dark:bg-neutral-900 rounded-2xl shadow-lg shadow-orange-500/5 dark:shadow-yellow-500/5 border border-slate-200 dark:border-neutral-800 p-6">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center">
+                                <i class="fas fa-shopping-bag text-white"></i>
+                            </div>
+                            <h3 class="text-lg font-bold text-slate-900 dark:text-white">Giá trị đơn hàng TB</h3>
+                        </div>
+                        <div class="text-3xl font-black text-slate-900 dark:text-white mb-2" id="avg-order-value">0đ</div>
+                        <div class="text-sm text-green-600 dark:text-green-400 font-semibold" id="avg-order-growth">Đang tải...</div>
+                        <div class="mt-4">
+                            <div class="w-full bg-slate-200 dark:bg-neutral-700 rounded-full h-2">
+                                <div class="bg-gradient-to-r from-blue-500 to-cyan-500 h-2 rounded-full transition-all duration-500" id="avg-order-bar" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Customer Retention -->
+                    <div class="bg-white dark:bg-neutral-900 rounded-2xl shadow-lg shadow-orange-500/5 dark:shadow-yellow-500/5 border border-slate-200 dark:border-neutral-800 p-6">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
+                                <i class="fas fa-users text-white"></i>
+                            </div>
+                            <h3 class="text-lg font-bold text-slate-900 dark:text-white">Tỷ lệ giữ chân</h3>
+                        </div>
+                        <div class="text-3xl font-black text-slate-900 dark:text-white mb-2" id="retention-rate">0%</div>
+                        <div class="text-sm text-green-600 dark:text-green-400 font-semibold" id="retention-growth">Đang tải...</div>
+                        <div class="mt-4">
+                            <div class="w-full bg-slate-200 dark:bg-neutral-700 rounded-full h-2">
+                                <div class="bg-gradient-to-r from-purple-500 to-pink-500 h-2 rounded-full transition-all duration-500" id="retention-bar" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <script>
+        const token = localStorage.getItem('authToken');
+        if (!token) {
+            window.location.href = '/admin/login';
+        }
+
+        function logout() {
+            localStorage.removeItem('authToken');
+            localStorage.removeItem('userInfo');
+            localStorage.removeItem('hoTen');
+            window.location.href = '/';
+        }
+
+        // Update admin username
+        document.addEventListener('DOMContentLoaded', function() {
+            let userName = 'Admin';
+            try {
+                const userInfo = localStorage.getItem('userInfo');
+                if (userInfo) {
+                    const userObj = JSON.parse(userInfo);
+                    if (userObj.hoTen) userName = userObj.hoTen;
+                    else if (userObj.name) userName = userObj.name;
+                } else if (localStorage.getItem('hoTen')) {
+                    userName = localStorage.getItem('hoTen');
+                }
+            } catch(e) {}
+            const el = document.getElementById('admin-username');
+            if (el) el.textContent = userName;
+        });
+
+        // Revenue Chart
+        const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+        new Chart(revenueCtx, {
+            type: 'line',
+            data: {
+                labels: ['T1', 'T2', 'T3', 'T4', 'T5', 'T6'],
+                datasets: [{
+                    label: 'Doanh thu (VNĐ)',
+                    data: [150000000, 180000000, 200000000, 220000000, 240000000, 250000000],
+                    borderColor: '#f97316',
+                    backgroundColor: 'rgba(249, 115, 22, 0.1)',
+                    tension: 0.4,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        labels: {
+                            color: '#64748b'
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            color: '#64748b',
+                            callback: function(value) {
+                                return (value / 1000000).toFixed(0) + 'M';
+                            }
+                        }
+                    },
+                    x: {
+                        ticks: {
+                            color: '#64748b'
+                        }
+                    }
+                }
+            }
+        });
+
+        // Category Chart will be created in updateCharts function
+
+        // Global variables
+        let revenueChart = null;
+        let categoryChart = null;
+
+        // Set default dates and load data
+        document.addEventListener('DOMContentLoaded', function() {
+            const today = new Date();
+            const lastMonth = new Date(today.getFullYear(), today.getMonth() - 1, today.getDate());
+            
+            document.getElementById('startDate').value = lastMonth.toISOString().split('T')[0];
+            document.getElementById('endDate').value = today.toISOString().split('T')[0];
+            
+            // Load reports data
+            loadReportsData();
+            
+            // Setup event listeners (tránh dùng :has để tương thích trình duyệt)
+            document.getElementById('btn-view-reports')?.addEventListener('click', loadReportsData);
+            document.getElementById('refresh-insights')?.addEventListener('click', loadReportsData);
+        });
+
+        // Load reports data from API
+        async function loadReportsData() {
+            try {
+                const startDate = document.getElementById('startDate').value;
+                const endDate = document.getElementById('endDate').value;
+                
+                const params = new URLSearchParams();
+                if (startDate && endDate) {
+                    params.append('startDate', startDate);
+                    params.append('endDate', endDate);
+                } else {
+                    params.append('days', '30');
+                }
+                
+                const response = await fetch(`/api/admin/reports?${params.toString()}`);
+                if (!response.ok) throw new Error('Failed to fetch reports');
+                
+                const result = await response.json();
+                if (result.success && result.data) {
+                    renderReportsData(result.data);
+                }
+            } catch (error) {
+                console.error('Error loading reports:', error);
+            }
+        }
+
+        function renderReportsData(data) {
+            // Update overview cards
+            updateOverviewCards(data.overview);
+            
+            // Update metrics
+            updateMetrics(data.metrics);
+            
+            // Update charts
+            updateCharts(data.charts);
+            
+            // Update top products table
+            updateTopProducts(data.topProducts);
+            
+            // Render AI insights
+            renderAIInsights(data.aiInsights);
+        }
+
+        function updateOverviewCards(overview) {
+            // Find cards by their text content
+            const allCards = document.querySelectorAll('.grid.grid-cols-1')[0]?.querySelectorAll('.bg-white, .dark\\:bg-neutral-900');
+            if (!allCards || allCards.length < 4) return;
+            
+            allCards.forEach(card => {
+                const title = card.querySelector('p.text-slate-600, p.dark\\:text-neutral-400');
+                if (!title) return;
+                
+                const titleText = title.textContent.trim();
+                const valueEl = card.querySelector('h3');
+                const growthEl = card.querySelector('.text-sm');
+                
+                if (titleText.includes('Tổng doanh thu')) {
+                    if (valueEl) {
+                        const revenue = overview.revenue.total;
+                        valueEl.textContent = revenue >= 1000000000 ? (revenue / 1000000000).toFixed(1) + 'B' : 
+                                             revenue >= 1000000 ? (revenue / 1000000).toFixed(1) + 'M' : 
+                                             revenue.toLocaleString('vi-VN');
+                    }
+                    if (growthEl) {
+                        const growth = overview.revenue.growth;
+                        growthEl.textContent = `${growth >= 0 ? '+' : ''}${growth.toFixed(1)}% so với kỳ trước`;
+                        growthEl.className = `text-sm font-semibold ${growth >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`;
+                    }
+                } else if (titleText.includes('Tổng đơn hàng')) {
+                    if (valueEl) valueEl.textContent = overview.orders.total.toLocaleString('vi-VN');
+                    if (growthEl) {
+                        const growth = overview.orders.growth;
+                        growthEl.textContent = `${growth >= 0 ? '+' : ''}${growth.toFixed(1)}% so với kỳ trước`;
+                        growthEl.className = `text-sm font-semibold ${growth >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`;
+                    }
+                } else if (titleText.includes('Khách hàng mới')) {
+                    if (valueEl) valueEl.textContent = overview.customers.total.toLocaleString('vi-VN');
+                    if (growthEl) {
+                        const growth = overview.customers.growth;
+                        growthEl.textContent = `${growth >= 0 ? '+' : ''}${growth.toFixed(1)}% so với kỳ trước`;
+                        growthEl.className = `text-sm font-semibold ${growth >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`;
+                    }
+                } else if (titleText.includes('Gian hàng mới')) {
+                    if (valueEl) valueEl.textContent = overview.stores.total.toLocaleString('vi-VN');
+                    if (growthEl) {
+                        const growth = overview.stores.growth;
+                        growthEl.textContent = `${growth >= 0 ? '+' : ''}${growth.toFixed(1)}% so với kỳ trước`;
+                        growthEl.className = `text-sm font-semibold ${growth >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`;
+                    }
+                }
+            });
+        }
+
+        function updateMetrics(metrics) {
+            // Conversion Rate
+            document.getElementById('conversion-rate').textContent = metrics.conversionRate.toFixed(2) + '%';
+            document.getElementById('conversion-bar').style.width = Math.min(metrics.conversionRate * 10, 100) + '%';
+            document.getElementById('conversion-growth').textContent = '+0.5% so với tháng trước';
+            
+            // Average Order Value
+            document.getElementById('avg-order-value').textContent = metrics.avgOrderValue.toLocaleString('vi-VN') + 'đ';
+            document.getElementById('avg-order-bar').style.width = Math.min((metrics.avgOrderValue / 500000) * 100, 100) + '%';
+            document.getElementById('avg-order-growth').textContent = '+12% so với tháng trước';
+            
+            // Retention Rate
+            document.getElementById('retention-rate').textContent = metrics.retentionRate + '%';
+            document.getElementById('retention-bar').style.width = metrics.retentionRate + '%';
+            document.getElementById('retention-growth').textContent = '+3% so với tháng trước';
+        }
+
+        function updateCharts(charts) {
+            // Revenue Chart
+            if (revenueChart) revenueChart.destroy();
+            const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+            const revenueData = charts.revenueByDay || [];
+            const labels = revenueData.map(([date]) => {
+                const d = new Date(date);
+                return d.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit' });
+            });
+            const values = revenueData.map(([, value]) => value);
+            
+            revenueChart = new Chart(revenueCtx, {
+                type: 'line',
+                data: {
+                    labels: labels.length > 0 ? labels : ['T1', 'T2', 'T3', 'T4', 'T5', 'T6'],
+                    datasets: [{
+                        label: 'Doanh thu (VNĐ)',
+                        data: values.length > 0 ? values : [150000000, 180000000, 200000000, 220000000, 240000000, 250000000],
+                        borderColor: '#f97316',
+                        backgroundColor: 'rgba(249, 115, 22, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: { color: window.matchMedia('(prefers-color-scheme: dark)').matches ? '#e5e7eb' : '#64748b' }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                color: window.matchMedia('(prefers-color-scheme: dark)').matches ? '#9ca3af' : '#64748b',
+                                callback: function(value) {
+                                    return (value / 1000000).toFixed(0) + 'M';
+                                }
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                color: window.matchMedia('(prefers-color-scheme: dark)').matches ? '#9ca3af' : '#64748b'
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Category Chart
+            if (categoryChart) {
+                categoryChart.destroy();
+                categoryChart = null;
+            }
+            
+            const categoryCtx = document.getElementById('categoryChart');
+            if (!categoryCtx) {
+                console.error('Category chart canvas not found');
+                return;
+            }
+            
+            const ctx = categoryCtx.getContext('2d');
+            const categoryData = charts.categoryStats || {};
+            const categoryLabels = Object.keys(categoryData);
+            const categoryValues = Object.values(categoryData);
+            
+            // Use default data if no data available
+            const labels = categoryLabels.length > 0 ? categoryLabels : ['Điện thoại', 'Laptop', 'Phụ kiện', 'Khác'];
+            const values = categoryValues.length > 0 ? categoryValues : [45, 30, 15, 10];
+            
+            // Calculate percentages for labels
+            const total = values.reduce((sum, val) => sum + val, 0) || 1;
+            const labelsWithPercent = labels.map((label, index) => {
+                const value = values[index] || 0;
+                const percent = ((value / total) * 100).toFixed(1);
+                return `${label} (${percent}%)`;
+            });
+            
+            // Build plugins object
+            const pluginsConfig = {
+                legend: {
+                    position: 'right',
+                    labels: {
+                        color: window.matchMedia('(prefers-color-scheme: dark)').matches ? '#e5e7eb' : '#64748b',
+                        padding: 20,
+                        font: {
+                            size: 13,
+                            weight: '500'
+                        }
+                    }
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            const label = context.label || '';
+                            const value = context.parsed || 0;
+                            const datasetTotal = context.dataset.data.reduce((a, b) => a + b, 0);
+                            if (datasetTotal === 0) return label + ': 0 (0%)';
+                            const percent = ((value / datasetTotal) * 100).toFixed(1);
+                            // Remove percentage from label if already there
+                            const cleanLabel = label.split(' (')[0];
+                            return `${cleanLabel}: ${value} (${percent}%)`;
+                        }
+                    }
+                }
+            };
+            
+            // Add datalabels plugin if available
+            if (typeof ChartDataLabels !== 'undefined') {
+                pluginsConfig.datalabels = {
+                    display: true,
+                    color: '#ffffff',
+                    font: {
+                        size: 16,
+                        weight: 'bold'
+                    },
+                    formatter: function(value, context) {
+                        const datasetTotal = context.dataset.data.reduce((a, b) => a + b, 0);
+                        if (datasetTotal === 0) return '0%';
+                        const percent = ((value / datasetTotal) * 100).toFixed(1);
+                        return percent + '%';
+                    },
+                    textStrokeColor: 'rgba(0, 0, 0, 0.8)',
+                    textStrokeWidth: 3,
+                    padding: 4
+                };
+            }
+            
+            try {
+                categoryChart = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: labelsWithPercent,
+                        datasets: [{
+                            data: values,
+                            backgroundColor: ['#f97316', '#3b82f6', '#10b981', '#8b5cf6'],
+                            borderWidth: 0
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: pluginsConfig
+                    }
+                });
+            } catch (error) {
+                console.error('Error creating category chart:', error);
+                // Fallback: create chart without datalabels
+                categoryChart = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: labelsWithPercent,
+                        datasets: [{
+                            data: values,
+                            backgroundColor: ['#f97316', '#3b82f6', '#10b981', '#8b5cf6'],
+                            borderWidth: 0
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'right',
+                                labels: {
+                                    color: window.matchMedia('(prefers-color-scheme: dark)').matches ? '#e5e7eb' : '#64748b',
+                                    padding: 20,
+                                    font: {
+                                        size: 13,
+                                        weight: '500'
+                                    }
+                                }
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        const label = context.label || '';
+                                        const value = context.parsed || 0;
+                                        const datasetTotal = context.dataset.data.reduce((a, b) => a + b, 0);
+                                        if (datasetTotal === 0) return label + ': 0 (0%)';
+                                        const percent = ((value / datasetTotal) * 100).toFixed(1);
+                                        const cleanLabel = label.split(' (')[0];
+                                        return `${cleanLabel}: ${value} (${percent}%)`;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+        function updateTopProducts(products) {
+            const tbody = document.querySelector('tbody');
+            if (!tbody || !products || products.length === 0) return;
+            
+            tbody.innerHTML = '';
+            products.forEach((product, index) => {
+                const row = document.createElement('tr');
+                row.className = 'hover:bg-slate-50 dark:hover:bg-neutral-800 transition-colors';
+                row.innerHTML = `
+                    <td class="py-4 px-6">
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 bg-gradient-to-br from-orange-500 to-yellow-500 rounded-lg flex items-center justify-center text-white font-bold">
+                                ${index + 1}
+                            </div>
+                            <div>
+                                <div class="font-semibold text-slate-900 dark:text-white">${product.name}</div>
+                                <div class="text-sm text-slate-500 dark:text-neutral-400">ID: #SP${String(index + 1).padStart(3, '0')}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="py-4 px-6">
+                        <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-400">
+                            Danh mục
+                        </span>
+                    </td>
+                    <td class="py-4 px-6">
+                        <span class="font-semibold text-slate-900 dark:text-white">${product.sold}</span>
+                    </td>
+                    <td class="py-4 px-6">
+                        <span class="font-semibold text-slate-900 dark:text-white">${product.revenue.toLocaleString('vi-VN')}đ</span>
+                    </td>
+                    <td class="py-4 px-6">
+                        <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-400">
+                            <i class="fas fa-arrow-up mr-1"></i>
+                            +${Math.floor(Math.random() * 20 + 10)}%
+                        </span>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function renderAIInsights(insights) {
+            const container = document.getElementById('ai-insights-container');
+            if (!container || !insights || insights.length === 0) {
+                if (container) {
+                    container.innerHTML = '<div class="text-center py-8 text-slate-500 dark:text-neutral-400">Không có insights nào tại thời điểm này.</div>';
+                }
+                return;
+            }
+            
+            container.innerHTML = '';
+            insights.forEach(insight => {
+                const colors = {
+                    success: 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800',
+                    warning: 'bg-yellow-50 dark:bg-yellow-900/20 border-yellow-200 dark:border-yellow-800',
+                    info: 'bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800'
+                };
+                const iconColors = {
+                    success: 'text-green-600 dark:text-green-400',
+                    warning: 'text-yellow-600 dark:text-yellow-400',
+                    info: 'text-blue-600 dark:text-blue-400'
+                };
+                
+                const item = document.createElement('div');
+                item.className = `p-4 rounded-xl border-2 ${colors[insight.type] || colors.info} transition-all hover:shadow-lg`;
+                item.innerHTML = `
+                    <div class="flex items-start gap-4">
+                        <div class="w-10 h-10 rounded-lg ${iconColors[insight.type] || iconColors.info} flex items-center justify-center flex-shrink-0">
+                            <i class="fas ${insight.icon} text-xl"></i>
+                        </div>
+                        <div class="flex-1">
+                            <div class="flex items-center justify-between mb-2">
+                                <h3 class="font-bold text-slate-900 dark:text-white">${insight.title}</h3>
+                                ${insight.priority === 'high' ? '<span class="px-2 py-1 bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-400 text-xs font-semibold rounded-full">Ưu tiên cao</span>' : ''}
+                            </div>
+                            <p class="text-slate-700 dark:text-neutral-300 mb-3">${insight.message}</p>
+                            <button class="px-4 py-2 bg-white dark:bg-neutral-800 rounded-lg text-sm font-semibold text-orange-600 dark:text-yellow-400 hover:bg-orange-50 dark:hover:bg-neutral-700 transition-colors">
+                                ${insight.action} <i class="fas fa-arrow-right ml-2"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(item);
+            });
+        }
+    </script>
+</body>
+</html>

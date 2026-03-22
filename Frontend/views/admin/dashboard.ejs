@@ -1,0 +1,997 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - MegaStore VN</title>
+    <meta name="description" content="Bảng điều khiển quản trị MegaStore VN - Quản lý hệ thống thương mại điện tử">
+    
+    <!-- Tailwind CSS (CDN) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        if (window.tailwind) { 
+            tailwind.config = { 
+                darkMode: 'class',
+                theme: {
+                    extend: {
+                        animation: {
+                            'fade-in': 'fadeIn 0.5s ease-in',
+                            'slide-up': 'slideUp 0.6s ease-out',
+                            'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        },
+                        keyframes: {
+                            fadeIn: {
+                                '0%': { opacity: '0' },
+                                '100%': { opacity: '1' }
+                            },
+                            slideUp: {
+                                '0%': { transform: 'translateY(20px)', opacity: '0' },
+                                '100%': { transform: 'translateY(0)', opacity: '1' }
+                            }
+                        }
+                    }
+                }
+            } 
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        /* Custom styles to override any conflicting CSS */
+        .admin-layout {
+            display: flex;
+            min-height: 100vh;
+        }
+        .main-content {
+            flex: 1;
+            margin-left: 16rem; /* 64 * 0.25rem = 16rem */
+            margin-top: 0; /* Remove any top margin */
+            padding-top: 2rem; /* Add padding instead */
+        }
+        
+        /* Override header styles for admin pages */
+        .seller-header {
+            position: relative !important;
+            z-index: 10 !important;
+            margin-bottom: 0 !important;
+        }
+        
+        /* Ensure sidebar is positioned correctly */
+        nav.sidebar {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            height: 100vh !important;
+            z-index: 30 !important;
+        }
+        
+        @media (max-width: 768px) {
+            .main-content {
+                margin-left: 0;
+                padding-top: 1rem;
+            }
+            nav.sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+            nav.sidebar.active {
+                transform: translateX(0);
+            }
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-slate-50 via-white to-slate-50 dark:from-neutral-900 dark:via-black dark:to-neutral-900 min-h-screen transition-colors duration-300" style="font-family: 'Inter', sans-serif;">
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <%- include('./../elements/navbaradmin') %>
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Admin Header -->
+            <div class="bg-white dark:bg-neutral-900 border-b border-slate-200 dark:border-neutral-800 px-6 py-4">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h1 class="text-2xl font-bold text-slate-900 dark:text-white">Admin Dashboard</h1>
+                        <p class="text-slate-600 dark:text-neutral-400">Quản trị hệ thống MegaStore VN</p>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <div class="relative">
+                            <button class="p-2 text-slate-600 dark:text-neutral-400 hover:text-orange-500 dark:hover:text-yellow-400 transition-colors">
+                                <i class="fas fa-bell text-lg"></i>
+                                <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">3</span>
+                            </button>
+                        </div>
+                        <div class="relative group">
+                            <button class="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-orange-500 to-yellow-500 dark:from-yellow-500 dark:to-yellow-400 text-white dark:text-black rounded-xl font-medium hover:shadow-lg transition-all">
+                                <i class="fas fa-user-circle"></i>
+                                <span id="admin-username">Admin</span>
+                                <i class="fas fa-chevron-down text-sm"></i>
+                            </button>
+                            <div class="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-neutral-800 rounded-xl shadow-lg border border-slate-200 dark:border-neutral-700 py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                                <a href="/" class="flex items-center gap-3 px-4 py-2 text-slate-700 dark:text-neutral-300 hover:bg-slate-50 dark:hover:bg-neutral-700 transition-colors">
+                                    <i class="fas fa-home"></i>
+                                    <span>Quay lại trang chính</span>
+                                </a>
+                                <a href="#" onclick="logout()" class="flex items-center gap-3 px-4 py-2 text-slate-700 dark:text-neutral-300 hover:bg-slate-50 dark:hover:bg-neutral-700 transition-colors">
+                                    <i class="fas fa-sign-out-alt"></i>
+                                    <span>Đăng xuất</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Dashboard Content -->
+            <div class="p-6 space-y-8">
+                <!-- Header Section -->
+                <div class="space-y-2">
+                    <h2 class="text-4xl font-black text-slate-900 dark:text-white">Dashboard</h2>
+                    <p class="text-slate-600 dark:text-neutral-400 text-lg">Chào mừng trở lại! Đây là tổng quan về hệ thống của bạn.</p>
+                </div>
+
+            <!-- Stats Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Users Card -->
+                <div class="group bg-white dark:bg-neutral-900 rounded-2xl shadow-lg shadow-orange-500/5 dark:shadow-yellow-500/5 border border-slate-200 dark:border-neutral-800 p-6 hover:shadow-xl hover:shadow-orange-500/10 dark:hover:shadow-yellow-500/10 transition-all duration-300 hover:-translate-y-1">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-orange-500 to-yellow-500 dark:from-yellow-500 dark:to-yellow-400 flex items-center justify-center">
+                            <i class="fas fa-users text-white dark:text-black text-xl"></i>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-2xl font-black text-slate-900 dark:text-white">1,234</div>
+                            <div class="text-sm text-green-600 dark:text-green-400 font-semibold">+12%</div>
+                        </div>
+                    </div>
+                    <h3 class="text-slate-600 dark:text-neutral-400 font-medium mb-1">Người dùng</h3>
+                    <p class="text-xs text-slate-500 dark:text-neutral-500">So với tháng trước</p>
+                </div>
+
+                <!-- Orders Card -->
+                <div class="group bg-white dark:bg-neutral-900 rounded-2xl shadow-lg shadow-orange-500/5 dark:shadow-yellow-500/5 border border-slate-200 dark:border-neutral-800 p-6 hover:shadow-xl hover:shadow-orange-500/10 dark:hover:shadow-yellow-500/10 transition-all duration-300 hover:-translate-y-1">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center">
+                            <i class="fas fa-shopping-cart text-white text-xl"></i>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-2xl font-black text-slate-900 dark:text-white">856</div>
+                            <div class="text-sm text-green-600 dark:text-green-400 font-semibold">+8%</div>
+                        </div>
+                    </div>
+                    <h3 class="text-slate-600 dark:text-neutral-400 font-medium mb-1">Đơn hàng</h3>
+                    <p class="text-xs text-slate-500 dark:text-neutral-500">So với tháng trước</p>
+                </div>
+
+                <!-- Stores Card -->
+                <div class="group bg-white dark:bg-neutral-900 rounded-2xl shadow-lg shadow-orange-500/5 dark:shadow-yellow-500/5 border border-slate-200 dark:border-neutral-800 p-6 hover:shadow-xl hover:shadow-orange-500/10 dark:hover:shadow-yellow-500/10 transition-all duration-300 hover:-translate-y-1">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center">
+                            <i class="fas fa-store text-white text-xl"></i>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-2xl font-black text-slate-900 dark:text-white">245</div>
+                            <div class="text-sm text-green-600 dark:text-green-400 font-semibold">+5%</div>
+                        </div>
+                    </div>
+                    <h3 class="text-slate-600 dark:text-neutral-400 font-medium mb-1">Cửa hàng</h3>
+                    <p class="text-xs text-slate-500 dark:text-neutral-500">So với tháng trước</p>
+                </div>
+
+                <!-- Revenue Card -->
+                <div class="group bg-white dark:bg-neutral-900 rounded-2xl shadow-lg shadow-orange-500/5 dark:shadow-yellow-500/5 border border-slate-200 dark:border-neutral-800 p-6 hover:shadow-xl hover:shadow-orange-500/10 dark:hover:shadow-yellow-500/10 transition-all duration-300 hover:-translate-y-1">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
+                            <i class="fas fa-money-bill-wave text-white text-xl"></i>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-2xl font-black text-slate-900 dark:text-white">1.2B</div>
+                            <div class="text-sm text-green-600 dark:text-green-400 font-semibold">+15%</div>
+                        </div>
+                    </div>
+                    <h3 class="text-slate-600 dark:text-neutral-400 font-medium mb-1">Doanh thu</h3>
+                    <p class="text-xs text-slate-500 dark:text-neutral-500">So với tháng trước</p>
+                </div>
+            </div>
+
+            <!-- Charts and Activity Section -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Recent Activity -->
+                <div class="bg-white dark:bg-neutral-900 rounded-2xl shadow-lg shadow-orange-500/5 dark:shadow-yellow-500/5 border border-slate-200 dark:border-neutral-800 p-6">
+                    <div class="flex items-center justify-between mb-6">
+                        <h2 class="text-xl font-bold text-slate-900 dark:text-white">Hoạt động gần đây</h2>
+                        <a href="#" class="inline-flex items-center gap-2 text-orange-500 dark:text-yellow-500 hover:text-orange-600 dark:hover:text-yellow-400 font-medium transition-colors">
+                            <span>Xem tất cả</span>
+                            <i class="fas fa-arrow-right text-sm"></i>
+                        </a>
+                    </div>
+                    <div class="space-y-4" id="recent-activities-container">
+                        <div class="flex items-center gap-4 p-4 rounded-xl bg-slate-50 dark:bg-neutral-800 hover:bg-slate-100 dark:hover:bg-neutral-700 transition-colors">
+                            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-orange-500 to-yellow-500 dark:from-yellow-500 dark:to-yellow-400 flex items-center justify-center">
+                                <i class="fas fa-user-plus text-white dark:text-black text-sm"></i>
+                            </div>
+                            <div class="flex-1">
+                                <p class="font-medium text-slate-900 dark:text-white">Người dùng mới đăng ký</p>
+                                <p class="text-sm text-slate-500 dark:text-neutral-400">5 phút trước</p>
+                            </div>
+                            <div class="text-right">
+                                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-400">
+                                    +1 người dùng
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center gap-4 p-4 rounded-xl bg-slate-50 dark:bg-neutral-800 hover:bg-slate-100 dark:hover:bg-neutral-700 transition-colors">
+                            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center">
+                                <i class="fas fa-store text-white text-sm"></i>
+                            </div>
+                            <div class="flex-1">
+                                <p class="font-medium text-slate-900 dark:text-white">Cửa hàng mới được phê duyệt</p>
+                                <p class="text-sm text-slate-500 dark:text-neutral-400">30 phút trước</p>
+                            </div>
+                            <div class="text-right">
+                                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-400">
+                                    +1 cửa hàng
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-4 p-4 rounded-xl bg-slate-50 dark:bg-neutral-800 hover:bg-slate-100 dark:hover:bg-neutral-700 transition-colors">
+                            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center">
+                                <i class="fas fa-shopping-cart text-white text-sm"></i>
+                            </div>
+                            <div class="flex-1">
+                                <p class="font-medium text-slate-900 dark:text-white">Đơn hàng mới được tạo</p>
+                                <p class="text-sm text-slate-500 dark:text-neutral-400">1 giờ trước</p>
+                            </div>
+                            <div class="text-right">
+                                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-400">
+                                    +3 đơn hàng
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- System Status -->
+                <div class="bg-white dark:bg-neutral-900 rounded-2xl shadow-lg shadow-orange-500/5 dark:shadow-yellow-500/5 border border-slate-200 dark:border-neutral-800 p-6">
+                    <h2 class="text-xl font-bold text-slate-900 dark:text-white mb-6">Trạng thái hệ thống</h2>
+                    <div class="space-y-6">
+                        <div class="space-y-2">
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm font-medium text-slate-600 dark:text-neutral-400">CPU Usage</span>
+                                <span class="text-sm font-bold text-slate-900 dark:text-white">45%</span>
+                            </div>
+                            <div class="w-full bg-slate-200 dark:bg-neutral-700 rounded-full h-2">
+                                <div class="bg-gradient-to-r from-orange-500 to-yellow-500 dark:from-yellow-500 dark:to-yellow-400 h-2 rounded-full transition-all duration-500" style="width: 45%"></div>
+                            </div>
+                        </div>
+
+                        <div class="space-y-2">
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm font-medium text-slate-600 dark:text-neutral-400">Memory Usage</span>
+                                <span class="text-sm font-bold text-slate-900 dark:text-white">60%</span>
+                            </div>
+                            <div class="w-full bg-slate-200 dark:bg-neutral-700 rounded-full h-2">
+                                <div class="bg-gradient-to-r from-blue-500 to-cyan-500 h-2 rounded-full transition-all duration-500" style="width: 60%"></div>
+                            </div>
+                        </div>
+
+                        <div class="space-y-2">
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm font-medium text-slate-600 dark:text-neutral-400">Storage Usage</span>
+                                <span class="text-sm font-bold text-slate-900 dark:text-white">75%</span>
+                            </div>
+                            <div class="w-full bg-slate-200 dark:bg-neutral-700 rounded-full h-2">
+                                <div class="bg-gradient-to-r from-red-500 to-pink-500 h-2 rounded-full transition-all duration-500" style="width: 75%"></div>
+                            </div>
+                        </div>
+
+                        <div class="space-y-2">
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm font-medium text-slate-600 dark:text-neutral-400">Network</span>
+                                <span class="text-sm font-bold text-slate-900 dark:text-white">98%</span>
+                            </div>
+                            <div class="w-full bg-slate-200 dark:bg-neutral-700 rounded-full h-2">
+                                <div class="bg-gradient-to-r from-green-500 to-emerald-500 h-2 rounded-full transition-all duration-500" style="width: 98%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Analytics Section (PostHog-style) -->
+            <div class="space-y-6 mt-8">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h2 class="text-3xl font-black text-slate-900 dark:text-white">Product Analytics</h2>
+                        <p class="text-slate-600 dark:text-neutral-400 mt-1">Thống kê và phân tích hành vi người dùng trên website</p>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <select id="analytics-days" class="px-4 py-2 bg-white dark:bg-neutral-800 border border-slate-200 dark:border-neutral-700 rounded-lg text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-orange-500 dark:focus:ring-yellow-500">
+                            <option value="7">7 ngày qua</option>
+                            <option value="30">30 ngày qua</option>
+                            <option value="90">90 ngày qua</option>
+                        </select>
+                        <button id="refresh-analytics" class="px-4 py-2 bg-gradient-to-r from-orange-500 to-yellow-500 dark:from-yellow-500 dark:to-yellow-400 text-white dark:text-black rounded-lg font-medium hover:shadow-lg transition-all">
+                            <i class="fas fa-sync-alt"></i> Làm mới
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Analytics Overview Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div class="bg-white dark:bg-neutral-900 rounded-2xl shadow-lg border border-slate-200 dark:border-neutral-800 p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center">
+                                <i class="fas fa-chart-line text-white text-xl"></i>
+                            </div>
+                        </div>
+                        <h3 class="text-2xl font-black text-slate-900 dark:text-white" id="total-events">0</h3>
+                        <p class="text-slate-600 dark:text-neutral-400 font-medium mt-1">Tổng sự kiện</p>
+                        <p class="text-xs text-slate-500 dark:text-neutral-500 mt-2" id="recent-events">0 sự kiện gần đây</p>
+                    </div>
+
+                    <div class="bg-white dark:bg-neutral-900 rounded-2xl shadow-lg border border-slate-200 dark:border-neutral-800 p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
+                                <i class="fas fa-eye text-white text-xl"></i>
+                            </div>
+                        </div>
+                        <h3 class="text-2xl font-black text-slate-900 dark:text-white" id="total-views">0</h3>
+                        <p class="text-slate-600 dark:text-neutral-400 font-medium mt-1">Lượt xem sản phẩm</p>
+                        <p class="text-xs text-slate-500 dark:text-neutral-500 mt-2">Hành vi: view</p>
+                    </div>
+
+                    <div class="bg-white dark:bg-neutral-900 rounded-2xl shadow-lg border border-slate-200 dark:border-neutral-800 p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center">
+                                <i class="fas fa-mouse-pointer text-white text-xl"></i>
+                            </div>
+                        </div>
+                        <h3 class="text-2xl font-black text-slate-900 dark:text-white" id="total-clicks">0</h3>
+                        <p class="text-slate-600 dark:text-neutral-400 font-medium mt-1">Lượt click</p>
+                        <p class="text-xs text-slate-500 dark:text-neutral-500 mt-2">Hành vi: click</p>
+                    </div>
+
+                    <div class="bg-white dark:bg-neutral-900 rounded-2xl shadow-lg border border-slate-200 dark:border-neutral-800 p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-orange-500 to-yellow-500 dark:from-yellow-500 dark:to-yellow-400 flex items-center justify-center">
+                                <i class="fas fa-shopping-cart text-white dark:text-black text-xl"></i>
+                            </div>
+                        </div>
+                        <h3 class="text-2xl font-black text-slate-900 dark:text-white" id="total-addtocart">0</h3>
+                        <p class="text-slate-600 dark:text-neutral-400 font-medium mt-1">Thêm vào giỏ</p>
+                        <p class="text-xs text-slate-500 dark:text-neutral-500 mt-2">Hành vi: add_to_cart</p>
+                    </div>
+                </div>
+
+                <!-- Charts and Data Grid -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <!-- Events Over Time Chart -->
+                    <div class="bg-white dark:bg-neutral-900 rounded-2xl shadow-lg border border-slate-200 dark:border-neutral-800 p-6">
+                        <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-6">Sự kiện theo thời gian</h3>
+                        <div class="relative" style="height: 300px;">
+                            <canvas id="events-chart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Behavior Types Breakdown -->
+                    <div class="bg-white dark:bg-neutral-900 rounded-2xl shadow-lg border border-slate-200 dark:border-neutral-800 p-6">
+                        <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-6">Phân loại hành vi</h3>
+                        <div id="behavior-types-list" class="space-y-4">
+                            <!-- Will be populated by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Top Products and Users -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <!-- Top Products -->
+                    <div class="bg-white dark:bg-neutral-900 rounded-2xl shadow-lg border border-slate-200 dark:border-neutral-800 p-6">
+                        <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-6">Top 10 Sản phẩm được tương tác</h3>
+                        <div id="top-products-list" class="space-y-3">
+                            <!-- Will be populated by JavaScript -->
+                        </div>
+                    </div>
+
+                    <!-- Top Users -->
+                    <div class="bg-white dark:bg-neutral-900 rounded-2xl shadow-lg border border-slate-200 dark:border-neutral-800 p-6">
+                        <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-6">Top 10 Người dùng hoạt động</h3>
+                        <div id="top-users-list" class="space-y-3">
+                            <!-- Will be populated by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Category Stats -->
+                <div class="bg-white dark:bg-neutral-900 rounded-2xl shadow-lg border border-slate-200 dark:border-neutral-800 p-6">
+                    <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-6">Thống kê theo danh mục</h3>
+                    <div id="category-stats-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <!-- Will be populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+            </div>
+        </main>
+    </div>
+    
+    <!-- Chart.js for analytics charts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    
+    <script>
+        const token = localStorage.getItem('authToken');
+        if (!token) {
+            window.location.href = '/admin/login';
+        }
+        
+        function logout() {
+            localStorage.removeItem('authToken');
+            localStorage.removeItem('userInfo');
+            localStorage.removeItem('hoTen');
+            window.location.href = '/';
+        }
+        
+        // Update admin username and load dashboard stats
+        document.addEventListener('DOMContentLoaded', function() {
+            let userName = 'Admin';
+            try {
+                const userInfo = localStorage.getItem('userInfo');
+                if (userInfo) {
+                    const userObj = JSON.parse(userInfo);
+                    if (userObj.hoTen) userName = userObj.hoTen;
+                    else if (userObj.name) userName = userObj.name;
+                } else if (localStorage.getItem('hoTen')) {
+                    userName = localStorage.getItem('hoTen');
+                }
+            } catch(e) {}
+            const el = document.getElementById('admin-username');
+            if (el) el.textContent = userName;
+            
+            // Load dashboard statistics
+            loadDashboardStats();
+            
+            // Load analytics data
+            loadAnalytics();
+        });
+
+        // Load dashboard statistics
+        async function loadDashboardStats() {
+            try {
+                const response = await fetch('/api/admin/stats');
+                if (!response.ok) {
+                    throw new Error('Failed to fetch stats');
+                }
+                
+                const data = await response.json();
+                if (data.success && data.stats) {
+                    renderDashboardStats(data.stats);
+                    renderRecentActivities(data.stats.recentActivities);
+                }
+            } catch (error) {
+                console.error('Error loading dashboard stats:', error);
+                // Keep default values if fetch fails
+            }
+        }
+
+        function renderDashboardStats(stats) {
+            // Update Users Card - find by text content
+            const statsGrid = document.querySelectorAll('.grid.grid-cols-1')[0];
+            if (statsGrid) {
+                const cards = statsGrid.querySelectorAll('.group');
+                
+                // Users Card (first card with "Người dùng")
+                cards.forEach(card => {
+                    const title = card.querySelector('h3');
+                    if (title && title.textContent.includes('Người dùng')) {
+                        const valueEl = card.querySelector('.text-2xl.font-black');
+                        const growthEl = card.querySelector('.text-sm');
+                        if (valueEl) valueEl.textContent = stats.users.total.toLocaleString('vi-VN');
+                        if (growthEl) {
+                            const growth = stats.users.growth;
+                            growthEl.textContent = `${growth >= 0 ? '+' : ''}${growth}%`;
+                            growthEl.className = `text-sm font-semibold ${growth >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`;
+                        }
+                    }
+                    // Orders Card
+                    else if (title && title.textContent.includes('Đơn hàng')) {
+                        const valueEl = card.querySelector('.text-2xl.font-black');
+                        const growthEl = card.querySelector('.text-sm');
+                        if (valueEl) valueEl.textContent = stats.orders.total.toLocaleString('vi-VN');
+                        if (growthEl) {
+                            const growth = stats.orders.growth;
+                            growthEl.textContent = `${growth >= 0 ? '+' : ''}${growth}%`;
+                            growthEl.className = `text-sm font-semibold ${growth >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`;
+                        }
+                    }
+                    // Stores Card
+                    else if (title && title.textContent.includes('Cửa hàng')) {
+                        const valueEl = card.querySelector('.text-2xl.font-black');
+                        const growthEl = card.querySelector('.text-sm');
+                        if (valueEl) valueEl.textContent = stats.stores.total.toLocaleString('vi-VN');
+                        if (growthEl) {
+                            const growth = stats.stores.growth;
+                            growthEl.textContent = `${growth >= 0 ? '+' : ''}${growth}%`;
+                            growthEl.className = `text-sm font-semibold ${growth >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`;
+                        }
+                    }
+                    // Revenue Card
+                    else if (title && title.textContent.includes('Doanh thu')) {
+                        const valueEl = card.querySelector('.text-2xl.font-black');
+                        const growthEl = card.querySelector('.text-sm');
+                        if (valueEl) {
+                            const revenue = stats.revenue.total;
+                            if (revenue >= 1000000000) {
+                                valueEl.textContent = (revenue / 1000000000).toFixed(1) + 'B';
+                            } else if (revenue >= 1000000) {
+                                valueEl.textContent = (revenue / 1000000).toFixed(1) + 'M';
+                            } else {
+                                valueEl.textContent = revenue.toLocaleString('vi-VN');
+                            }
+                        }
+                        if (growthEl) {
+                            const growth = stats.revenue.growth;
+                            growthEl.textContent = `${growth >= 0 ? '+' : ''}${growth}%`;
+                            growthEl.className = `text-sm font-semibold ${growth >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`;
+                        }
+                    }
+                });
+            }
+        }
+
+        function renderRecentActivities(activities) {
+            // Find the recent activities container by ID
+            const container = document.getElementById('recent-activities-container');
+            
+            if (!container || !activities || activities.length === 0) return;
+
+            container.innerHTML = '';
+
+            activities.slice(0, 3).forEach(activity => {
+                const icons = {
+                    'user': 'fa-user-plus',
+                    'order': 'fa-shopping-cart',
+                    'store': 'fa-store'
+                };
+                const colors = {
+                    'user': 'from-orange-500 to-yellow-500 dark:from-yellow-500 dark:to-yellow-400',
+                    'order': 'from-green-500 to-emerald-500',
+                    'store': 'from-blue-500 to-cyan-500'
+                };
+                const badgeColors = {
+                    'user': 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-400',
+                    'order': 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-400',
+                    'store': 'bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-400'
+                };
+
+                const item = document.createElement('div');
+                item.className = 'flex items-center gap-4 p-4 rounded-xl bg-slate-50 dark:bg-neutral-800 hover:bg-slate-100 dark:hover:bg-neutral-700 transition-colors';
+                item.innerHTML = `
+                    <div class="w-10 h-10 rounded-full bg-gradient-to-br ${colors[activity.type] || 'from-gray-500 to-gray-600'} flex items-center justify-center">
+                        <i class="fas ${icons[activity.type] || 'fa-circle'} text-white text-sm"></i>
+                    </div>
+                    <div class="flex-1">
+                        <p class="font-medium text-slate-900 dark:text-white">${activity.message}</p>
+                        <p class="text-sm text-slate-500 dark:text-neutral-400">${activity.timeText}</p>
+                    </div>
+                    <div class="text-right">
+                        <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold ${badgeColors[activity.type] || 'bg-gray-100 dark:bg-gray-900/30 text-gray-800 dark:text-gray-400'}">
+                            ${activity.type === 'user' ? '+1 người dùng' : activity.type === 'order' ? '+1 đơn hàng' : '+1 cửa hàng'}
+                        </span>
+                    </div>
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        // Analytics functionality
+        const RECOMMENDATION_SERVICE_URL = 'http://localhost:3011';
+        let eventsChart = null;
+
+        async function loadAnalytics() {
+            try {
+                // Check if Chart.js is loaded
+                if (typeof Chart === 'undefined') {
+                    console.error('Chart.js is not loaded');
+                    setTimeout(loadAnalytics, 500); // Retry after 500ms
+                    return;
+                }
+
+                const days = document.getElementById('analytics-days')?.value || 7;
+                const response = await fetch(`${RECOMMENDATION_SERVICE_URL}/api/recommendation/analytics?days=${days}`);
+                
+                if (!response.ok) {
+                    throw new Error(`Failed to fetch analytics: ${response.status} ${response.statusText}`);
+                }
+                
+                const data = await response.json();
+                if (data.success && data.analytics) {
+                    renderAnalytics(data.analytics);
+                } else {
+                    console.error('Invalid response format:', data);
+                    showAnalyticsError('Dữ liệu không hợp lệ');
+                }
+            } catch (error) {
+                console.error('Error loading analytics:', error);
+                showAnalyticsError(error.message || 'Không thể tải dữ liệu');
+            }
+        }
+
+        function showAnalyticsError(message) {
+            const totalEventsEl = document.getElementById('total-events');
+            if (totalEventsEl) {
+                totalEventsEl.textContent = 'Error';
+                totalEventsEl.parentElement.querySelector('p').textContent = message;
+            }
+        }
+
+        function renderAnalytics(analytics) {
+            // Update overview cards
+            document.getElementById('total-events').textContent = analytics.overview.totalBehaviors.toLocaleString('vi-VN');
+            document.getElementById('recent-events').textContent = `${analytics.overview.recentBehaviors.toLocaleString('vi-VN')} sự kiện gần đây`;
+            document.getElementById('total-views').textContent = (analytics.behaviorTypes.view || 0).toLocaleString('vi-VN');
+            document.getElementById('total-clicks').textContent = (analytics.behaviorTypes.click || 0).toLocaleString('vi-VN');
+            document.getElementById('total-addtocart').textContent = (analytics.behaviorTypes.add_to_cart || 0).toLocaleString('vi-VN');
+
+            // Render events over time chart
+            renderEventsChart(analytics.eventsOverTime);
+
+            // Render behavior types
+            renderBehaviorTypes(analytics.behaviorTypes);
+
+            // Render top products
+            renderTopProducts(analytics.topProducts);
+
+            // Render top users
+            renderTopUsers(analytics.topUsers);
+
+            // Render category stats
+            renderCategoryStats(analytics.categoryStats);
+        }
+
+        function renderEventsChart(eventsData) {
+            const canvas = document.getElementById('events-chart');
+            if (!canvas) {
+                console.error('Canvas element not found');
+                return;
+            }
+
+            // Handle empty or invalid data
+            if (!eventsData || !Array.isArray(eventsData) || eventsData.length === 0) {
+                console.warn('No events data available');
+                // Show empty state message
+                const parent = canvas.parentElement;
+                if (parent) {
+                    parent.innerHTML = '<p class="text-slate-500 dark:text-neutral-400 text-center py-8">Chưa có dữ liệu sự kiện trong khoảng thời gian này</p>';
+                }
+                return;
+            }
+
+            // Destroy existing chart if any
+            if (eventsChart) {
+                eventsChart.destroy();
+                eventsChart = null;
+            }
+
+            // Parse date labels - handle both string format (YYYY-MM-DD) and Date objects
+            const labels = eventsData.map(e => {
+                try {
+                    let dateStr = e._id;
+                    // If it's already a date string in YYYY-MM-DD format
+                    if (typeof dateStr === 'string' && dateStr.match(/^\d{4}-\d{2}-\d{2}$/)) {
+                        const [year, month, day] = dateStr.split('-');
+                        const date = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+                        return date.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit' });
+                    } else {
+                        // Try to parse as date
+                        const date = new Date(dateStr);
+                        if (isNaN(date.getTime())) {
+                            return dateStr; // Return as is if can't parse
+                        }
+                        return date.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit' });
+                    }
+                } catch (error) {
+                    console.error('Error parsing date:', e._id, error);
+                    return e._id || 'N/A';
+                }
+            });
+
+            const views = eventsData.map(e => Number(e.views) || 0);
+            const clicks = eventsData.map(e => Number(e.clicks) || 0);
+            const addToCart = eventsData.map(e => Number(e.addToCart) || 0);
+            const purchases = eventsData.map(e => Number(e.purchases) || 0);
+
+            // Get 2D context
+            const ctx = canvas.getContext('2d');
+            if (!ctx) {
+                console.error('Could not get 2D context from canvas');
+                return;
+            }
+
+            try {
+                eventsChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [
+                            {
+                                label: 'Lượt xem',
+                                data: views,
+                                borderColor: 'rgb(59, 130, 246)',
+                                backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                                tension: 0.4,
+                                fill: true
+                            },
+                            {
+                                label: 'Lượt click',
+                                data: clicks,
+                                borderColor: 'rgb(16, 185, 129)',
+                                backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                                tension: 0.4,
+                                fill: true
+                            },
+                            {
+                                label: 'Thêm vào giỏ',
+                                data: addToCart,
+                                borderColor: 'rgb(249, 115, 22)',
+                                backgroundColor: 'rgba(249, 115, 22, 0.1)',
+                                tension: 0.4,
+                                fill: true
+                            },
+                            {
+                                label: 'Mua hàng',
+                                data: purchases,
+                                borderColor: 'rgb(168, 85, 247)',
+                                backgroundColor: 'rgba(168, 85, 247, 0.1)',
+                                tension: 0.4,
+                                fill: true
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                                labels: {
+                                    color: window.matchMedia('(prefers-color-scheme: dark)').matches ? '#e5e7eb' : '#1e293b',
+                                    padding: 15,
+                                    usePointStyle: true
+                                }
+                            },
+                            tooltip: {
+                                mode: 'index',
+                                intersect: false
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    color: window.matchMedia('(prefers-color-scheme: dark)').matches ? '#9ca3af' : '#64748b'
+                                },
+                                grid: {
+                                    color: window.matchMedia('(prefers-color-scheme: dark)').matches ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'
+                                }
+                            },
+                            x: {
+                                ticks: {
+                                    color: window.matchMedia('(prefers-color-scheme: dark)').matches ? '#9ca3af' : '#64748b'
+                                },
+                                grid: {
+                                    color: window.matchMedia('(prefers-color-scheme: dark)').matches ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'
+                                }
+                            }
+                        },
+                        interaction: {
+                            mode: 'nearest',
+                            axis: 'x',
+                            intersect: false
+                        }
+                    }
+                });
+            } catch (error) {
+                console.error('Error creating chart:', error);
+                const parent = canvas.parentElement;
+                if (parent) {
+                    parent.innerHTML = '<p class="text-red-500 text-center py-8">Lỗi khi tạo biểu đồ: ' + error.message + '</p>';
+                }
+            }
+        }
+
+        function renderBehaviorTypes(behaviorTypes) {
+            const container = document.getElementById('behavior-types-list');
+            if (!container) return;
+
+            const total = Object.values(behaviorTypes).reduce((sum, val) => sum + val, 0);
+            container.innerHTML = '';
+
+            Object.entries(behaviorTypes)
+                .sort((a, b) => b[1] - a[1])
+                .forEach(([type, count]) => {
+                    const percentage = total > 0 ? ((count / total) * 100).toFixed(1) : 0;
+                    const typeLabels = {
+                        'view': 'Xem sản phẩm',
+                        'click': 'Click',
+                        'add_to_cart': 'Thêm vào giỏ',
+                        'purchase': 'Mua hàng'
+                    };
+
+                    const item = document.createElement('div');
+                    item.className = 'flex items-center justify-between p-3 rounded-lg bg-slate-50 dark:bg-neutral-800';
+                    item.innerHTML = `
+                        <div class="flex-1">
+                            <div class="flex items-center justify-between mb-1">
+                                <span class="font-medium text-slate-900 dark:text-white">${typeLabels[type] || type}</span>
+                                <span class="text-sm font-bold text-slate-900 dark:text-white">${count.toLocaleString('vi-VN')}</span>
+                            </div>
+                            <div class="w-full bg-slate-200 dark:bg-neutral-700 rounded-full h-2">
+                                <div class="bg-gradient-to-r from-orange-500 to-yellow-500 dark:from-yellow-500 dark:to-yellow-400 h-2 rounded-full transition-all" style="width: ${percentage}%"></div>
+                            </div>
+                            <span class="text-xs text-slate-500 dark:text-neutral-400 mt-1">${percentage}%</span>
+                        </div>
+                    `;
+                    container.appendChild(item);
+                });
+        }
+
+        async function renderTopProducts(products) {
+            const container = document.getElementById('top-products-list');
+            if (!container) return;
+
+            container.innerHTML = '<p class="text-slate-500 dark:text-neutral-400 text-center py-4">Đang tải thông tin sản phẩm...</p>';
+
+            for (let i = 0; i < products.length; i++) {
+                const product = products[i];
+                let productName = `Sản phẩm ${product._id}`;
+                let productLink = `/products/detail/${product._id}`;
+                
+                try {
+                    // Fetch product details
+                    const productRes = await fetch(`http://localhost:3001/api/public/sanphams/${product._id}`);
+                    if (productRes.ok) {
+                        const productData = await productRes.json();
+                        if (productData && productData.tenSP) {
+                            productName = productData.tenSP;
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error fetching product:', product._id, error);
+                    // Keep default name if fetch fails
+                }
+
+                const item = document.createElement('div');
+                item.className = 'flex items-center justify-between p-3 rounded-lg bg-slate-50 dark:bg-neutral-800 hover:bg-slate-100 dark:hover:bg-neutral-700 transition-colors';
+                item.innerHTML = `
+                    <div class="flex items-center gap-3 flex-1">
+                        <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-orange-500 to-yellow-500 dark:from-yellow-500 dark:to-yellow-400 flex items-center justify-center text-white dark:text-black font-bold text-sm flex-shrink-0">
+                            ${i + 1}
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <a href="${productLink}" class="block group" target="_blank">
+                                <p class="font-medium text-slate-900 dark:text-white truncate group-hover:text-orange-600 dark:group-hover:text-yellow-400 transition-colors">
+                                    ${productName}
+                                    <i class="fas fa-external-link-alt text-xs ml-1 opacity-0 group-hover:opacity-100 transition-opacity"></i>
+                                </p>
+                            </a>
+                            <p class="text-xs text-slate-500 dark:text-neutral-400 mt-1">
+                                Xem: ${product.views || 0} | Click: ${product.clicks || 0} | Giỏ: ${product.addToCart || 0}
+                            </p>
+                            <a href="${productLink}" class="text-xs text-orange-600 dark:text-yellow-500 hover:text-orange-700 dark:hover:text-yellow-400 mt-1 inline-block" target="_blank">
+                                Xem chi tiết <i class="fas fa-arrow-right text-xs"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="text-right flex-shrink-0 ml-4">
+                        <span class="text-lg font-bold text-orange-600 dark:text-yellow-500">${product.total}</span>
+                        <p class="text-xs text-slate-500 dark:text-neutral-400">tổng</p>
+                    </div>
+                `;
+                
+                // Clear loading message on first item
+                if (i === 0) {
+                    container.innerHTML = '';
+                }
+                container.appendChild(item);
+            }
+        }
+
+        async function renderTopUsers(users) {
+            const container = document.getElementById('top-users-list');
+            if (!container) return;
+
+            container.innerHTML = '<p class="text-slate-500 dark:text-neutral-400 text-center py-4">Đang tải thông tin người dùng...</p>';
+
+            const USER_SERVICE_URL = 'http://localhost:3002';
+
+            for (let index = 0; index < users.length; index++) {
+                const user = users[index];
+                let userName = 'Khách vãng lai';
+                let userEmail = 'N/A';
+                
+                // Fetch user info if user ID exists
+                if (user._id && user._id !== 'N/A' && user._id !== null) {
+                    try {
+                        const userRes = await fetch(`${USER_SERVICE_URL}/api/auth/${user._id}`);
+                        if (userRes.ok) {
+                            const userData = await userRes.json();
+                            if (userData.success && userData.data) {
+                                userName = userData.data.hoTen || 'Chưa có tên';
+                                userEmail = userData.data.email || 'N/A';
+                            }
+                        }
+                    } catch (error) {
+                        console.error('Error fetching user info:', user._id, error);
+                        // Keep default values if fetch fails
+                    }
+                }
+
+                const item = document.createElement('div');
+                item.className = 'flex items-center justify-between p-3 rounded-lg bg-slate-50 dark:bg-neutral-800 hover:bg-slate-100 dark:hover:bg-neutral-700 transition-colors';
+                item.innerHTML = `
+                    <div class="flex items-center gap-3 flex-1">
+                        <div class="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center text-white font-bold text-sm">
+                            ${index + 1}
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <p class="font-medium text-slate-900 dark:text-white truncate">${userName}</p>
+                            <p class="text-xs text-slate-500 dark:text-neutral-400 truncate">
+                                <i class="fas fa-envelope mr-1"></i>${userEmail}
+                            </p>
+                            <p class="text-xs text-slate-500 dark:text-neutral-400 mt-1">
+                                Xem: ${user.views || 0} | Click: ${user.clicks || 0} | Giỏ: ${user.addToCart || 0}
+                            </p>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <span class="text-lg font-bold text-blue-600 dark:text-cyan-400">${user.total}</span>
+                        <p class="text-xs text-slate-500 dark:text-neutral-400">hoạt động</p>
+                    </div>
+                `;
+                
+                // Clear loading message on first item
+                if (index === 0) {
+                    container.innerHTML = '';
+                }
+                container.appendChild(item);
+            }
+        }
+
+        function renderCategoryStats(categories) {
+            const container = document.getElementById('category-stats-list');
+            if (!container) return;
+
+            container.innerHTML = '';
+
+            categories.forEach((category, index) => {
+                const item = document.createElement('div');
+                item.className = 'p-4 rounded-lg bg-slate-50 dark:bg-neutral-800 border border-slate-200 dark:border-neutral-700';
+                item.innerHTML = `
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="font-medium text-slate-900 dark:text-white">${category._id || 'Không xác định'}</span>
+                        <span class="text-lg font-bold text-orange-600 dark:text-yellow-500">${category.count.toLocaleString('vi-VN')}</span>
+                    </div>
+                    <div class="w-full bg-slate-200 dark:bg-neutral-700 rounded-full h-2">
+                        <div class="bg-gradient-to-r from-orange-500 to-yellow-500 dark:from-yellow-500 dark:to-yellow-400 h-2 rounded-full transition-all" style="width: ${Math.min((category.count / (categories[0]?.count || 1)) * 100, 100)}%"></div>
+                    </div>
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        // Refresh analytics button
+        document.getElementById('refresh-analytics')?.addEventListener('click', () => {
+            loadAnalytics();
+        });
+
+        // Change days filter
+        document.getElementById('analytics-days')?.addEventListener('change', () => {
+            loadAnalytics();
+        });
+
+        // Auto-refresh every 30 seconds
+        setInterval(() => {
+            loadAnalytics();
+        }, 30000);
+    </script>
+</body>
+</html> 

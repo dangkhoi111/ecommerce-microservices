@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chi Tiết Đơn Hàng - MegaStore VN</title>
+  <link rel="stylesheet" href="/css/seller.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
+</head>
+<style>
+    .order-details-container {
+  max-width: 800px;
+  margin: 20px auto;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.order-details-container h3 {
+  margin-top: 20px;
+  color: #333;
+}
+
+.order-details-container p {
+  margin: 10px 0;
+  font-size: 16px;
+}
+
+.order-details-container table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.order-details-container th, .order-details-container td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+.order-details-container th {
+  background-color: #f4f4f4;
+  font-weight: bold;
+}
+</style>
+<body>
+  <%- include('./../elements/header') %>
+  <%- include('./../elements/navbar') %>
+
+  <main class="main-content">
+    <section id="order-details" class="content-section">
+      <div class="section-header">
+        <h2>Chi Tiết Đơn Hàng</h2>
+      </div>
+      <div class="order-details-container">
+        <h3>Thông tin đơn hàng</h3>
+        <p><strong>Mã đơn hàng:</strong> <span id="order-id"></span></p>
+        <p><strong>Ngày đặt:</strong> <span id="order-date"></span></p>
+        <p><strong>Trạng thái:</strong> <span id="order-status"></span></p>
+        <p><strong>Tổng tiền:</strong> <span id="order-total"></span></p>
+        <p><strong>Phương thức giao hàng:</strong> <span id="order-shipping-method"></span></p>
+        <p><strong>Phí vận chuyển:</strong> <span id="order-shipping-fee"></span></p>
+        <p><strong>Người bán:</strong> <span id="order-seller"></span></p>
+        <h3>Thông tin người nhận</h3>
+        <p><strong>Họ tên:</strong> <span id="receiver-name"></span></p>
+        <p><strong>Số điện thoại:</strong> <span id="receiver-phone"></span></p>
+        <p><strong>Địa chỉ:</strong> <span id="receiver-address"></span>, <span id="receiver-city"></span></p>
+        <h3>Danh sách sản phẩm</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Tên sản phẩm</th>
+              <th>Số lượng</th>
+              <th>Màu sắc</th>
+              <th>Kích thước</th>
+              <th>Tổng tiền</th>
+            </tr>
+          </thead>
+          <tbody id="product-list"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    // Lấy orderId từ URL dạng /order/:id
+    const pathParts = window.location.pathname.split('/');
+    const orderId = pathParts[pathParts.length - 1];
+
+    if (!orderId) {
+      document.getElementById('order-details').innerHTML = '<p>Không có ID đơn hàng.</p>';
+    } else {
+      // Gọi API chi tiết đơn hàng
+      fetch(`http://localhost:3006/api/orders/${orderId}`)
+        .then(response => response.json())
+        .then(data => {
+          // Hiển thị thông tin đơn hàng
+          document.getElementById('order-id').textContent = data._id;
+          document.getElementById('order-date').textContent = new Date(data.NgayLap).toLocaleString('vi-VN');
+          document.getElementById('order-status').textContent = data.TrangThai;
+          document.getElementById('order-total').textContent = data.TongTien.toLocaleString('vi-VN') + ' VND';
+          document.getElementById('order-shipping-method').textContent =
+            data.PhuongThucGiaoHang === 'cod' ? 'Thanh toán khi nhận hàng (COD)' : data.PhuongThucGiaoHang;
+          document.getElementById('order-seller').textContent = data.MaUserBan;
+          document.getElementById('receiver-name').textContent = data.hoTenNguoiNhan;
+          document.getElementById('receiver-phone').textContent = data.sdtNguoiNhan;
+          document.getElementById('receiver-address').textContent = data.diaChiChiTiet;
+          document.getElementById('receiver-city').textContent = data.tinhThanh;
+
+          // Gọi API lấy thông tin vận chuyển nếu cần
+          fetch(`http://localhost:3004/api/shipping/${data.MaVC}`)
+            .then(res => res.json())
+            .then(shipping => {
+              document.getElementById('order-shipping-fee').textContent = (shipping.PhiVC || 0).toLocaleString('vi-VN') + ' VND';
+            })
+            .catch(() => {
+              document.getElementById('order-shipping-fee').textContent = 'Không rõ';
+            });
+
+          // Hiển thị danh sách sản phẩm
+          const productList = document.getElementById('product-list');
+          productList.innerHTML = ''; // Xóa danh sách cũ
+          data.orderItems.forEach(item => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+              <td>${item.TenSp}</td>
+              <td>${item.SoLuong}</td>
+              <td>${item.MauSac}</td>
+              <td>${item.KichThuoc}</td>
+              <td>${item.Tong.toLocaleString('vi-VN')} VND</td>
+            `;
+            productList.appendChild(row);
+          });
+        })
+        .catch(error => {
+          console.error('Lỗi khi lấy dữ liệu:', error);
+          document.getElementById('order-details').innerHTML = '<p>Không thể tải thông tin đơn hàng.</p>';
+        });
+    }
+  </script>
+</body>
+</html>
